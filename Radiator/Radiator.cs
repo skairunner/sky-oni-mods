@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using static SkyLib.Utility;
+
 namespace Radiator
 {
     public class Radiator : KMonoBehaviour, ISim200ms, IBridgedNetworkItem
@@ -66,11 +68,25 @@ namespace Radiator
             var panel_mat = gameObject.GetComponent<PrimaryElement>();
             var element = ElementLoader.FindElementByHash(contents.element);
             var deltaheat = conductive_heat(element, contents.temperature, panel_mat.Element, panel_mat.Temperature, surface_area);
-            // heat change = mass * specific heat capacity * temp change            
-            var deltatemp_liquid = -deltaheat / contents.mass / element.specificHeatCapacity * dt;
+            // heat change = mass * specific heat capacity * temp change        
             var deltatemp_panel = deltaheat / RadiatorConfig.MASS[0] / panel_mat.Element.specificHeatCapacity * dt;
-            float delta = flowManager.AddElement(outputCell, contents.element, contents.mass, contents.temperature + deltatemp_liquid, contents.diseaseIdx, contents.diseaseCount);
-            panel_mat.Temperature += deltatemp_panel;
+            var deltatemp_liquid = -deltaheat / contents.mass / element.specificHeatCapacity * dt;
+            var panel_newtemp = panel_mat.Temperature + deltatemp_panel;
+            var liquid_newtemp = contents.temperature + deltatemp_liquid;
+            // In this case, the panel can at most be cooled to the content temperature
+            if (panel_mat.Temperature > contents.temperature)
+            {
+                panel_newtemp = Math.Max(panel_newtemp, contents.temperature);
+                liquid_newtemp = Math.Min(liquid_newtemp, panel_mat.Temperature);
+            } else
+            {
+                panel_newtemp = Math.Min(panel_newtemp, contents.temperature);
+                liquid_newtemp = Math.Max(liquid_newtemp, panel_mat.Temperature);
+            }
+
+            SkyLib.Logger.LogLine("TempLog", $"dH {deltaheat} dT_l {deltatemp_liquid} T_l {contents.temperature} dT_p {deltatemp_panel} Mass {contents.mass}");
+            float delta = flowManager.AddElement(outputCell, contents.element, contents.mass, liquid_newtemp, contents.diseaseIdx, contents.diseaseCount);
+            panel_mat.Temperature = panel_newtemp;
             if (delta <= 0f) return;
             flowManager.RemoveElement(inputCell, delta);
             Game.Instance.accumulators.Accumulate(accumulator, contents.mass);

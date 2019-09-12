@@ -83,8 +83,7 @@ if exist "$(ProjectDir)anim" xcopy /Y /R /I /E /Q  "$(ProjectDir)anim" "$(Soluti
 if exist "$(ProjectDir)previews" xcopy /Y /R /I /E /Q  "$(ProjectDir)previews" "$(SolutionDir)..\Mods\$(TargetName)\"
 if exist "$(TargetDir)Config.json" echo F | xcopy /Y /S /R /Q "$(TargetDir)Config.json" "$(SolutionDir)..\Mods\$(TargetName)\Config.json"
 
-xcopy /Y /R  /I /Q  /E "$(SolutionDir)..\Mods\$(TargetName)" "C:\Users\%25USERNAME%25\Documents\Klei\OxygenNotIncluded\mods\dev\$(TargetName)"
-xcopy /Y /R  /I /Q  /E "$(SolutionDir)..\Mods\$(TargetName)" "C:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\Mods\$(TargetName)"</PostBuildEvent>
+xcopy /Y /R  /I /Q  /E "$(SolutionDir)..\Mods\$(TargetName)" "C:\Users\%25USERNAME%25\Documents\Klei\OxygenNotIncluded\mods\dev\$(TargetName)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
