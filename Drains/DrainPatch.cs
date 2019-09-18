@@ -4,9 +4,9 @@ using static SkyLib.OniUtils;
 
 namespace Drain
 {
-    public class RadiatorPatch
+    public class DrainPatch
     {
-        public static string ModName = "Radiator";
+        public static string ModName = "Drain";
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
@@ -26,12 +26,8 @@ namespace Drain
             {
                 if (!didStartUp_Building)
                 {
-                    AddBuildingStrings(RadiatorConfig.Id, RadiatorConfig.DisplayName, RadiatorConfig.Description, RadiatorConfig.Effect);
-                    AddBuildingToBuildMenu("Utilities", RadiatorConfig.Id);
-                    AddStatusItem($"{RadiatorConfig.Id}_RADIATING", "NAME", "Radiating {0}");
-                    AddStatusItem($"{RadiatorConfig.Id}_RADIATING", "TOOLTIP", "This radiator is currently radiating heat at {0}.");
-                    AddStatusItem($"{RadiatorConfig.Id}_NOTINSPACE", "NAME", "Not in space");
-                    AddStatusItem($"{RadiatorConfig.Id}_NOTINSPACE", "TOOLTIP", "This radiator is not fully in space and can't operate.");
+                    AddBuildingStrings(DrainConfig.Id, DrainConfig.DisplayName, DrainConfig.Description, DrainConfig.Effect);
+                    AddBuildingToBuildMenu("Plumbing", DrainConfig.Id);
                     didStartUp_Building = true;
                 }
             }
@@ -45,7 +41,7 @@ namespace Drain
             {
                 if(!didStartUp_Db)
                 {
-                    AddBuildingToTech("TemperatureModulation", RadiatorConfig.Id);
+                    AddBuildingToTech("SanitationSciences", DrainConfig.Id);
                     didStartUp_Db = true;
                 }
             }

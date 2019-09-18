@@ -1,0 +1,27 @@
+
+drain.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+drain
+  rotate: false
+  xy: 2, 148
+  size: 145, 144
+  orig: 145, 144
+  offset: 0, 0
+  index: 0
+drain_place
+  rotate: false
+  xy: 2, 2
+  size: 145, 144
+  orig: 145, 144
+  offset: 0, 0
+  index: 0
+ui
+  rotate: false
+  xy: 149, 168
+  size: 123, 124
+  orig: 123, 124
+  offset: 0, 0
+  index: 0
