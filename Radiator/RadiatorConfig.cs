@@ -8,7 +8,7 @@ namespace Radiator
     {
         public const string Id = "Radiator";
         public const string DisplayName = "Radiator";
-        public const string Description = "A space-age space heater, a Radiator passively absorbs heat from liquid pipes through it and radiates it away into space. The hotter it is, the faster it cools itself.";
+        public const string Description = "A space-age space heater, a Radiator passively absorbs heat from liquid pipes through it and radiates it away into space. The hotter it is, the faster it cools itself. It can also be used to equalize the temperature of the piped liquid and a liquid or gas environment.";
         public static string Effect = $"Warmed up by liquids piped through it, and radiates heat into space. More effective the hotter it is.";
         public static float[] MASS = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 
@@ -28,7 +28,7 @@ namespace Radiator
                 decor: BUILDINGS.DECOR.NONE,
                 noise: NOISE_POLLUTION.NONE
             );
-            def.Floodable = true;
+            def.Floodable = false;
             def.MaterialCategory = MATERIALS.REFINED_METALS;
             def.AudioCategory = "HollowMetal";
             def.Overheatable = false;

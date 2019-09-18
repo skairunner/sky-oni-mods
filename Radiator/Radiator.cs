@@ -163,7 +163,7 @@ namespace Radiator
         private static string _FormatStatusCallback(string formatstr, object data)
         {
             var radiator = (Radiator)data;
-            var radiation_rate = GameUtil.GetFormattedHeatEnergyRate(radiator.CurrentCooling);
+            var radiation_rate = GameUtil.GetFormattedHeatEnergyRate(radiator.CurrentCooling * 5);
             return string.Format(formatstr, radiation_rate);
         }
 
