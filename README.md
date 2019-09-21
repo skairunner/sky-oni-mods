@@ -24,10 +24,12 @@ Automatic Dispenser: -160 DTU/s
 Auto-Sweeper: 1200 DTU/s*  
 Battery: 550 DTU/s☨  
 Battery, Jumbo: -100 DTU/s  
-Battery, Smart: -600 DTU/s  
+Battery, Smart: -600 DTU/s 
+Ceiling Light: 400 DTU/s  
 Conveyor Loader: 1600 DTU/s**  
 Duplicant Checkpoint: 450 DTU/s☨☨  
 Gantry: 1500 DTU/s***  
+Lamp: 300 DTU/s
 Power Transformer: 500 DTU/s  
 Power Transformer, Large: 500 DTU/s  
 Robo-Miner: 700 DTU/s****  

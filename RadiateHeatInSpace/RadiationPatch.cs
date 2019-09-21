@@ -166,5 +166,23 @@ namespace RadiateHeat
                 Mod_OnLoad.AttachHeatComponent(go, .1f, 12f);
             }
         }
+
+        [HarmonyPatch(typeof(CeilingLightConfig), "DoPostConfigureComplete")]
+        public static class CeilingLightConfig_Patch
+        {
+            public static void Prefix(GameObject go)
+            {
+                Mod_OnLoad.AttachHeatComponent(go, .5f, .5f);
+            }
+        }
+
+        [HarmonyPatch(typeof(FloorLampConfig), "DoPostConfigureComplete")]
+        public static class FloorLampConfig_Patch
+        {
+            public static void Prefix(GameObject go)
+            {
+                Mod_OnLoad.AttachHeatComponent(go, .3f, 1.5f);
+            }
+        }
     }
 }
