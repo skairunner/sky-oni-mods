@@ -2,7 +2,7 @@
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
-namespace Drain
+namespace Radiator
 {
     public class RadiatorPatch
     {

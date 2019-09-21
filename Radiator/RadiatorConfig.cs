@@ -2,7 +2,7 @@
 using TUNING;
 using UnityEngine;
 
-namespace Drain
+namespace Radiator
 {
     class RadiatorConfig : IBuildingConfig
     {

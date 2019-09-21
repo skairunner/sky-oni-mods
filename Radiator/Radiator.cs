@@ -4,7 +4,7 @@ using UnityEngine;
 
 using static SkyLib.Utility;
 
-namespace Drain
+namespace Radiator
 {
     public class Radiator : KMonoBehaviour, ISim200ms, IBridgedNetworkItem
     {
