@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadiateHeatInSpace", "Radia
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpandedLights", "ExpandedLights\ExpandedLights.csproj", "{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpandedLights2", "ExpandedLights2\ExpandedLights2.csproj", "{D59170CB-58DB-40A8-8448-CCB275A5FCC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

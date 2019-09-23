@@ -12,3 +12,7 @@ A personal document to compile some common quirks of ONI.
 * UI sprites **must** be named `ui_0.png`, nothing more and nothing less. The animation must be named `ui`, again exactly. Capitalization matters.
 * It's a good idea to aim for about 120x120 for a UI sprite, including margin and all.
 * Klei UI sprites tend to have a small, circuar shadow beneath them.
+
+## ObjectLayers
+* ObjectLayer.Building = passable
+* ObjectLayer.FoundationTile = Can be built upon
