@@ -103,7 +103,8 @@ namespace ExpandedLights
             var obj = Grid.Objects[cell, (int)ObjectLayer.Building];
             if (obj != null)
             {
-                if (obj.GetComponent<Building>().Def.PrefabID == "Door")
+                var building = obj.GetComponent<Building>();
+                if (building != null && building.Def.PrefabID == "Door")
                 {
                     return brightness * .7f;
                 }
@@ -113,7 +114,6 @@ namespace ExpandedLights
             if (obj != null)
             {
                 var name = obj.GetComponent<Building>().Def.PrefabID;
-                SkyLib.Logger.LogLine("DEBUG", name);
                 if (name == "MeshTile")
                 {
                     return brightness * .9f;
@@ -122,7 +122,7 @@ namespace ExpandedLights
                     return brightness * .5f;
                 }
             }
-
+            
             // Totally occlude if tile is solid.
             if (Grid.IsValidCell(cell) && !Grid.Transparent[cell] && Grid.Solid[cell])
             {
