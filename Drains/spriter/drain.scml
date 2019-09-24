@@ -4,9 +4,22 @@
         <file id="0" name="drain_0.png" width="145" height="144" pivot_x="0" pivot_y="1"/>
         <file id="1" name="drain_place_0.png" width="145" height="144" pivot_x="0" pivot_y="1"/>
         <file id="2" name="ui_0.png" width="123" height="124" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="drain_clogged_0.png" width="145" height="144" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="drain">
-        <animation id="0" name="place" length="165" interval="33">
+        <animation id="0" name="clogged" length="1000" interval="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="drain_clogged_0">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="-57" y="116" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="place" length="165" interval="33">
             <mainline>
                 <key id="0">
                     <object_ref id="0" timeline="0" key="0" z_index="0"/>
@@ -30,7 +43,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="ui" length="165" interval="33">
+        <animation id="2" name="ui" length="165" interval="33">
             <mainline>
                 <key id="0">
                     <object_ref id="0" timeline="0" key="0" z_index="0"/>
@@ -54,7 +67,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="built" length="165" interval="33">
+        <animation id="3" name="built" length="165" interval="33">
             <mainline>
                 <key id="0">
                     <object_ref id="0" timeline="0" key="0" z_index="0"/>
@@ -74,7 +87,7 @@
             </mainline>
             <timeline id="0" name="drain_0_000">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="-57" y="115" angle="0" scale_x="0.8" scale_y="0.8"/>
+                    <object folder="0" file="0" x="-57" y="116" angle="0" scale_x="0.8" scale_y="0.8"/>
                 </key>
             </timeline>
         </animation>

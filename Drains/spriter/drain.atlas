@@ -6,21 +6,28 @@ filter: Nearest,Nearest
 repeat: none
 drain
   rotate: false
-  xy: 2, 148
+  xy: 2, 274
+  size: 145, 144
+  orig: 145, 144
+  offset: 0, 0
+  index: 0
+drain_clogged
+  rotate: false
+  xy: 2, 128
   size: 145, 144
   orig: 145, 144
   offset: 0, 0
   index: 0
 drain_place
   rotate: false
-  xy: 2, 2
+  xy: 149, 274
   size: 145, 144
   orig: 145, 144
   offset: 0, 0
   index: 0
 ui
   rotate: false
-  xy: 149, 168
+  xy: 2, 2
   size: 123, 124
   orig: 123, 124
   offset: 0, 0
