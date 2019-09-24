@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using PeterHan.PLib;
 using PeterHan.PLib.Lighting;
 using UnityEngine;
 
@@ -42,6 +41,36 @@ namespace ExpandedLights
                     octants.AddOctant(range, DiscreteShadowCaster.Octant.N_NW);
                     break;
             }
+        }
+
+        // A cone that starts light one tile offset from the source.
+        public static void DoOffsetCone(GameObject source, int sourceCell, int range,
+                IDictionary<int, float> brightness)
+        {
+            var rotation = source.GetComponent<Rotatable>();
+            var offset_dir = new Vector2I(0, 0);
+            switch (rotation?.GetOrientation())
+            {
+                case Orientation.R90:
+                    // Cone right
+                    offset_dir.X = 1;
+                    break;
+                case Orientation.R180:
+                    // Cone down
+                    offset_dir.Y = -1;
+                    break;
+                case Orientation.R270:
+                    // Cone left
+                    offset_dir.X = -1;
+                    break;
+                case Orientation.Neutral:
+                default:
+                    // Cone up
+                    offset_dir.Y = 1;
+                    break;
+            }
+            int new_sourceCell = Grid.OffsetCell(sourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
+            DoLightCone(source, new_sourceCell, range, brightness);
         }
 
         public static void DoLightCircle(GameObject source, int sourceCell, int range,

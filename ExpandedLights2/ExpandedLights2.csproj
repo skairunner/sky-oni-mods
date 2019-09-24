@@ -66,7 +66,7 @@
     <Compile Include="FloodlightConfig.cs" />
     <Compile Include="LEDLightConfig.cs" />
     <Compile Include="LightDefs.cs" />
-    <Compile Include="LightSystemPatch.cs" />
+    <Compile Include="StockLightPatches.cs" />
     <Compile Include="TileLightConfig.cs" />
   </ItemGroup>
   <ItemGroup>

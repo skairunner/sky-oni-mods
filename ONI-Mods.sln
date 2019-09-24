@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drains", "Drains\Drains.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadiateHeatInSpace", "RadiateHeatInSpace\RadiateHeatInSpace.csproj", "{19ED4516-4530-4619-A028-591E1A09B94D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpandedLights", "ExpandedLights\ExpandedLights.csproj", "{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpandedLights2", "ExpandedLights2\ExpandedLights2.csproj", "{D59170CB-58DB-40A8-8448-CCB275A5FCC6}"
 EndProject
 Global
@@ -47,10 +45,6 @@ Global
 		{19ED4516-4530-4619-A028-591E1A09B94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19ED4516-4530-4619-A028-591E1A09B94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19ED4516-4530-4619-A028-591E1A09B94D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DD2EC83-97B9-4FDB-AFE1-B362C9A93064}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU

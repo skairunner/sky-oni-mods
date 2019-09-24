@@ -11,7 +11,7 @@ namespace ExpandedLights
     {
         public const string Id = "LEDLight";
         public const string DisplayName = "LED Light";
-        public const string Description = "A small LED light that can be built on the wall.";
+        public const string Description = "The only thing holding back this LED light is its high costs and lack of determination. It does, however, always give its one hundred percent.";
         public static string Effect = $"Emits light but no heat. Can be built anywhere.";
 
         public const int lux = 1500;
@@ -21,18 +21,35 @@ namespace ExpandedLights
         {
             int width = 1;
             int height = 1;
-            string anim = "walllamp_kanim";
+            string anim = "ledLight_kanim";
             int hitpoints = 10;
             float construction_time = BUILDINGS.CONSTRUCTION_TIME_SECONDS.TIER2;
-            float[] tieR1 = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
-            string[] allMetals = MATERIALS.REFINED_METALS;
             float melting_point = 800f;
             BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
             EffectorValues none = NOISE_POLLUTION.NONE;
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, tieR1, allMetals, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 0.2f);
+
+            var construction_materials = new[]
+            {
+                "RefinedMetal",
+                "Plastic"
+            };
+
+            var construction_costs = new[]
+            {
+                50f,
+                50f
+            };
+
+            var decor = new EffectorValues()
+            {
+                amount = 5,
+                radius = 3
+            };
+
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, construction_costs, construction_materials, melting_point, build_location_rule, decor, none, 0.2f);
             buildingDef.RequiresPowerInput = true;
             buildingDef.PermittedRotations = PermittedRotations.Unrotatable;
-            buildingDef.EnergyConsumptionWhenActive = 10f;
+            buildingDef.EnergyConsumptionWhenActive = 2f;
             buildingDef.SelfHeatKilowattsWhenActive = 0f;
             buildingDef.ViewMode = OverlayModes.Light.ID;
             buildingDef.ObjectLayer = ObjectLayer.Building;

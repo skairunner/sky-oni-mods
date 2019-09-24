@@ -14,6 +14,25 @@ If you find what you think is a bug, please feel free to open a report in [Issue
 
 Adds a new building to the Plumbing tab called the Drain, built with 100kg of metal. It passively pumps liquids inside it into pipes at a rate of 100g/s, and is thus useful for buildings that "dribble" liquid like the Natural Gas Generator, or for cleaning up Algae Terrarium automation.
 
+### Expanded Lights
+
+Add new lights that are much more convenient for lighting areas: Floodlight, Tile Light, LED Light. Additionally, Ceiling Light and Lamp have smooth lighting, and produce less heat.
+
+#### New lights
+
+**Floodlight**: Rotatable. An industrial light that consumes 30W and illuminates a 5 x 16 rectangular at a brightness of 6000 Lux (no falloff) at the cost of a heavy decor penalty. Costs 100 kg of refined metal, and is unlocked with Low-Resistance Conductors.
+
+**LED Light**: A high-tech light that produces no heat, consuming 2W to light a circular area. Can be built anywhere. Costs 50 kg of refined metal and 50 kg of plastic, and is unlocked with Catalytics.
+
+**Tile Light**: Rotatable. A tiny light that can be embedded in other tiles, consuming 5W and illuminating a similar area and brightness as a Ceiling Light. Is a background layer building, meaning it can be built within tile. Costs 50 kg of plastic, and is unlocked with Artistic Expression.
+
+#### Tweaked lights
+
+**Ceiling Light**: Produces 100 DTU/s (down from 500 DTU/s).
+
+**Lamp**: Consumes 4W (down from 8W) and produces 100 DTU/s (down from 500 DTU/s).
+
+
 ### Radiate Heat In Space
 
 Add mechanic where select buildings passively radiate heat when in space. The radiated amount of heat scales by the fourth power of the temperature of the building. This allows buildings to be potentially operated in space without a "drop of liquid" cooling system, although many buildings will have to be periodically disabled, because they do not radiate enough heat to keep themselves cool while continuously operating.

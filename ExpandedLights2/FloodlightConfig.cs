@@ -6,23 +6,23 @@ namespace ExpandedLights {
 		public const string Id = "Floodlight";
 		public const string DisplayName = "Floodlight";
 		public const string Description = "It's called a floodlight because 'deluge light' didn't quite have the same ring.";
-		public static string Effect = $"Lights a large area.";
+		public static string Effect = $"Brightly illuminates a large area.";
 
 		public override BuildingDef CreateBuildingDef() {
 			int width = 1;
 			int height = 1;
-			string anim = "ceilinglight_kanim";
+			string anim = "floodlight_kanim";
 			int hitpoints = 10;
 			float construction_time = BUILDINGS.CONSTRUCTION_TIME_SECONDS.TIER2;
-			float[] tieR1 = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
+			float[] tieR1 = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
 			string[] allMetals = MATERIALS.REFINED_METALS;
 			float melting_point = 800f;
 			BuildLocationRule build_location_rule = BuildLocationRule.OnFoundationRotatable;
 			EffectorValues none = NOISE_POLLUTION.NONE;
-			BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, tieR1, allMetals, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 0.2f);
+			BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, tieR1, allMetals, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER5, none, 0.2f);
 			buildingDef.RequiresPowerInput = true;
 			buildingDef.PermittedRotations = PermittedRotations.R360;
-			buildingDef.EnergyConsumptionWhenActive = 40f;
+			buildingDef.EnergyConsumptionWhenActive = 30f;
 			buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
 			buildingDef.ViewMode = OverlayModes.Light.ID;
 			buildingDef.AudioCategory = "Metal";

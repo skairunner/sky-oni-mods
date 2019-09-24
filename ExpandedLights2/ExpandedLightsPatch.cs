@@ -16,7 +16,7 @@ namespace ExpandedLights {
 		/// <summary>
 		/// Light shape: Directed cone according to component rotation
 		/// </summary>
-		public static PLightShape DirectedCone, Beam5, SmoothCircle;
+		public static PLightShape DirectedCone, Beam5, SmoothCircle, OffsetCone;
 
 		public static class Mod_OnLoad
         {
@@ -27,6 +27,7 @@ namespace ExpandedLights {
 				DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.DoLightCone);
                 Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
                 SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.DoLightCircle);
+                OffsetCone = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.DoOffsetCone);
             }
 		}
 
@@ -58,8 +59,8 @@ namespace ExpandedLights {
             {
                 if (!didStartUp_Db)
                 {
-                    AddBuildingToTech("Artistry", FloodlightConfig.Id);
-                    AddBuildingToTech("PrettyGoodConductors", TileLightConfig.Id);
+                    AddBuildingToTech("PrettyGoodConductors", FloodlightConfig.Id);
+                    AddBuildingToTech("Artistry", TileLightConfig.Id);
                     AddBuildingToTech("Catalytics", LEDLightConfig.Id);
                     didStartUp_Db = true;
                 }

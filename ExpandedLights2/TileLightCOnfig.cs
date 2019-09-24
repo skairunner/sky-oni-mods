@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using TUNING;
-using static ExpandedLights.LightSystemPatch;
 using Harmony;
 
 namespace ExpandedLights
@@ -9,7 +8,7 @@ namespace ExpandedLights
     {
         public const string Id = "TileLight";
         public const string DisplayName = "Tile Light";
-        public const string Description = "A light embedded within a tile. It is a marvelous innovation.";
+        public const string Description = "These tiny lights are the real MVP, illuminating places that other lights don't dare to go.";
         public static string Effect = $"Emits light. Can be built behind most other buildings, except Drywall and Tempshift Plates.";
 
         public const int lux = 1800;
@@ -19,7 +18,7 @@ namespace ExpandedLights
         {
             int width = 1;
             int height = 1;
-            string anim = "ceilinglight_kanim";
+            string anim = "tileLight_kanim";
             int hitpoints = 10;
             float construction_time = BUILDINGS.CONSTRUCTION_TIME_SECONDS.TIER2;
             float[] tieR1 = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
@@ -44,7 +43,7 @@ namespace ExpandedLights
             LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
             lightShapePreview.lux = lux;
             lightShapePreview.radius = range;
-            lightShapePreview.shape = LightShape.Circle;
+            lightShapePreview.shape = ExpandedLightsPatch.OffsetCone.GetKLightShape();
         }
 
         public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
@@ -62,7 +61,7 @@ namespace ExpandedLights
             light2D.Angle = 2.6f;
             light2D.Direction = LIGHT2D.CEILINGLIGHT_DIRECTION;
             light2D.Offset = LIGHT2D.CEILINGLIGHT_OFFSET;
-            light2D.shape = LightShape.Cone;
+            light2D.shape = ExpandedLightsPatch.OffsetCone.GetKLightShape();
             light2D.drawOverlay = true;
             light2D.Lux = lux;
             go.AddOrGetDef<LightController.Def>();
