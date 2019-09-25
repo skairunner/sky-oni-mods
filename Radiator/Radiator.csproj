@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RadiatingTileConfig.cs" />
     <Compile Include="Radiator.cs" />
     <Compile Include="RadiatorConfig.cs" />
     <Compile Include="RadiatorPatch.cs" />

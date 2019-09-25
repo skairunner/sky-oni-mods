@@ -83,8 +83,6 @@ namespace Radiator
                 panel_newtemp = Math.Min(panel_newtemp, contents.temperature);
                 liquid_newtemp = Math.Max(liquid_newtemp, panel_mat.Temperature);
             }
-
-            SkyLib.Logger.LogLine("TempLog", $"dH {deltaheat} dT_l {deltatemp_liquid} T_l {contents.temperature} dT_p {deltatemp_panel} Mass {contents.mass}");
             float delta = flowManager.AddElement(outputCell, contents.element, contents.mass, liquid_newtemp, contents.diseaseIdx, contents.diseaseCount);
             panel_mat.Temperature = panel_newtemp;
             if (delta <= 0f) return;
@@ -131,7 +129,10 @@ namespace Radiator
         public void Sim200ms(float dt)
         {
             float temp = gameObject.GetComponent<PrimaryElement>().Temperature;
-            //SkyLib.Logger.LogLine("TempLog", $"Radiator @ {temp}K, cooling @ {cooling * 1000} DTU");
+            if (temp < 5)
+            {
+                return;
+            }
             if (CheckInSpace())
             {
                 double cooling = radiative_heat(temp) * 1;
