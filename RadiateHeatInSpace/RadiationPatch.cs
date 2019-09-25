@@ -11,6 +11,7 @@ namespace RadiateHeat
     {
         public static string ModName = "RadiateHeatInSpace";
         public static bool didStartUp_Building = false;
+        public static bool didStartUp_Db = false;
 
         public class PatchedBuilding
         {
@@ -50,11 +51,27 @@ namespace RadiateHeat
             {
                 if (!didStartUp_Building)
                 {
+                    AddBuildingStrings(RadiatorTileConfig.Id, RadiatorTileConfig.DisplayName, RadiatorTileConfig.Description, RadiatorTileConfig.Effect);
+                    AddBuildingToBuildMenu("Base", RadiatorTileConfig.Id);
                     AddStatusItem($"{ModName}_RADIATING", "NAME", "Radiating {0}");
                     AddStatusItem($"{ModName}_RADIATING", "TOOLTIP", "This building is currently radiating heat at {0}.");
                     AddStatusItem($"{ModName}_NOTINSPACE", "NAME", "Not in space");
                     AddStatusItem($"{ModName}_NOTINSPACE", "TOOLTIP", "This building is not fully in space and is not radiating heat.");
                     didStartUp_Building = true;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Db))]
+        [HarmonyPatch("Initialize")]
+        public static class Db_Initialize_Patch
+        {
+            public static void Prefix()
+            {
+                if (!didStartUp_Db)
+                {
+                    AddBuildingToTech("Smelting", RadiatorTileConfig.Id);
+                    didStartUp_Db = true;
                 }
             }
         }

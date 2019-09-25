@@ -33,20 +33,23 @@ namespace RadiateHeat
         public void Sim1000ms(float dt)
         {
             float temp = gameObject.GetComponent<PrimaryElement>().Temperature;
-            double cooling = radiative_heat(temp);
-            if (CheckInSpace())
+            if (temp > 5f)
             {
-                if (cooling > 1f)
+                double cooling = radiative_heat(temp);
+                if (CheckInSpace())
                 {
-                    CurrentCooling = (float)cooling;
-                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float)-cooling / 1000, "Radiated", 1f);
+                    if (cooling > 1f)
+                    {
+                        CurrentCooling = (float)cooling;
+                        GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float)-cooling / 1000, "Radiated", 1f);
+                    }
+                    UpdateStatusItem(true);
+                } else
+                {
+                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float) 0, "Radiated", 1f);
+                    UpdateStatusItem(false);
                 }
-                UpdateStatusItem(true);
-            } else
-            {
-                GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float) 0, "Radiated", 1f);
-                UpdateStatusItem(false);
-            }
+            } 
         }
 
         private double radiative_heat(float temp)

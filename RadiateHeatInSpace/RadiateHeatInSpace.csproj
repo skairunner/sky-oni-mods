@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RadiateHeat.cs" />
+    <Compile Include="RadiatingTileConfig.cs" />
     <Compile Include="RadiationPatch.cs" />
   </ItemGroup>
   <ItemGroup>
