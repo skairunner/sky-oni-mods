@@ -8,6 +8,9 @@ namespace ExpandedLights {
 		public const string Description = "It's called a floodlight because 'deluge light' didn't quite have the same ring.";
 		public static string Effect = $"Brightly illuminates a large area.";
 
+        public const int lux = 2000;
+        public const float range = 16f;
+
 		public override BuildingDef CreateBuildingDef() {
 			int width = 1;
 			int height = 1;
@@ -31,8 +34,8 @@ namespace ExpandedLights {
 
 		public override void DoPostConfigurePreview(BuildingDef def, GameObject go) {
 			LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
-			lightShapePreview.lux = 6000;
-			lightShapePreview.radius = 16f;
+			lightShapePreview.lux = lux;
+			lightShapePreview.radius = range;
 			lightShapePreview.shape = ExpandedLightsPatch.Beam5.GetKLightShape();
 		}
 
@@ -46,13 +49,13 @@ namespace ExpandedLights {
 			Light2D light2D = go.AddOrGet<Light2D>();
 			light2D.overlayColour = LIGHT2D.CEILINGLIGHT_OVERLAYCOLOR;
 			light2D.Color = LIGHT2D.CEILINGLIGHT_COLOR;
-			light2D.Range = 16f;
+			light2D.Range = range;
 			light2D.Angle = 2.6f;
 			light2D.Direction = LIGHT2D.CEILINGLIGHT_DIRECTION;
 			light2D.Offset = LIGHT2D.CEILINGLIGHT_OFFSET;
 			light2D.shape = ExpandedLightsPatch.Beam5.GetKLightShape();
             light2D.drawOverlay = true;
-			light2D.Lux = 6000;
+			light2D.Lux = lux;
 			go.AddOrGetDef<LightController.Def>();
 		}
 	}
