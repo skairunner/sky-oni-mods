@@ -22,11 +22,16 @@ namespace DrywallHidesPipes
         {
             public static void Postfix(BuildingDef __result)
             {
-                if (!didStartUp_Building)
-                {
-                    __result.SceneLayer = Grid.SceneLayer.LogicGatesFront;
-                    didStartUp_Building = true;
-                }
+                __result.SceneLayer = Grid.SceneLayer.LogicGatesFront;
+            }
+        }
+
+        [HarmonyPatch(typeof(ThermalBlockConfig), "CreateBuildingDef")]
+        public static class ThermalBlockConfig_CreateBuildingDef_Path
+        {
+            public static void Postfix(BuildingDef __result)
+            {
+                __result.SceneLayer = Grid.SceneLayer.LogicGatesFront;
             }
         }
     }
