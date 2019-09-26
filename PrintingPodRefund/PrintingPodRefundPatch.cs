@@ -52,7 +52,12 @@ namespace PrintPodRefund
             public static void Postfix()
             {
                 // Refund time if rejected all options.
-                var f = PrintingPodRefundSettings.GetSettings().refundFraction;
+                var settings = PrintingPodRefundSettings.GetSettings();
+                if (settings == null)
+                {
+                    settings = new PrintingPodRefundSettings();
+                }
+                var f = settings.refundFraction;
                 var waittime = GetImmigrationTime();
                 Immigration.Instance.timeBeforeSpawn = (1 - f) * waittime;
             }

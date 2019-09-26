@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrywallHidesPipes", "Drywal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConveyorValve", "ConveyorValve\ConveyorValve.csproj", "{7E8D5A54-6F9A-425B-86E1-2A87BFC3AA80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingPodRechargePatch", "PrintingPodRefund\PrintingPodRechargePatch.csproj", "{89B878E7-1799-4B04-A90D-F0B2027CD44F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingPodRecharge", "PrintingPodRefund\PrintingPodRecharge.csproj", "{89B878E7-1799-4B04-A90D-F0B2027CD44F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSweeper", "AdvancedSweeper\AdvancedSweeper.csproj", "{FED34109-90AE-477B-A9B4-F2EDBB7802A5}"
 EndProject

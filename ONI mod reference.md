@@ -16,3 +16,7 @@ A personal document to compile some common quirks of ONI.
 ## ObjectLayers
 * ObjectLayer.Building = passable
 * ObjectLayer.FoundationTile = Can be built upon
+
+## UI
+* Is gross.
+* Side screens inherit SideScreen, always exist and check for whether the given object is a valid target.
