@@ -14,6 +14,10 @@ If you find what you think is a bug, please feel free to open a report in [Issue
 
 Adds a new building to the Plumbing tab called the Drain, built with 100kg of metal. It passively pumps liquids inside it into pipes at a rate of 100g/s, and is thus useful for buildings that "dribble" liquid like the Natural Gas Generator, or for cleaning up Algae Terrarium automation.
 
+### Drywall Hides Pipes
+
+Drywall and Tempshift Plate hides pipes, conduits and conveyor belts.
+
 ### Expanded Lights
 
 Add new lights that are much more convenient for lighting areas: Floodlight, Tile Light, LED Light. Additionally, Ceiling Light and Lamp have smooth lighting, and produce less heat.
@@ -66,3 +70,11 @@ Smart Storage Bin: -120 DTU/s
 Adds a new building to the Utilities tab called the Radiator, built with 400kg of Refined Metal. It is passively warmed up by liquid piped through it, and when it is in space (no backwall!), it passively cools itself by radiating its heat to space. It radiates more heat the hotter it is. Unlike the thermo-tuners, it does not take power but also does not actively pump heat. The Radiator does not overheat or be entombed, but it is damageable by meteorites. The Radiator also does not need access to the sun. It is unlocked through the research Temperature Modulation.
 
 Aside from radiating heat into space, the Radiator can also be used as a more compact version of a typical radiant pipe loop. Simply plop a few in the fluid of your choice and route liquid through it!
+
+### Raincheck (Printing Pod time refund)
+
+Lets you take a raincheck on the Printing Pod. When you reject all items, it recharges faster, defaulting to 66% refunded.
+
+### Storage Pod
+
+Adds a new storage building, the Storage Pod. Costs 100 kg of Refined Metal and can be built anywhere. Stores 5t, and is unlocked with Refined Renovations.

@@ -21,9 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrywallHidesPipes", "Drywal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConveyorValve", "ConveyorValve\ConveyorValve.csproj", "{7E8D5A54-6F9A-425B-86E1-2A87BFC3AA80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingPodRecharge", "PrintingPodRefund\PrintingPodRecharge.csproj", "{89B878E7-1799-4B04-A90D-F0B2027CD44F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingPodRefund", "PrintingPodRefund\PrintingPodRefund.csproj", "{89B878E7-1799-4B04-A90D-F0B2027CD44F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSweeper", "AdvancedSweeper\AdvancedSweeper.csproj", "{FED34109-90AE-477B-A9B4-F2EDBB7802A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoragePod", "StoragePod\StoragePod.csproj", "{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,10 @@ Global
 		{FED34109-90AE-477B-A9B4-F2EDBB7802A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FED34109-90AE-477B-A9B4-F2EDBB7802A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FED34109-90AE-477B-A9B4-F2EDBB7802A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
