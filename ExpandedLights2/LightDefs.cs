@@ -178,7 +178,7 @@ namespace ExpandedLights
                 {
                     var total_offset = parallel_dir * i + perpendicular_dir * j;
                     var cell = Grid.OffsetCell(sourceCell, new CellOffset(total_offset.X, total_offset.Y));
-                    if (brightness != 0f)
+                    if (Grid.IsValidCell(cell) && brightness != 0f)
                     {
                         brightness_map[cell] = brightness;
                         //brightness = brightness * (1f - falloff);
