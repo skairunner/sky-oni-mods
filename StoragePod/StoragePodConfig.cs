@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using TUNING;
 using Harmony;
+using PeterHan.PLib.Options;
 
-namespace DrywallHidesPipes
+namespace StoragePod
 {
     class StoragePodConfig : IBuildingConfig
     {
         public const string ID = "StoragePodConfig";
         public const string DisplayName = "Storage Pod";
-        public const string Description = "";
-        public static string Effect = $"";
+        public const string Description = "Now you, too, can store things in pods.";
+        public static string Effect = $"Stores the Solid resources of your choosing. Compact and can be build anywhere.";
 
         public override BuildingDef CreateBuildingDef()
         {
@@ -44,7 +45,13 @@ namespace DrywallHidesPipes
             storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
             go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.StorageLocker;
             go.AddOrGet<StorageLocker>();
-            go.GetComponent<Storage>().capacityKg = 5000f;
+            var config = POptions.ReadSettings<StoragePodOptions>();
+            if (config == null)
+            {
+                POptions.WriteSettings(new StoragePodOptions());
+                config = new StoragePodOptions();
+            }
+            go.GetComponent<Storage>().capacityKg = config.podCapacity;
         }
 
         public override void DoPostConfigureComplete(GameObject go)

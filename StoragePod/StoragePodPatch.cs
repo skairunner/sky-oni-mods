@@ -1,10 +1,30 @@
 ﻿using Harmony;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
+using PeterHan.PLib;
+using PeterHan.PLib.Options;
+using Newtonsoft.Json;
 
-namespace DrywallHidesPipes
+namespace StoragePod
 {
-    public class DrywallPatch
+    public class StoragePodOptions
+    {
+        [Option("Pod Capacity", "How many kg of Solids a Storage Pod can store.")]
+        [JsonProperty]
+        public float podCapacity { get; set; }
+
+        [Option("Cool Pod Capacity", "How many kg of Solids a Cool Pod can store.")]
+        [JsonProperty]
+        public float coolPodCapacity { get; set; }
+
+        public StoragePodOptions()
+        {
+            podCapacity = 5000f;
+            coolPodCapacity = 50f;
+        }
+    }
+
+    public class StoragePodPatch
     {
         public static string ModName = "StoragePod";
         public static bool didStartupBuilding = false;
@@ -15,6 +35,8 @@ namespace DrywallHidesPipes
             public static void OnLoad()
             {
                 StartLogging(ModName);
+                PUtil.LogModInit();
+                POptions.RegisterOptions(typeof(StoragePodOptions));
             }
         }
 
