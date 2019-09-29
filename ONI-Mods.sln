@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSweeper", "Advanced
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoragePod", "StoragePod\StoragePod.csproj", "{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterproofTransformer", "WaterproofTransformer\WaterproofTransformer.csproj", "{5E06843D-345E-42DF-881B-8B2EFFEDBFAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BleachstoneRefinery", "BleachstoneRefinery\BleachstoneRefinery.csproj", "{63CAF7A8-25F2-45E5-98B5-1AEBD9401A18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,14 @@ Global
 		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509B2F28-C1EB-4BBD-B08E-F84E54482C6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E06843D-345E-42DF-881B-8B2EFFEDBFAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E06843D-345E-42DF-881B-8B2EFFEDBFAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E06843D-345E-42DF-881B-8B2EFFEDBFAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E06843D-345E-42DF-881B-8B2EFFEDBFAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63CAF7A8-25F2-45E5-98B5-1AEBD9401A18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CAF7A8-25F2-45E5-98B5-1AEBD9401A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63CAF7A8-25F2-45E5-98B5-1AEBD9401A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63CAF7A8-25F2-45E5-98B5-1AEBD9401A18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

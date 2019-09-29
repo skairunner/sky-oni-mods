@@ -10,6 +10,12 @@ If you find what you think is a bug, please feel free to open a report in [Issue
 
 ## Mods
 
+### Bleachstone Refinery
+
+Adds a new building that refines Chlorine into Bleachstone. Unlocked with Catalytics research, and takes the same materials to construct as the Oxylite Refinery but uses half the power (600 W).
+
+600 g/s Chlorine + 3 g/s Copper = 600 g/s Bleachstone.
+
 ### Drain
 
 Adds a new building to the Plumbing tab called the Drain, built with 100kg of metal. It passively pumps liquids inside it into pipes at a rate of 100g/s, and is thus useful for buildings that "dribble" liquid like the Natural Gas Generator, or for cleaning up Algae Terrarium automation.
