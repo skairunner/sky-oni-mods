@@ -7,10 +7,9 @@
   </Target>
 
   <Target Name="ILRepack" AfterTargets="Build">
-    <ItemGroup>
-      <InternalizeExcludeAssemblies Include="Assembly-CSharp.dll" />
-      <InternalizeExcludeAssemblies Include="Assembly-CSharp-firstpass.dll" />
-    </ItemGroup>
+    <!-- FIXME: Workaround for PLib bringing in Harmony -->
+    <Delete Files="$(TargetDir)\0Harmony.dll" />
+
     <ILRepack 
         TargetPlatformVersion="v2"
         OutputType="SameAsPrimaryAssembly"
