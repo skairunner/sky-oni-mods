@@ -34,7 +34,7 @@ namespace StoragePod
             public static void OnLoad()
             {
                 StartLogging();
-                PUtil.LogModInit();
+                PUtil.InitLibrary(false);
                 POptions.RegisterOptions(typeof(StoragePodOptions));
             }
         }

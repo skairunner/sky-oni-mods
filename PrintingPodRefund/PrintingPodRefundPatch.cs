@@ -2,6 +2,7 @@
 using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 using Newtonsoft.Json;
+using PeterHan.PLib;
 
 namespace PrintPodRefund
 {
@@ -32,7 +33,7 @@ namespace PrintPodRefund
             public static void OnLoad()
             {
                 StartLogging();
-                PeterHan.PLib.PUtil.LogModInit();
+                PUtil.InitLibrary(false);
                 POptions.RegisterOptions(typeof(PrintingPodRefundSettings));
             }
         }

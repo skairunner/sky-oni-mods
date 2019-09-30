@@ -22,7 +22,7 @@ namespace ExpandedLights {
         {
             public static void OnLoad()
             {
-				PUtil.LogModInit();
+                PUtil.InitLibrary(false);
                 StartLogging();
       
 				DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);

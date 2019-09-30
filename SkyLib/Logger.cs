@@ -27,8 +27,7 @@ namespace SkyLib
         public static void LogLine(string line)
         {
             var assembly = Assembly.GetCallingAssembly();
-            string timestamp = System.DateTime.Now.ToString("HH:mm:ss.fff");
-            Console.WriteLine($"[{timestamp}][{GetModName(assembly)}] {line}");
+            Debug.LogFormat("[{0}] {1}", GetModName(assembly), line);
         }
     }
 }
