@@ -45,6 +45,9 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="PLib">
+      <HintPath>..\lib\PLib.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core">
       <HintPath>..\..\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\System.Core.dll</HintPath>
     </Reference>
@@ -60,6 +63,7 @@
     <Compile Include="RadiateHeat.cs" />
     <Compile Include="RadiatingTileConfig.cs" />
     <Compile Include="RadiationPatch.cs" />
+    <Compile Include="VeryLatePatches.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SkyLib\^SkyLib.csproj">
@@ -73,7 +77,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(ILMergeConsolePath) /lib:"C:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed" /out:$(TargetName)-merged.dll $(TargetName).dll SkyLib.dll /targetplatform:v2,C:/Windows/Microsoft.NET/Framework64/v2.0.50727
+    <PostBuildEvent>$(ILMergeConsolePath) /lib:"C:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed" /out:$(TargetName)-merged.dll $(TargetName).dll SkyLib.dll PLib.dll /targetplatform:v2,C:/Windows/Microsoft.NET/Framework64/v2.0.50727
 
 echo F | xcopy /Y /S /R /Q "$(TargetDir)$(TargetName)-merged.dll" "$(SolutionDir)..\Mods\$(TargetName)\$(TargetName).dll"
 if exist "$(ProjectDir)anim" xcopy /Y /R /I /E /Q  "$(ProjectDir)anim" "$(SolutionDir)..\Mods\$(TargetName)\anim"

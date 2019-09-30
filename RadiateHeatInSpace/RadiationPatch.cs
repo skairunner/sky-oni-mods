@@ -1,9 +1,9 @@
 ﻿using Harmony;
 using System;
-using System.Reflection;
 using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
+using PeterHan.PLib;
 
 namespace RadiateHeat
 {
@@ -32,6 +32,8 @@ namespace RadiateHeat
             public static void OnLoad()
             {
                 StartLogging();
+
+                PUtil.RegisterPostload(VeryLatePatches.DoVeryLatePatches);
             }
 
             public static void AttachHeatComponent(GameObject go, float emissivity, float surface_area)
@@ -198,6 +200,15 @@ namespace RadiateHeat
             public static void Prefix(GameObject go)
             {
                 Mod_OnLoad.AttachHeatComponent(go, .3f, 1.5f);
+            }
+        }
+
+        [HarmonyPatch(typeof(SolarPanelConfig), "DoPostConfigureComplete")]
+        public static class SolarPanelConfig_Patch
+        {
+            public static void Prefix(GameObject go)
+            {
+                Mod_OnLoad.AttachHeatComponent(go, .1f, 21f);
             }
         }
     }
