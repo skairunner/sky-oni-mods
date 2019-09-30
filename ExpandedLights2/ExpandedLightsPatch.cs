@@ -32,8 +32,6 @@ namespace ExpandedLights {
                 FixedSemi = PLightShape.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
                 Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
                 OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
-
-                PUtil.RegisterPostload(VeryLatePatches.DoVeryLatePatches);
             }
 		}
 
