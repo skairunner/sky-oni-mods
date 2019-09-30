@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Target Name="ClearGameAssetCopyLocal" AfterTargets="ResolveAssemblyReferences">
+  <Target Name="ClearGameFolderCopyLocal" AfterTargets="ResolveAssemblyReferences">
     <ItemGroup>
       <ReferenceCopyLocalPaths Remove="$(GameFolder)\*" />
     </ItemGroup>
   </Target>
+
   <Target Name="ILRepack" AfterTargets="Build">
     <ItemGroup>
       <InternalizeExcludeAssemblies Include="Assembly-CSharp.dll" />
@@ -19,15 +20,20 @@
         WilcardInputAssemblies="true"
         WorkingDirectory="$(GameFolder)" />
   </Target>
-  <Target Name="InstallModToUserDocuments" AfterTargets="ILRepack" Condition=" '$(AssemblyName)' != 'SkyLib' ">
-    <PropertyGroup>
+
+  <Target Name="CopyArtifactsToInstallFolder" AfterTargets="ILRepack" Condition=" '$(AssemblyName)' != 'SkyLib' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+      <InstallFolder>..\Release\$(ProjectName)</InstallFolder>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
       <InstallFolder>$(ModFolder)\$(ProjectName)</InstallFolder>
     </PropertyGroup>
+
     <ItemGroup>  
       <AnimFiles Include="$(ProjectDir)\anim\**\*.*" />
     </ItemGroup>  
 
-    <Copy SourceFiles="@(AnimFiles)" DestinationFiles="@(AnimFiles->'$(InstallFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(AnimFiles)" DestinationFiles="@(AnimFiles->'$(InstallFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
   </Target>
 </Project>
