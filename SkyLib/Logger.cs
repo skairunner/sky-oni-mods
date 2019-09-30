@@ -9,12 +9,12 @@ namespace SkyLib
 
         public static string GetModName(Assembly mod)
         {
-            return ((AssemblyModName)(mod.GetCustomAttributes(typeof(AssemblyModName), false)[0])).Value;
+            return ((AssemblyProductAttribute)(mod.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0])).Product;
         }
 
         public static string GetModVersion(Assembly mod)
         {
-            return ((AssemblyFileVersionAttribute)(mod.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false)[0])).Version;
+            return ((AssemblyInformationalVersionAttribute)(mod.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)[0])).InformationalVersion;
         }
 
         // Start only once per instance.

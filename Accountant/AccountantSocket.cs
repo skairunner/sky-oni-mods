@@ -72,7 +72,7 @@ namespace Accountant
             }
             catch
             {
-                LogLine(Accountant.ModName, "Tried to send inventory contents when it is unloaded.");
+                LogLine("Tried to send inventory contents when it is unloaded.");
                 return output;
             }
         }
@@ -135,7 +135,7 @@ namespace Accountant
 
         protected override void OnOpen()
         {
-            LogLine(Accountant.ModName, "New WS connection.");
+            LogLine("New WS connection.");
         }
 
         protected override void OnMessage(MessageEventArgs e)
@@ -150,7 +150,7 @@ namespace Accountant
                     BroadcastLocstrings(JsonConvert.DeserializeObject<RequestLocPacket>(e.Data).itemnames);
                     break;
                 default:
-                    LogLine(Accountant.ModName, $"Unknown message type: {packet.msgtype}");
+                    LogLine($"Unknown message type: {packet.msgtype}");
                     break;
             }
         }

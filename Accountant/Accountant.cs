@@ -28,15 +28,15 @@ namespace Accountant
                 StartLogging();
                 if (wss == null)
                 {
-                    LogLine(ModName, "Starting websocket server.");
+                    LogLine("Starting websocket server.");
                     wss = new WebSocketServer(4920);
                     wss.AddWebSocketService<AccountantSocket>("/");
                     wss.Start();
-                    LogLine(ModName, "Websocket server started.");
+                    LogLine("Websocket server started.");
                 }
                 else
                 {
-                    LogLine(ModName, "Websocket server already started, skipping.");
+                    LogLine("Websocket server already started, skipping.");
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace Accountant
         {
             public static void Postfix(PauseScreen __instance)
             {
-                LogLine(ModName, "Hello! After OnPrefabInit. Trying to add AccountantUpdate.");
+                LogLine("Hello! After OnPrefabInit. Trying to add AccountantUpdate.");
                 Game.Instance.gameObject.AddComponent(typeof(AccountantUpdate));
             }
         }
@@ -58,7 +58,7 @@ namespace Accountant
         {
             public static void Postfix(PauseScreen __instance)
             {
-                LogLine(ModName, "Hello! After OnLoadLevel.");
+                LogLine("Hello! After OnLoadLevel.");
             }
         }
     }
