@@ -16,7 +16,8 @@ namespace ExpandedLights {
 		/// <summary>
 		/// Light shape: Directed cone according to component rotation
 		/// </summary>
-		public static PLightShape DirectedCone, Beam5, SmoothCircle, OffsetCone;
+		public static PLightShape DirectedCone, Beam5, SmoothCircle, OffsetCone,
+            FixedSemi, Semicircle, OffsetSemi;
 
 		public static class Mod_OnLoad
         {
@@ -24,10 +25,14 @@ namespace ExpandedLights {
             {
 				PUtil.LogModInit();
                 StartLogging(ModName);
-				DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.DoLightCone);
+      
+				DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
                 Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
-                SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.DoLightCircle);
-                OffsetCone = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.DoOffsetCone);
+                SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
+                OffsetCone = PLightShape.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
+                FixedSemi = PLightShape.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
+                Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
+                OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
             }
 		}
 
