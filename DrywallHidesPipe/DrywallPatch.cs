@@ -6,14 +6,13 @@ namespace DrywallHidesPipes
 {
     public class DrywallPatch
     {
-        public static string ModName = "DrywallHidesPipes";
         public static bool didStartUp_Building = false;
 
         public static class Mod_OnLoad
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
             }
         }
 

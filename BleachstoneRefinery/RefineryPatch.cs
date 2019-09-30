@@ -6,7 +6,6 @@ namespace BleachstoneRefinery
 {
     public class BleachstoneRefineryPatch
     {
-        public static string ModName = "BleachstoneRefinery";
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
@@ -14,7 +13,7 @@ namespace BleachstoneRefinery
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
             }
         }
 

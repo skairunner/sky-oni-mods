@@ -43,8 +43,9 @@ namespace ExpandedLights {
 			go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 		}
 
-		public override void DoPostConfigureComplete(GameObject go) {
-			go.AddOrGet<EnergyConsumer>();
+		public override void DoPostConfigureComplete(GameObject go)
+        {
+            go.AddOrGet<EnergyConsumer>();
 			go.AddOrGet<LoopingSounds>();
 			Light2D light2D = go.AddOrGet<Light2D>();
 			light2D.overlayColour = LIGHT2D.CEILINGLIGHT_OVERLAYCOLOR;

@@ -26,7 +26,6 @@ namespace StoragePod
 
     public class StoragePodPatch
     {
-        public static string ModName = "StoragePod";
         public static bool didStartupBuilding = false;
         public static bool didStartupDb = false;
 
@@ -34,7 +33,7 @@ namespace StoragePod
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
                 PUtil.LogModInit();
                 POptions.RegisterOptions(typeof(StoragePodOptions));
             }

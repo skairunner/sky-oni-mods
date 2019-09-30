@@ -1,35 +1,34 @@
 ﻿using System;
+using System.Reflection;
 using Harmony;
 
 namespace SkyLib
 {
     public class Logger
     {
-        private static bool started = false;
 
-        // Start only once per instance.
-        public static void StartLogging(string modname = "")
+        public static string GetModName(Assembly mod)
         {
-            if (!started)
-            {
-                LogLine("I'ms't'd've SkyLib!");
-                started = true;
-            }
-            if (modname != "")
-            {
-                LogLine($"[{modname}] Started.");
-            }
+            return ((AssemblyModName)(mod.GetCustomAttributes(typeof(AssemblyModName), false)[0])).Value;
         }
 
-        public static void LogLine(string modname, string line)
+        public static string GetModVersion(Assembly mod)
         {
-            LogLine($"[{modname}] {line}");
+            return ((AssemblyFileVersionAttribute)(mod.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false)[0])).Version;
+        }
+
+        // Start only once per instance.
+        public static void StartLogging()
+        {
+            var assembly = Assembly.GetCallingAssembly();
+            LogLine($"Started with version {GetModVersion((assembly))}.");
         }
 
         public static void LogLine(string line)
         {
+            var assembly = Assembly.GetCallingAssembly();
             string timestamp = System.DateTime.Now.ToString("HH:mm:ss.fff");
-            Console.WriteLine($"[{timestamp}] {line}");
+            Console.WriteLine($"[{timestamp}][{GetModName(assembly)}] {line}");
         }
     }
 }

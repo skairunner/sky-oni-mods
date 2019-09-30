@@ -9,7 +9,6 @@ namespace RadiateHeat
 {
     public class RadiatePatch
     {
-        public static string ModName = "RadiateHeatInSpace";
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
@@ -32,7 +31,7 @@ namespace RadiateHeat
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
             }
 
             public static void AttachHeatComponent(GameObject go, float emissivity, float surface_area)
@@ -53,10 +52,10 @@ namespace RadiateHeat
                 {
                     AddBuildingStrings(RadiatorTileConfig.Id, RadiatorTileConfig.DisplayName, RadiatorTileConfig.Description, RadiatorTileConfig.Effect);
                     AddBuildingToBuildMenu("Base", RadiatorTileConfig.Id);
-                    AddStatusItem($"{ModName}_RADIATING", "NAME", "Radiating {0}");
-                    AddStatusItem($"{ModName}_RADIATING", "TOOLTIP", "This building is currently radiating heat at {0}.");
-                    AddStatusItem($"{ModName}_NOTINSPACE", "NAME", "Not in space");
-                    AddStatusItem($"{ModName}_NOTINSPACE", "TOOLTIP", "This building is not fully in space and is not radiating heat.");
+                    AddStatusItem("RADIATESHEAT_RADIATING", "NAME", "Radiating {0}");
+                    AddStatusItem("RADIATESHEAT_RADIATING", "TOOLTIP", "This building is currently radiating heat at {0}.");
+                    AddStatusItem("RADIATESHEAT_NOTINSPACE", "NAME", "Not in space");
+                    AddStatusItem("RADIATESHEAT_NOTINSPACE", "TOOLTIP", "This building is not fully in space and is not radiating heat.");
                     didStartUp_Building = true;
                 }
             }

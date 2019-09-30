@@ -25,14 +25,13 @@ namespace PrintPodRefund
     }
     public class PrintingPodRefundPatch
     {
-        public static string ModName = "PrintingPodRecharges";
         public static bool didStartUp_Building = false;
 
         public static class Mod_OnLoad
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
                 PeterHan.PLib.PUtil.LogModInit();
                 POptions.RegisterOptions(typeof(PrintingPodRefundSettings));
             }

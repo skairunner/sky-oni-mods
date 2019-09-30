@@ -10,7 +10,7 @@ namespace StoragePod
         public const string ID = "StoragePodConfig";
         public const string DisplayName = "Storage Pod";
         public const string Description = "Now you, too, can store things in pods.";
-        public static string Effect = $"Stores the Solid resources of your choosing. Compact and can be build anywhere.";
+        public static string Effect = $"Stores the Solid resources of your choosing. Compact and can be built anywhere.";
 
         public override BuildingDef CreateBuildingDef()
         {

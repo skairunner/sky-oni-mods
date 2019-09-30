@@ -6,7 +6,6 @@ namespace Drain
 {
     public class DrainPatch
     {
-        public static string ModName = "Drain";
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
@@ -14,7 +13,7 @@ namespace Drain
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
             }
         }
 

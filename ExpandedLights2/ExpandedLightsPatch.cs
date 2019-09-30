@@ -9,7 +9,6 @@ using static SkyLib.OniUtils;
 namespace ExpandedLights {
 	public class ExpandedLightsPatch
     {
-        public static string ModName = "ExpandedLights";
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
@@ -24,7 +23,7 @@ namespace ExpandedLights {
             public static void OnLoad()
             {
 				PUtil.LogModInit();
-                StartLogging(ModName);
+                StartLogging();
       
 				DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
                 Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
@@ -33,11 +32,12 @@ namespace ExpandedLights {
                 FixedSemi = PLightShape.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
                 Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
                 OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
+
+                PUtil.RegisterPostload(VeryLatePatches.DoVeryLatePatches);
             }
 		}
 
-		[HarmonyPatch(typeof(GeneratedBuildings))]
-        [HarmonyPatch(nameof(GeneratedBuildings.LoadGeneratedBuildings))]
+		[HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
         public static class GeneratedBuildings_LoadGeneratedBuildings_Path
         {
             public static void Prefix()

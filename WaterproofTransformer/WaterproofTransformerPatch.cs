@@ -6,7 +6,6 @@ namespace WaterproofTransformer
 {
     public class DrywallPatch
     {
-        public static string ModName = "WaterproofTransformer";
         public static bool didStartupBuilding = false;
         public static bool didStartupDb = false;
 
@@ -14,7 +13,7 @@ namespace WaterproofTransformer
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
             }
         }
 

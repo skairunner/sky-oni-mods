@@ -85,7 +85,7 @@ namespace RadiateHeat
                 // Remove outdated status, if it exists
                 handle_notinspace = selectable.RemoveStatusItem(handle_notinspace);
                 // Update the existing callback
-                _radiating_status = new StatusItem($"{RadiatePatch.ModName}_RADIATING", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
+                _radiating_status = new StatusItem($"RADIATESHEAT_RADIATING", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
                 _radiating_status.resolveTooltipCallback = _FormatStatusCallback;
                 _radiating_status.resolveStringCallback = _FormatStatusCallback;
                 if (handle_radiating == Guid.Empty)
@@ -97,7 +97,7 @@ namespace RadiateHeat
                 // Remove outdated status-
                  handle_radiating = selectable.RemoveStatusItem(handle_radiating);
 
-                _no_space_status = new StatusItem($"{RadiatePatch.ModName}_NOTINSPACE", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
+                _no_space_status = new StatusItem($"RADIATESHEAT_NOTINSPACE", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
                 // add the status item!
                 if (handle_notinspace == Guid.Empty)
                 {

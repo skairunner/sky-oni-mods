@@ -6,7 +6,6 @@ namespace Radiator
 {
     public class RadiatorPatch
     {
-        public static string ModName = "Radiator";
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
@@ -14,7 +13,7 @@ namespace Radiator
         {
             public static void OnLoad()
             {
-                StartLogging(ModName);
+                StartLogging();
             }
         }
 

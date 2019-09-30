@@ -22,14 +22,14 @@ namespace SkyLib
             var i = TUNING.BUILDINGS.PLANORDER.FindIndex(x => x.category == category);
             if (i == -1)
             {
-                Logger.LogLine("SkyLib", $"Could not find building category '{category}'");
+                Logger.LogLine($"Could not find building category '{category}'");
                 return;
             }
 
             var planorderlist = TUNING.BUILDINGS.PLANORDER[i].data as IList<string>;
             if (planorderlist == null)
             {
-                Logger.LogLine("SkyLib", $"Could not find planorder with the given index for '{category}'");
+                Logger.LogLine($"Could not find planorder with the given index for '{category}'");
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace SkyLib
                 var neigh_i = planorderlist.IndexOf(addAfterId);
                 if (neigh_i == -1)
                 {
-                    Logger.LogLine("SkyLib", $"Could not find the building '{addAfterId}' to add '{buildingid}' after.");
+                    Logger.LogLine($"Could not find the building '{addAfterId}' to add '{buildingid}' after.");
                     return;
                 }
                 planorderlist.Insert(neigh_i + 1, buildingid);
@@ -67,38 +67,6 @@ namespace SkyLib
             // check in space biome, then check there is no drywall
             return Game.Instance.world.zoneRenderData.GetSubWorldZoneType(cell) == SubWorld.ZoneType.Space 
                 && Grid.Objects[cell, (int)ObjectLayer.Backwall] == null;
-        }
-
-        /// <summary>
-        /// Patches a method manually. Taken from PLib at https://github.com/peterhaneve/ONIMods copyright Peter Han.
-        /// See LICENSE.md for copy of MIT license.
-        /// </summary>
-        /// <param name="instance">The Harmony instance.</param>
-        /// <param name="type">The class to modify.</param>
-        /// <param name="methodName">The method to patch.</param>
-        /// <param name="prefix">The prefix to apply, or null if none.</param>
-        /// <param name="postfix">The postfix to apply, or null if none.</param>
-        public static void PlibPatch(this HarmonyInstance instance, Type type, string methodName,
-                HarmonyMethod prefix = null, HarmonyMethod postfix = null)
-        {
-            if (type == null)
-                throw new ArgumentNullException("type");
-            if (string.IsNullOrEmpty(methodName))
-                throw new ArgumentNullException("method");
-            // Fetch the method
-            try
-            {
-                var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.
-                    Public | BindingFlags.Static | BindingFlags.Instance);
-                if (method != null)
-                    instance.Patch(method, prefix, postfix);
-                else
-                    Logger.LogLine("HarmonyPatch", $"Unable to find method {methodName} on type {type.FullName}");
-            }
-            catch (AmbiguousMatchException e)
-            {
-                Logger.LogLine("HarmonyPatch", e.ToString());
-            }
         }
     }
 }
