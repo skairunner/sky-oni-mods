@@ -35,7 +35,8 @@ namespace ExpandedLights {
             }
 		}
 
-		[HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
+		[HarmonyPatch(typeof(GeneratedBuildings))]
+        [HarmonyPatch("LoadGeneratedBuildings")]
         public static class GeneratedBuildings_LoadGeneratedBuildings_Path
         {
             public static void Prefix()
@@ -44,7 +45,7 @@ namespace ExpandedLights {
                 {
                     AddBuildingStrings(FloodlightConfig.Id, FloodlightConfig.DisplayName, FloodlightConfig.Description, FloodlightConfig.Effect);
                     AddBuildingStrings(LEDLightConfig.Id, LEDLightConfig.DisplayName, LEDLightConfig.Description, LEDLightConfig.Effect);
-                    AddBuildingStrings(TileLightConfig.Id, TileLightConfig.DisplayName, TileLightConfig.Description, FloodlightConfig.Effect);
+                    AddBuildingStrings(TileLightConfig.Id, TileLightConfig.DisplayName, TileLightConfig.Description, TileLightConfig.Effect);
 
                     AddBuildingToBuildMenu("Furniture", FloodlightConfig.Id);
                     AddBuildingToBuildMenu("Furniture", LEDLightConfig.Id);

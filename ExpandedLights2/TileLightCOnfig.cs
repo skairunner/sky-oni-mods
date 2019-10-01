@@ -9,7 +9,7 @@ namespace ExpandedLights
         public const string Id = "TileLight";
         public const string DisplayName = "Tile Light";
         public const string Description = "These tiny lights are the real MVP, illuminating places that other lights don't dare to go.";
-        public static string Effect = $"Emits light. Can be built behind most other buildings, except Drywall and Tempshift Plates.";
+        public static string Effect = "Emits light. Can be built behind most other buildings, except Drywall and Tempshift Plates.";
 
         public const int lux = 1800;
         public const float range = 8f;
@@ -35,6 +35,7 @@ namespace ExpandedLights
             buildingDef.ObjectLayer = ObjectLayer.Backwall;
             buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
             buildingDef.AudioCategory = "Metal";
+            buildingDef.OverheatTemperature = TUNING.BUILDINGS.OVERHEAT_TEMPERATURES.HIGH_2;
             return buildingDef;
         }
 
