@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Raincheck</Product>
+    <AssemblyTitle>Raincheck</AssemblyTitle>
     <Version>2.1.1</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>

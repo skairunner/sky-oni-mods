@@ -9,7 +9,7 @@ namespace SkyLib
 
         public static string GetModName(Assembly mod)
         {
-            return ((AssemblyProductAttribute)(mod.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0])).Product;
+            return ((AssemblyTitleAttribute)(mod.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0])).Title;
         }
 
         public static string GetModVersion(Assembly mod)

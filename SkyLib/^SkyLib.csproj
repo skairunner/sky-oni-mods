@@ -2,8 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>SkyLib</Product>
-    <Version>2.0.1</Version>
+    <AssemblyTitle>SkyLib</AssemblyTitle>
+    <Version>2.1.0</Version>
     <AssemblyName>SkyLib</AssemblyName>
     <RootNamespace>SkyLib</RootNamespace>
     <UsesSkyLib>false</UsesSkyLib>

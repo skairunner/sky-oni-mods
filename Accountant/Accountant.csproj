@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Accountant</Product>
+    <AssemblyTitle>Accountant</AssemblyTitle>
     <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>

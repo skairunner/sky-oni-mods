@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Drains</Product>
+    <AssemblyTitle>Drains</AssemblyTitle>
     <Version>2.1.0</Version>
   </PropertyGroup>
 </Project>

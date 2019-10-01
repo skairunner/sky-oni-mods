@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Radiate Heat in Space</Product>
+    <AssemblyTitle>Radiate Heat in Space</AssemblyTitle>
     <Version>1.2.0</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
