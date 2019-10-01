@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BleachstoneRefinery", "Blea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpandedLights", "ExpandedLights\ExpandedLights.csproj", "{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OilFish", "OilFish\OilFish.csproj", "{2E3BB633-834E-427D-8132-8A6EA8DBAA72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
