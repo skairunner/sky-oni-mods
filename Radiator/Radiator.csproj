@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Radiators</Product>
+    <AssemblyTitle>Radiators</AssemblyTitle>
     <Version>1.2.0</Version>
   </PropertyGroup>
 </Project>

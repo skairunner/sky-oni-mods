@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Bleachstone Refinery</Product>
+    <AssemblyTitle>Bleachstone Refinery</AssemblyTitle>
     <Version>1.1.0</Version>
   </PropertyGroup>
 </Project>

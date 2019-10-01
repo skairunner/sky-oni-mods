@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Storage Pod</Product>
+    <AssemblyTitle>Storage Pod</AssemblyTitle>
     <Version>1.2.0</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>

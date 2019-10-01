@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <Product>Drywall Hides Pipes</Product>
+    <AssemblyTitle>Drywall Hides Pipes</AssemblyTitle>
     <Version>2.1.0</Version>
   </PropertyGroup>
 </Project>
