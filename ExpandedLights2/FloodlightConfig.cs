@@ -1,7 +1,7 @@
 ﻿using TUNING;
 using UnityEngine;
 
-namespace ExpandedLights {
+namespace ExpandedLights2 {
 	class FloodlightConfig : IBuildingConfig {
 		public const string Id = "Floodlight";
 		public const string DisplayName = "Floodlight";

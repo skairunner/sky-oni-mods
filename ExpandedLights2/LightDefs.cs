@@ -2,7 +2,7 @@
 using PeterHan.PLib.Lighting;
 using UnityEngine;
 
-namespace ExpandedLights
+namespace ExpandedLights2
 {
     public static class LightDefs
     {

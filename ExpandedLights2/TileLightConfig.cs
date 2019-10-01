@@ -2,7 +2,7 @@
 using TUNING;
 using Harmony;
 
-namespace ExpandedLights
+namespace ExpandedLights2
 {
     class TileLightConfig : IBuildingConfig
     {

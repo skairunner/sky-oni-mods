@@ -6,7 +6,7 @@ using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
-namespace ExpandedLights {
+namespace ExpandedLights2 {
         public class ExpandedLightsPatch
     {
         public static bool didStartUp_Building = false;

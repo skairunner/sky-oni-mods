@@ -5,7 +5,7 @@ using System.Text;
 using TUNING;
 using UnityEngine;
 
-namespace ExpandedLights
+namespace ExpandedLights2
 {
     class LEDLightConfig: IBuildingConfig
     {
