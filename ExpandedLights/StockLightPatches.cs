@@ -1,7 +1,7 @@
 ﻿using Harmony;
 using UnityEngine;
 
-namespace ExpandedLights2
+namespace ExpandedLights
 {
     public class StockLightsPatch
     {

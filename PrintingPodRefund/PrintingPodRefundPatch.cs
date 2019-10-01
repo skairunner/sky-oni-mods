@@ -1,15 +1,16 @@
 ﻿using Harmony;
-using PeterHan.PLib.Options;
-using static SkyLib.Logger;
 using Newtonsoft.Json;
 using PeterHan.PLib;
+using PeterHan.PLib.Options;
+using static SkyLib.Logger;
 
-namespace PrintPodRefund
+namespace PrintingPodRefund
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class PrintingPodRefundSettings
     {
-        [PeterHan.PLib.Option("Refund fraction", "Between 0 and 1. How much of the recharge time to refund when you reject a package. Smaller numbers means less refunded.")]
+        [PeterHan.PLib.Option("Refund fraction",
+            "Between 0 and 1. How much of the recharge time to refund when you reject a package. Smaller numbers means less refunded.")]
         [PeterHan.PLib.Limit(0, 1)]
         [JsonProperty]
         public float refundFraction { get; set; }
@@ -24,6 +25,7 @@ namespace PrintPodRefund
             return POptions.ReadSettings<PrintingPodRefundSettings>();
         }
     }
+
     public class PrintingPodRefundPatch
     {
         public static bool didStartUp_Building = false;
@@ -57,6 +59,7 @@ namespace PrintPodRefund
                 {
                     settings = new PrintingPodRefundSettings();
                 }
+
                 var f = settings.refundFraction;
                 var waittime = GetImmigrationTime();
                 Immigration.Instance.timeBeforeSpawn = (1 - f) * waittime;

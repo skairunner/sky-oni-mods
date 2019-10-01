@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "^SkyLib", "SkyLib\^SkyLib.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Radiator", "Radiator\Radiator.csproj", "{66E16BC4-CC4D-48F2-9920-7CCFA97ABECE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accountant", "Accountant\Accountant.csproj", "{B046A213-8AF8-4CA1-8024-B3F8209D24CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accountant", "Accountant\Accountant.csproj", "{B046A213-8AF8-4CA1-8024-B3F8209D24CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drains", "Drains\Drains.csproj", "{0A37EDDF-26B1-4D09-BBD6-76BDAC50F593}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadiateHeatInSpace", "RadiateHeatInSpace\RadiateHeatInSpace.csproj", "{19ED4516-4530-4619-A028-591E1A09B94D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpandedLights", "ExpandedLights2\ExpandedLights.csproj", "{D59170CB-58DB-40A8-8448-CCB275A5FCC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Walls", "Walls\Walls.csproj", "{77887255-EEAF-4059-83D3-11BC2BDBF9D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiseasesReimagined", "DiseasesReimagined\DiseasesReimagined.csproj", "{67A5D49F-CF0E-40B7-BE36-5232AC4F9BB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrywallHidesPipes", "DrywallHidesPipe\DrywallHidesPipes.csproj", "{BDDE4F01-9BEB-497E-A058-29EEAC2569BC}"
 EndProject
@@ -25,9 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterproofTransformer", "Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BleachstoneRefinery", "BleachstoneRefinery\BleachstoneRefinery.csproj", "{63CAF7A8-25F2-45E5-98B5-1AEBD9401A18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Walls", "Walls\Walls.csproj", "{77887255-EEAF-4059-83D3-11BC2BDBF9D3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiseasesReimagined", "DiseasesReimagined\DiseasesReimagined.csproj", "{67A5D49F-CF0E-40B7-BE36-5232AC4F9BB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpandedLights", "ExpandedLights\ExpandedLights.csproj", "{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +55,6 @@ Global
 		{19ED4516-4530-4619-A028-591E1A09B94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19ED4516-4530-4619-A028-591E1A09B94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19ED4516-4530-4619-A028-591E1A09B94D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D59170CB-58DB-40A8-8448-CCB275A5FCC6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDDE4F01-9BEB-497E-A058-29EEAC2569BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BDDE4F01-9BEB-497E-A058-29EEAC2569BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDDE4F01-9BEB-497E-A058-29EEAC2569BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,6 +83,10 @@ Global
 		{67A5D49F-CF0E-40B7-BE36-5232AC4F9BB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67A5D49F-CF0E-40B7-BE36-5232AC4F9BB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67A5D49F-CF0E-40B7-BE36-5232AC4F9BB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

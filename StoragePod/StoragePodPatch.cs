@@ -1,9 +1,9 @@
 ﻿using Harmony;
-using static SkyLib.Logger;
-using static SkyLib.OniUtils;
+using Newtonsoft.Json;
 using PeterHan.PLib;
 using PeterHan.PLib.Options;
-using Newtonsoft.Json;
+using static SkyLib.Logger;
+using static SkyLib.OniUtils;
 
 namespace StoragePod
 {
@@ -46,7 +46,8 @@ namespace StoragePod
             {
                 if (!didStartupBuilding)
                 {
-                    AddBuildingStrings(StoragePodConfig.ID, StoragePodConfig.DisplayName, StoragePodConfig.Description, StoragePodConfig.Effect);
+                    AddBuildingStrings(StoragePodConfig.ID, StoragePodConfig.DisplayName, StoragePodConfig.Description,
+                        StoragePodConfig.Effect);
                     AddBuildingToBuildMenu("Base", StoragePodConfig.ID);
                     didStartupBuilding = true;
                 }

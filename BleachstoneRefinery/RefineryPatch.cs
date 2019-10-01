@@ -24,7 +24,8 @@ namespace BleachstoneRefinery
             {
                 if (!didStartUp_Building)
                 {
-                    AddBuildingStrings(BleachstoneRefineryConfig.Id, BleachstoneRefineryConfig.DisplayName, BleachstoneRefineryConfig.Description, BleachstoneRefineryConfig.Effect);
+                    AddBuildingStrings(BleachstoneRefineryConfig.Id, BleachstoneRefineryConfig.DisplayName,
+                        BleachstoneRefineryConfig.Description, BleachstoneRefineryConfig.Effect);
                     AddBuildingToBuildMenu("Refining", BleachstoneRefineryConfig.Id);
                     didStartUp_Building = true;
                 }
@@ -36,7 +37,7 @@ namespace BleachstoneRefinery
         {
             public static void Prefix()
             {
-                if(!didStartUp_Db)
+                if (!didStartUp_Db)
                 {
                     AddBuildingToTech("Catalytics", BleachstoneRefineryConfig.Id);
                     didStartUp_Db = true;

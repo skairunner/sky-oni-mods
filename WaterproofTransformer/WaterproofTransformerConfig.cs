@@ -1,5 +1,4 @@
-﻿using System;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
 namespace WaterproofTransformer
@@ -9,7 +8,9 @@ namespace WaterproofTransformer
         public const string ID = "ScubaTransformer";
         public const string DisplayName = "Waterproof Transformer";
         public const string Description = "This transformer isn't afraid of deep water, or sharks.";
-        public static string Effect = $"Connect Batteries on the large side to act as a valve and prevent Wires from drawing more than 2 kW.";
+
+        public static string Effect =
+            $"Connect Batteries on the large side to act as a valve and prevent Wires from drawing more than 2 kW.";
 
 
         public override BuildingDef CreateBuildingDef()
@@ -19,12 +20,14 @@ namespace WaterproofTransformer
             string anim = "waterformer_kanim";
             int hitpoints = 40;
             float construction_time = 30f;
-            var construction_mass = new[] { 150f, 50f };
-            string[] construction_mats = new string[] { MATERIALS.REFINED_METAL, MATERIALS.TRANSPARENT };
+            var construction_mass = new[] {150f, 50f};
+            string[] construction_mats = new string[] {MATERIALS.REFINED_METAL, MATERIALS.TRANSPARENT};
             float melting_point = 800f;
             BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
             EffectorValues tieR5 = NOISE_POLLUTION.NOISY.TIER5;
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(ID, width, height, anim, hitpoints, construction_time, construction_mass, construction_mats, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tieR5, 0.2f);
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(ID, width, height, anim, hitpoints,
+                construction_time, construction_mass, construction_mats, melting_point, build_location_rule,
+                BUILDINGS.DECOR.PENALTY.TIER1, tieR5, 0.2f);
             buildingDef.RequiresPowerInput = true;
             buildingDef.UseWhitePowerOutputConnectorColour = true;
             buildingDef.PowerInputOffset = new CellOffset(0, 1);
@@ -60,5 +63,4 @@ namespace WaterproofTransformer
             go.AddOrGetDef<PoweredActiveController.Def>();
         }
     }
-
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Reflection;
-using Harmony;
+﻿using System.Reflection;
 
 namespace SkyLib
 {
     public class Logger
     {
-
         public static string GetModName(Assembly mod)
         {
             return ((AssemblyTitleAttribute)(mod.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0])).Title;
@@ -14,7 +11,8 @@ namespace SkyLib
 
         public static string GetModVersion(Assembly mod)
         {
-            return ((AssemblyInformationalVersionAttribute)(mod.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)[0])).InformationalVersion;
+            return ((AssemblyInformationalVersionAttribute) (mod.GetCustomAttributes(
+                typeof(AssemblyInformationalVersionAttribute), false)[0])).InformationalVersion;
         }
 
         // Start only once per instance.

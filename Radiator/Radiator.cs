@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-
-using static SkyLib.Utility;
 
 namespace Radiator
 {
     public class Radiator : KMonoBehaviour, ISim200ms, IBridgedNetworkItem
     {
-        protected static readonly Operational.Flag spaceExposureFlag = new Operational.Flag("InSpace", Operational.Flag.Type.Requirement);
+        protected static readonly Operational.Flag spaceExposureFlag =
+            new Operational.Flag("InSpace", Operational.Flag.Type.Requirement);
+
         private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
         public ConduitType type = ConduitType.Liquid;
         private int inputCell;
@@ -17,10 +16,8 @@ namespace Radiator
         private float emissivity = 0.9f;
         private float surface_area = 8f;
         private Guid statusHandle; // essentially a reference to a statusitem in particular
-        [MyCmpReq]
-        private KSelectable selectable; // does tooltip-related stuff
-        [MyCmpReq]
-        protected Operational operational;
+        [MyCmpReq] private KSelectable selectable; // does tooltip-related stuff
+        [MyCmpReq] protected Operational operational;
         private CellOffset[] radiatorOffsets; // the tiles that must be checked for vacuum
 
         public StatusItem _radiating_status;
@@ -42,7 +39,8 @@ namespace Radiator
             var building = GetComponent<Building>();
             inputCell = building.GetUtilityInputCell();
             outputCell = building.GetUtilityOutputCell();
-            radiatorOffsets = new CellOffset[4] {
+            radiatorOffsets = new CellOffset[4]
+            {
                 new CellOffset(0, 0),
                 new CellOffset(0, 1),
                 new CellOffset(0, 2),
@@ -67,7 +65,8 @@ namespace Radiator
             if (contents.mass <= 0f) return;
             var panel_mat = gameObject.GetComponent<PrimaryElement>();
             var element = ElementLoader.FindElementByHash(contents.element);
-            var deltaheat = conductive_heat(element, contents.temperature, panel_mat.Element, panel_mat.Temperature, surface_area);
+            var deltaheat = conductive_heat(element, contents.temperature, panel_mat.Element, panel_mat.Temperature,
+                surface_area);
             // heat change = mass * specific heat capacity * temp change        
             var deltatemp_panel = deltaheat / RadiatorConfig.MASS[0] / panel_mat.Element.specificHeatCapacity * dt;
             var deltatemp_liquid = -deltaheat / contents.mass / element.specificHeatCapacity * dt;
@@ -78,12 +77,15 @@ namespace Radiator
             {
                 panel_newtemp = Math.Max(panel_newtemp, contents.temperature);
                 liquid_newtemp = Math.Min(liquid_newtemp, panel_mat.Temperature);
-            } else
+            }
+            else
             {
                 panel_newtemp = Math.Min(panel_newtemp, contents.temperature);
                 liquid_newtemp = Math.Max(liquid_newtemp, panel_mat.Temperature);
             }
-            float delta = flowManager.AddElement(outputCell, contents.element, contents.mass, liquid_newtemp, contents.diseaseIdx, contents.diseaseCount);
+
+            float delta = flowManager.AddElement(outputCell, contents.element, contents.mass, liquid_newtemp,
+                contents.diseaseIdx, contents.diseaseCount);
             panel_mat.Temperature = panel_newtemp;
             if (delta <= 0f) return;
             flowManager.RemoveElement(inputCell, delta);
@@ -106,7 +108,8 @@ namespace Radiator
         {
             bool flag = false;
             var networkManager = Conduit.GetNetworkManager(type);
-            return flag || networks.Contains(networkManager.GetNetworkForCell(inputCell)) || networks.Contains(networkManager.GetNetworkForCell(outputCell));
+            return flag || networks.Contains(networkManager.GetNetworkForCell(inputCell)) ||
+                   networks.Contains(networkManager.GetNetworkForCell(outputCell));
         }
 
         public int GetNetworkCell()
@@ -115,7 +118,8 @@ namespace Radiator
         }
 
         // returns how much heat is transfered in W
-        static float conductive_heat(Element from, float from_temp, Element panel_material, float panel_temp, float area)
+        static float conductive_heat(Element from, float from_temp, Element panel_material, float panel_temp,
+            float area)
         {
             float conductivity = Math.Min(from.thermalConductivity, panel_material.thermalConductivity);
             return conductivity * area * (from_temp - panel_temp) * 1f;
@@ -133,16 +137,20 @@ namespace Radiator
             {
                 return;
             }
+
             if (CheckInSpace())
             {
                 double cooling = radiative_heat(temp) * 1;
                 if (cooling > 1f)
                 {
-                    CurrentCooling = (float)cooling;
-                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float)-cooling / 1000, STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, (float)-cooling / 1000);
+                    CurrentCooling = (float) cooling;
+                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float) -cooling / 1000,
+                        STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, (float) -cooling / 1000);
                 }
+
                 UpdateStatusItem(false);
-            } else
+            }
+            else
             {
                 UpdateStatusItem(true);
             }
@@ -154,16 +162,18 @@ namespace Radiator
             var root_cell = Grid.PosToCell(this);
             foreach (var offset in radiatorOffsets)
             {
-                if (!SkyLib.OniUtils.IsCellExposedToSpace(Grid.OffsetCell(root_cell, offset))) {
+                if (!SkyLib.OniUtils.IsCellExposedToSpace(Grid.OffsetCell(root_cell, offset)))
+                {
                     return false;
                 }
             }
+
             return true;
         }
 
         private static string _FormatStatusCallback(string formatstr, object data)
         {
-            var radiator = (Radiator)data;
+            var radiator = (Radiator) data;
             var radiation_rate = GameUtil.GetFormattedHeatEnergyRate(radiator.CurrentCooling * 5);
             return string.Format(formatstr, radiation_rate);
         }
@@ -174,22 +184,26 @@ namespace Radiator
             {
                 operational.SetFlag(spaceExposureFlag, false);
                 // If there are no status items, just add a building disabled tooltip.
-                _no_space_status = new StatusItem($"{RadiatorConfig.Id}_NOTINSPACE", "MISC", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.TileMode.ID);
+                _no_space_status = new StatusItem($"{RadiatorConfig.Id}_NOTINSPACE", "MISC", "",
+                    StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.TileMode.ID);
                 // if it's not empty we need to remove the radiating status
                 if (statusHandle == Guid.Empty)
                 {
                     statusHandle = selectable.AddStatusItem(_no_space_status, this);
-                } else
+                }
+                else
                 {
                     // no idea why this if statement is here but we're cargo culting it
                     if (!(statusHandle != Guid.Empty))
                         return;
                     selectable.ReplaceStatusItem(statusHandle, _no_space_status, this);
                 }
-            } else
+            }
+            else
             {
                 operational.SetFlag(spaceExposureFlag, true);
-                _radiating_status = new StatusItem($"{RadiatorConfig.Id}_RADIATING", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
+                _radiating_status = new StatusItem($"{RadiatorConfig.Id}_RADIATING", "MISC", "",
+                    StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
                 _radiating_status.resolveTooltipCallback = _FormatStatusCallback;
                 _radiating_status.resolveStringCallback = _FormatStatusCallback;
 

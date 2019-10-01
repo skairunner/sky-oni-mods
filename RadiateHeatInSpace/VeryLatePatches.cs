@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Harmony;
 using JetBrains.Annotations;
 using UnityEngine;
 using static SkyLib.Logger;
 
-namespace RadiateHeat
+namespace RadiateHeatInSpace
 {
     public class Patch : Attribute
     {
@@ -32,6 +31,7 @@ namespace RadiateHeat
                     PatchBuilding(harmony, confName, methodInfo);
                 }
             }
+
             LogLine("Finished very late patches.");
         }
 
@@ -49,6 +49,7 @@ namespace RadiateHeat
 
             return null;
         }
+
         public static void PatchBuilding(HarmonyInstance harmony, string conf_name, MethodInfo postfix)
         {
             var type = MaybeGetBuilding(conf_name);

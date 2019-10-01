@@ -1,13 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
-
-
-using Newtonsoft.Json;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-
 using static SkyLib.Logger;
 
 namespace Accountant
@@ -26,8 +22,15 @@ namespace Accountant
             history = new Deque<string>(150);
         }
 
-        public static Deque<string> History { get { return Instance.history; } }
-        public static Dictionary<string, string> NameMapping { get { return Instance.name_mapping; } }
+        public static Deque<string> History
+        {
+            get { return Instance.history; }
+        }
+
+        public static Dictionary<string, string> NameMapping
+        {
+            get { return Instance.name_mapping; }
+        }
     }
 
     class LedgerEntry
@@ -64,10 +67,12 @@ namespace Accountant
                     {
                         AccountantData.NameMapping.Add(name, tag.ProperName());
                     }
+
                     float total = inv.GetTotalAmount(tag);
                     float inuse = MaterialNeeds.Instance.GetAmount(tag);
                     output.Add(new LedgerEntry(tag.Name, total, inuse, clock));
                 }
+
                 return output;
             }
             catch
@@ -88,6 +93,7 @@ namespace Accountant
             {
                 history.RemoveBack();
             }
+
             history.Add(dumped);
 
             return dumped;
@@ -95,7 +101,7 @@ namespace Accountant
 
         public void BroadcastInventory()
         {
-             Sessions.BroadcastAsync(GetInventoryString(), null);
+            Sessions.BroadcastAsync(GetInventoryString(), null);
         }
 
         public void BroadcastBacklog()

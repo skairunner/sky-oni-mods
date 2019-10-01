@@ -1,31 +1,35 @@
 ﻿using Harmony;
 using PeterHan.PLib;
 using PeterHan.PLib.Lighting;
-using System.Collections.Generic;
-using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
-namespace ExpandedLights2 {
-        public class ExpandedLightsPatch
+namespace ExpandedLights
+{
+    public class ExpandedLightsPatch
     {
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
-                /// <summary>
-                /// Light shape: Directed cone according to component rotation
-                /// </summary>
-                public static PLightShape DirectedCone, Beam5, SmoothCircle, OffsetCone,
-            FixedSemi, Semicircle, OffsetSemi;
+        /// <summary>
+        /// Light shape: Directed cone according to component rotation
+        /// </summary>
+        public static PLightShape DirectedCone,
+            Beam5,
+            SmoothCircle,
+            OffsetCone,
+            FixedSemi,
+            Semicircle,
+            OffsetSemi;
 
-                public static class Mod_OnLoad
+        public static class Mod_OnLoad
         {
             public static void OnLoad()
             {
                 PUtil.InitLibrary(false);
                 StartLogging();
-      
-                                DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
+
+                DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
                 Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
                 SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
                 OffsetCone = PLightShape.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
@@ -43,9 +47,12 @@ namespace ExpandedLights2 {
             {
                 if (!didStartUp_Building)
                 {
-                    AddBuildingStrings(FloodlightConfig.Id, FloodlightConfig.DisplayName, FloodlightConfig.Description, FloodlightConfig.Effect);
-                    AddBuildingStrings(LEDLightConfig.Id, LEDLightConfig.DisplayName, LEDLightConfig.Description, LEDLightConfig.Effect);
-                    AddBuildingStrings(TileLightConfig.Id, TileLightConfig.DisplayName, TileLightConfig.Description, TileLightConfig.Effect);
+                    AddBuildingStrings(FloodlightConfig.Id, FloodlightConfig.DisplayName, FloodlightConfig.Description,
+                        FloodlightConfig.Effect);
+                    AddBuildingStrings(LEDLightConfig.Id, LEDLightConfig.DisplayName, LEDLightConfig.Description,
+                        LEDLightConfig.Effect);
+                    AddBuildingStrings(TileLightConfig.Id, TileLightConfig.DisplayName, TileLightConfig.Description,
+                        TileLightConfig.Effect);
 
                     AddBuildingToBuildMenu("Furniture", FloodlightConfig.Id);
                     AddBuildingToBuildMenu("Furniture", LEDLightConfig.Id);

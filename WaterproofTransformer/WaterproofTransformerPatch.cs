@@ -24,9 +24,11 @@ namespace WaterproofTransformer
             {
                 if (!didStartupBuilding)
                 {
-                    AddBuildingStrings(WaterproofTransformerConfig.ID, WaterproofTransformerConfig.DisplayName, WaterproofTransformerConfig.Description, WaterproofTransformerConfig.Effect);
+                    AddBuildingStrings(WaterproofTransformerConfig.ID, WaterproofTransformerConfig.DisplayName,
+                        WaterproofTransformerConfig.Description, WaterproofTransformerConfig.Effect);
                     AddBuildingToBuildMenu("Power", WaterproofTransformerConfig.ID);
-                    AddBuildingStrings(WaterproofBatteryConfig.ID, WaterproofBatteryConfig.DisplayName, WaterproofBatteryConfig.Description, WaterproofBatteryConfig.Effect);
+                    AddBuildingStrings(WaterproofBatteryConfig.ID, WaterproofBatteryConfig.DisplayName,
+                        WaterproofBatteryConfig.Description, WaterproofBatteryConfig.Effect);
                     AddBuildingToBuildMenu("Power", WaterproofBatteryConfig.ID);
                     didStartupBuilding = true;
                 }
@@ -48,6 +50,4 @@ namespace WaterproofTransformer
             }
         }
     }
-
-
 }

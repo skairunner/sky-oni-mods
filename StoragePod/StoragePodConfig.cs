@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+﻿using PeterHan.PLib.Options;
 using TUNING;
-using Harmony;
-using PeterHan.PLib.Options;
+using UnityEngine;
 
 namespace StoragePod
 {
@@ -10,7 +9,9 @@ namespace StoragePod
         public const string ID = "StoragePodConfig";
         public const string DisplayName = "Storage Pod";
         public const string Description = "Now you, too, can store things in pods.";
-        public static string Effect = $"Stores the Solid resources of your choosing. Compact and can be built anywhere.";
+
+        public static string Effect =
+            $"Stores the Solid resources of your choosing. Compact and can be built anywhere.";
 
         public override BuildingDef CreateBuildingDef()
         {
@@ -25,7 +26,9 @@ namespace StoragePod
             float melting_point = 1600f;
             BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
             EffectorValues none = NOISE_POLLUTION.NONE;
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tieR4, construction_mats, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints,
+                construction_time, tieR4, construction_mats, melting_point, build_location_rule,
+                BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
             buildingDef.Floodable = false;
             buildingDef.AudioCategory = "Metal";
             buildingDef.Overheatable = false;
@@ -34,7 +37,8 @@ namespace StoragePod
 
         public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
         {
-            SoundEventVolumeCache.instance.AddVolume("storagelocker_kanim", "StorageLocker_Hit_metallic_low", NOISE_POLLUTION.NOISY.TIER1);
+            SoundEventVolumeCache.instance.AddVolume("storagelocker_kanim", "StorageLocker_Hit_metallic_low",
+                NOISE_POLLUTION.NOISY.TIER1);
             Prioritizable.AddRef(go);
             Storage storage = go.AddOrGet<Storage>();
             storage.showInUI = true;
@@ -51,6 +55,7 @@ namespace StoragePod
                 POptions.WriteSettings(new StoragePodOptions());
                 config = new StoragePodOptions();
             }
+
             go.GetComponent<Storage>().capacityKg = config.podCapacity;
         }
 

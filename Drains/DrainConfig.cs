@@ -1,8 +1,7 @@
-﻿using System;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
-namespace Drain
+namespace Drains
 {
     class DrainConfig : IBuildingConfig
     {
@@ -77,7 +76,7 @@ namespace Drain
             ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
             conduitDispenser.conduitType = ConduitType.Liquid;
             conduitDispenser.alwaysDispense = true;
-            conduitDispenser.elementFilter = (SimHashes[])null;
+            conduitDispenser.elementFilter = (SimHashes[]) null;
             BuildingTemplates.DoPostConfigure(go);
             // add anim
             go.GetComponent<KBatchedAnimController>().initialAnim = "built";

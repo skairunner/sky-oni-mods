@@ -2,11 +2,12 @@
 using PeterHan.PLib.Lighting;
 using UnityEngine;
 
-namespace ExpandedLights2
+namespace ExpandedLights
 {
     public static class LightDefs
     {
-        public static void _LightConeHelper(GameObject source, int sourceCell, int range, IDictionary<int, float> brightness)
+        public static void _LightConeHelper(GameObject source, int sourceCell, int range,
+            IDictionary<int, float> brightness)
         {
             var octants = new OctantBuilder(brightness, sourceCell)
             {
@@ -72,6 +73,7 @@ namespace ExpandedLights2
                     offset_dir.Y = 1;
                     break;
             }
+
             int new_sourceCell = Grid.OffsetCell(sourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
             _LightConeHelper(source, new_sourceCell, arg.Range, arg.Brightness);
         }
@@ -121,6 +123,7 @@ namespace ExpandedLights2
                     offset_dir.Y = 1;
                     break;
             }
+
             int new_sourceCell = Grid.OffsetCell(arg.SourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
 
             _LightSemicircleHelper(source, new_sourceCell, arg.Range, orient, arg.Brightness);
@@ -149,7 +152,8 @@ namespace ExpandedLights2
                 arg.Brightness);
         }
 
-        public static void _LightSemicircleHelper(GameObject source, int sourceCell, int range, Orientation rotation, IDictionary<int, float> brightness)
+        public static void _LightSemicircleHelper(GameObject source, int sourceCell, int range, Orientation rotation,
+            IDictionary<int, float> brightness)
         {
             var octants = new OctantBuilder(brightness, sourceCell)
             {
@@ -199,7 +203,7 @@ namespace ExpandedLights2
         public static float AdjustLightByTile(int cell, float brightness)
         {
             // If it's a Pneumatic Door, do not dim
-            var obj = Grid.Objects[cell, (int)ObjectLayer.Building];
+            var obj = Grid.Objects[cell, (int) ObjectLayer.Building];
             if (obj != null)
             {
                 var building = obj.GetComponent<Building>();
@@ -208,37 +212,41 @@ namespace ExpandedLights2
                     return brightness * .7f;
                 }
             }
+
             // Occlude slightly if mesh or airflow tile
-            obj = Grid.Objects[cell, (int)ObjectLayer.FoundationTile];
+            obj = Grid.Objects[cell, (int) ObjectLayer.FoundationTile];
             if (obj != null)
             {
                 var name = obj.GetComponent<Building>().Def.PrefabID;
                 if (name == "MeshTile")
                 {
                     return brightness * .9f;
-                } else if  (name == "GasPermeableMembrane")
+                }
+                else if (name == "GasPermeableMembrane")
                 {
                     return brightness * .5f;
                 }
             }
-            
+
             // Totally occlude if tile is solid.
             if (Grid.IsValidCell(cell) && !Grid.Transparent[cell] && Grid.Solid[cell])
             {
                 return 0f;
             }
+
             return brightness;
         }
 
         // Make an axis-aligned linear beam of light.
         public static void _LinearLightHelper(GameObject source, int sourceCell, int range,
-                IDictionary<int, float> brightness_map, float falloff, int width)
+            IDictionary<int, float> brightness_map, float falloff, int width)
         {
             // If width is not odd, throw exception.
             if (width < 0 || width % 2 != 1)
             {
                 throw new System.Exception("Width of LinearLight must be odd number.");
             }
+
             // First determine which way we're illuminating
             var rotation = source.GetComponent<Rotatable>();
             var parallel_dir = new Vector2I(0, 0);
@@ -267,6 +275,7 @@ namespace ExpandedLights2
                     perpendicular_dir.X = 1;
                     break;
             }
+
             var start_offset = -width / 2;
             var end_offset = width / 2;
             // Shoot parallel rays, terminating the loop whenever light is completely occluded.

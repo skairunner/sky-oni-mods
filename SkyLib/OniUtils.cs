@@ -1,9 +1,5 @@
-﻿using System;
+﻿using ProcGen;
 using System.Collections.Generic;
-using System.Reflection;
-using Harmony;
-using ProcGen;
-using TUNING;
 
 // Heavily referencing CaiLib's utils.
 
@@ -11,7 +7,8 @@ namespace SkyLib
 {
     public static class OniUtils
     {
-        public static void AddBuildingToTech(string tech, string buildingid) {
+        public static void AddBuildingToTech(string tech, string buildingid)
+        {
             var techlist = new List<string>(Database.Techs.TECH_GROUPING[tech]);
             techlist.Add(buildingid);
             Database.Techs.TECH_GROUPING[tech] = techlist.ToArray();
@@ -45,6 +42,7 @@ namespace SkyLib
                     Logger.LogLine($"Could not find the building '{addAfterId}' to add '{buildingid}' after.");
                     return;
                 }
+
                 planorderlist.Insert(neigh_i + 1, buildingid);
             }
         }
@@ -59,14 +57,15 @@ namespace SkyLib
 
         public static void AddStatusItem(string status_id, string stringtype, string statusitem)
         {
-            Strings.Add($"STRINGS.MISC.STATUSITEMS.{status_id.ToUpperInvariant()}.{stringtype.ToUpperInvariant()}", statusitem);
+            Strings.Add($"STRINGS.MISC.STATUSITEMS.{status_id.ToUpperInvariant()}.{stringtype.ToUpperInvariant()}",
+                statusitem);
         }
-        
+
         public static bool IsCellExposedToSpace(int cell)
         {
             // check in space biome, then check there is no drywall
-            return Game.Instance.world.zoneRenderData.GetSubWorldZoneType(cell) == SubWorld.ZoneType.Space 
-                && Grid.Objects[cell, (int)ObjectLayer.Backwall] == null;
+            return Game.Instance.world.zoneRenderData.GetSubWorldZoneType(cell) == SubWorld.ZoneType.Space
+                   && Grid.Objects[cell, (int) ObjectLayer.Backwall] == null;
         }
     }
 }

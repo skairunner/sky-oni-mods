@@ -13,6 +13,7 @@ namespace Accountant
         {
             msgtype = "inv";
         }
+
         public List<LedgerEntry> inventory;
     }
 
@@ -22,6 +23,7 @@ namespace Accountant
         {
             msgtype = "loc";
         }
+
         public Dictionary<string, string> locs;
     }
 

@@ -2,7 +2,7 @@
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
-namespace Drain
+namespace Drains
 {
     public class DrainPatch
     {
@@ -25,7 +25,8 @@ namespace Drain
             {
                 if (!didStartUp_Building)
                 {
-                    AddBuildingStrings(DrainConfig.Id, DrainConfig.DisplayName, DrainConfig.Description, DrainConfig.Effect);
+                    AddBuildingStrings(DrainConfig.Id, DrainConfig.DisplayName, DrainConfig.Description,
+                        DrainConfig.Effect);
                     AddBuildingToBuildMenu("Plumbing", DrainConfig.Id);
                     didStartUp_Building = true;
                 }
@@ -38,7 +39,7 @@ namespace Drain
         {
             public static void Prefix()
             {
-                if(!didStartUp_Db)
+                if (!didStartUp_Db)
                 {
                     AddBuildingToTech("SanitationSciences", DrainConfig.Id);
                     didStartUp_Db = true;

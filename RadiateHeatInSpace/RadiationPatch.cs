@@ -1,11 +1,11 @@
-﻿using Harmony;
-using System;
+﻿using System;
+using Harmony;
+using PeterHan.PLib;
 using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
-using PeterHan.PLib;
 
-namespace RadiateHeat
+namespace RadiateHeatInSpace
 {
     public class RadiatePatch
     {
@@ -52,12 +52,15 @@ namespace RadiateHeat
             {
                 if (!didStartUp_Building)
                 {
-                    AddBuildingStrings(RadiatorTileConfig.Id, RadiatorTileConfig.DisplayName, RadiatorTileConfig.Description, RadiatorTileConfig.Effect);
+                    AddBuildingStrings(RadiatorTileConfig.Id, RadiatorTileConfig.DisplayName,
+                        RadiatorTileConfig.Description, RadiatorTileConfig.Effect);
                     AddBuildingToBuildMenu("Base", RadiatorTileConfig.Id);
                     AddStatusItem("RADIATESHEAT_RADIATING", "NAME", "Radiating {0}");
-                    AddStatusItem("RADIATESHEAT_RADIATING", "TOOLTIP", "This building is currently radiating heat at {0}.");
+                    AddStatusItem("RADIATESHEAT_RADIATING", "TOOLTIP",
+                        "This building is currently radiating heat at {0}.");
                     AddStatusItem("RADIATESHEAT_NOTINSPACE", "NAME", "Not in space");
-                    AddStatusItem("RADIATESHEAT_NOTINSPACE", "TOOLTIP", "This building is not fully in space and is not radiating heat.");
+                    AddStatusItem("RADIATESHEAT_NOTINSPACE", "TOOLTIP",
+                        "This building is not fully in space and is not radiating heat.");
                     didStartUp_Building = true;
                 }
             }

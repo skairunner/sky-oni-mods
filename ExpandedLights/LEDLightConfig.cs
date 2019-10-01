@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
-namespace ExpandedLights2
+namespace ExpandedLights
 {
-    class LEDLightConfig: IBuildingConfig
+    class LEDLightConfig : IBuildingConfig
     {
         public const string Id = "LEDLight";
         public const string DisplayName = "LED Light";
-        public const string Description = "The only thing holding back this LED light is its high costs and lack of determination. It does, however, always give its one hundred percent.";
+
+        public const string Description =
+            "The only thing holding back this LED light is its high costs and lack of determination. It does, however, always give its one hundred percent.";
+
         public static string Effect = $"Emits light but no heat. Can be built anywhere.";
 
         public const int lux = 1500;
@@ -46,7 +45,9 @@ namespace ExpandedLights2
                 radius = 3
             };
 
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, construction_costs, construction_materials, melting_point, build_location_rule, decor, none, 0.2f);
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints,
+                construction_time, construction_costs, construction_materials, melting_point, build_location_rule,
+                decor, none, 0.2f);
             buildingDef.RequiresPowerInput = true;
             buildingDef.PermittedRotations = PermittedRotations.Unrotatable;
             buildingDef.EnergyConsumptionWhenActive = 2f;

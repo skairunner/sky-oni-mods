@@ -1,14 +1,16 @@
-﻿using System;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
-namespace RadiateHeat
+namespace RadiateHeatInSpace
 {
     class RadiatorTileConfig : IBuildingConfig
     {
         public const string Id = "RadiativeTile";
         public const string DisplayName = "Radiative Tile";
-        public const string Description = "Perfect for building a sauna, if the sauna were in space. On second thought, not so perfect for building a sauna.";
+
+        public const string Description =
+            "Perfect for building a sauna, if the sauna were in space. On second thought, not so perfect for building a sauna.";
+
         public static string Effect = $"A tile that passively radiates heat to space. More effective the hotter it is.";
         public static float[] MASS = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
 

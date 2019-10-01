@@ -1,15 +1,18 @@
-﻿using UnityEngine;
-using TUNING;
-using Harmony;
+﻿using TUNING;
+using UnityEngine;
 
-namespace ExpandedLights2
+namespace ExpandedLights
 {
     class TileLightConfig : IBuildingConfig
     {
         public const string Id = "TileLight";
         public const string DisplayName = "Tile Light";
-        public const string Description = "These tiny lights are the real MVP, illuminating places that other lights don't dare to go.";
-        public static string Effect = "Emits light. Can be built behind most other buildings, except Drywall and Tempshift Plates.";
+
+        public const string Description =
+            "These tiny lights are the real MVP, illuminating places that other lights don't dare to go.";
+
+        public static string Effect =
+            "Emits light. Can be built behind most other buildings, except Drywall and Tempshift Plates.";
 
         public const int lux = 1800;
         public const float range = 8f;
@@ -26,7 +29,9 @@ namespace ExpandedLights2
             float melting_point = 800f;
             BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
             EffectorValues none = NOISE_POLLUTION.NONE;
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, tieR1, allMetals, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 0.2f);
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints,
+                construction_time, tieR1, allMetals, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none,
+                0.2f);
             buildingDef.RequiresPowerInput = true;
             buildingDef.PermittedRotations = PermittedRotations.R360;
             buildingDef.EnergyConsumptionWhenActive = 5f;

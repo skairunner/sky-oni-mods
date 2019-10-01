@@ -1,5 +1,4 @@
-﻿using System;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
 namespace BleachstoneRefinery
@@ -8,7 +7,10 @@ namespace BleachstoneRefinery
     {
         public const string Id = "BleachstoneRefinery";
         public const string DisplayName = "Bleachstone Refinery";
-        public const string Description = "Duplicants enamoured with Frost Burgers, yet stressed by the environmental implications of unchecked Bleach Stone mining operations, have devised a new, more sustainable process to refine Chlorine into Frost Burgers, with a temporary Bleach Stone stage in the middle.";
+
+        public const string Description =
+            "Duplicants enamoured with Frost Burgers, yet stressed by the environmental implications of unchecked Bleach Stone mining operations, have devised a new, more sustainable process to refine Chlorine into Frost Burgers, with a temporary Bleach Stone stage in the middle.";
+
         public static string Effect = $"Synthesizes Bleach Stone using Chlorine and a small amount of Copper.";
 
         public const float EMIT_MASS = 10f;
@@ -30,15 +32,17 @@ namespace BleachstoneRefinery
             float construction_time = 480f;
             string[] construction_materials = new string[2]
             {
-              "RefinedMetal",
-              "Plastic"
+                "RefinedMetal",
+                "Plastic"
             };
             EffectorValues tieR5 = NOISE_POLLUTION.NOISY.TIER5;
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints, construction_time, new float[2]
-            {
-              BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
-              BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0]
-            }, construction_materials, 2400f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.PENALTY.TIER1, tieR5, 0.2f);
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(Id, width, height, anim, hitpoints,
+                construction_time, new float[2]
+                {
+                    BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
+                    BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0]
+                }, construction_materials, 2400f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.PENALTY.TIER1, tieR5,
+                0.2f);
             buildingDef.Overheatable = false;
             buildingDef.RequiresPowerInput = true;
             buildingDef.PowerInputOffset = new CellOffset(0, 0);
@@ -80,12 +84,13 @@ namespace BleachstoneRefinery
             ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
             elementConverter.consumedElements = new ElementConverter.ConsumedElement[2]
             {
-              new ElementConverter.ConsumedElement(tag1, 0.6f),
-              new ElementConverter.ConsumedElement(tag2, 3f / 1000f)
+                new ElementConverter.ConsumedElement(tag1, 0.6f),
+                new ElementConverter.ConsumedElement(tag2, 3f / 1000f)
             };
             elementConverter.outputElements = new ElementConverter.OutputElement[1]
             {
-              new ElementConverter.OutputElement(0.6f, SimHashes.BleachStone, 303.15f, false, true, 0.0f, 0.5f, 1f, byte.MaxValue, 0)
+                new ElementConverter.OutputElement(0.6f, SimHashes.BleachStone, 303.15f, false, true, 0.0f, 0.5f, 1f,
+                    byte.MaxValue, 0)
             };
             Prioritizable.AddRef(go);
         }
