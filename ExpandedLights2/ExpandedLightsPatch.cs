@@ -7,25 +7,25 @@ using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
 namespace ExpandedLights {
-	public class ExpandedLightsPatch
+        public class ExpandedLightsPatch
     {
         public static bool didStartUp_Building = false;
         public static bool didStartUp_Db = false;
 
-		/// <summary>
-		/// Light shape: Directed cone according to component rotation
-		/// </summary>
-		public static PLightShape DirectedCone, Beam5, SmoothCircle, OffsetCone,
+                /// <summary>
+                /// Light shape: Directed cone according to component rotation
+                /// </summary>
+                public static PLightShape DirectedCone, Beam5, SmoothCircle, OffsetCone,
             FixedSemi, Semicircle, OffsetSemi;
 
-		public static class Mod_OnLoad
+                public static class Mod_OnLoad
         {
             public static void OnLoad()
             {
                 PUtil.InitLibrary(false);
                 StartLogging();
       
-				DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
+                                DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
                 Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
                 SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
                 OffsetCone = PLightShape.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
@@ -33,9 +33,9 @@ namespace ExpandedLights {
                 Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
                 OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
             }
-		}
+        }
 
-		[HarmonyPatch(typeof(GeneratedBuildings))]
+        [HarmonyPatch(typeof(GeneratedBuildings))]
         [HarmonyPatch("LoadGeneratedBuildings")]
         public static class GeneratedBuildings_LoadGeneratedBuildings_Path
         {
