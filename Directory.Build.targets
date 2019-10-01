@@ -8,8 +8,7 @@
 
   <Target Name="ILRepack" AfterTargets="CopyFilesToOutputDirectory">
     <ItemGroup>
-      <InputAssemblies Include="$(TargetDir)\*.dll"
-        Exclude="**\0Harmony.dll" />
+      <InputAssemblies Include="$(TargetDir)\*.dll" />
     </ItemGroup>
 
     <ILRepack 

@@ -22,7 +22,7 @@
     <Reference Include="UnityEngine.CoreModule" HintPath="$(GameFolder)/UnityEngine.CoreModule.dll" />
   </ItemGroup>
   <ItemGroup Condition=" '$(UsesPLib)' == 'true' ">
-    <PackageReference Include="PLib" Version="2.11.1" />
+    <PackageReference Include="PLib" Version="2.11.2" />
     <Reference Include="Newtonsoft.Json" HintPath="$(GameFolder)/Newtonsoft.Json.dll" />
     <Reference Include="Unity.TextMeshPro" HintPath="$(GameFolder)/Unity.TextMeshPro.dll" />
     <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameFolder)/UnityEngine.TextRenderingModule.dll" />
