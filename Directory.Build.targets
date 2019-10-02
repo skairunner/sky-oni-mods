@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Target Name="ClearGameFolderCopyLocal" AfterTargets="ResolveAssemblyReferences">
+  <PropertyGroup>
+    <AssemblySearchPaths>
+      $(GameFolder);
+      $(AssemblySearchPaths)
+    </AssemblySearchPaths>
+  </PropertyGroup>
+
+  <Target Name="AfterResolveReferences">
     <ItemGroup>
       <ReferenceCopyLocalPaths Remove="$(GameFolder)\*" />
     </ItemGroup>
@@ -8,7 +15,9 @@
 
   <Target Name="ILRepack" AfterTargets="CopyFilesToOutputDirectory">
     <ItemGroup>
-      <InputAssemblies Include="$(TargetDir)\*.dll" />
+      <InputAssemblies
+        Include="$(TargetDir)\*.dll" 
+        Exclude="$(TargetPath)" />
     </ItemGroup>
 
     <ILRepack 
@@ -17,7 +26,6 @@
         MainAssembly="$(TargetPath)" 
         OutputAssembly="$(TargetPath)" 
         InputAssemblies="@(InputAssemblies)" 
-        WilcardInputAssemblies="true"
         WorkingDirectory="$(GameFolder)" />
   </Target>
 

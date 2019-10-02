@@ -8,6 +8,6 @@
   <ItemGroup>
     <PackageReference Include="Deque" Version="1.0.1" />
     <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
-    <Reference Include="Newtonsoft.Json" HintPath="$(GameFolder)/Newtonsoft.Json.dll" />
+    <Reference Include="Newtonsoft.Json" />
   </ItemGroup>
 </Project>
