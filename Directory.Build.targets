@@ -1,53 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Project>
-  <PropertyGroup>
-    <AssemblySearchPaths>
-      $(GameFolder);
-      $(AssemblySearchPaths)
-    </AssemblySearchPaths>
-  </PropertyGroup>
-
-  <Target Name="AfterResolveReferences" DependsOnTargets="ClearGameFolderCopyLocal" />
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project>
+  <PropertyGroup>
+    <AssemblySearchPaths>
+      $(GameFolder);
+      $(AssemblySearchPaths)
+    </AssemblySearchPaths>
+  </PropertyGroup>
+
+  <Target Name="AfterResolveReferences" DependsOnTargets="ClearGameFolderCopyLocal" />
 
   <Target Name="ClearGameFolderCopyLocal">
-    <ItemGroup>
-      <ReferenceCopyLocalPaths Remove="$(GameFolder)\*" />
-    </ItemGroup>
-  </Target>
-
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="$(GameFolder)\*" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="ILRepack" AfterTargets="CopyFilesToOutputDirectory">
-    <ItemGroup>
-      <InputAssemblies
-        Include="$(TargetDir)\*.dll"
-        Exclude="$(TargetPath)" />
-    </ItemGroup>
-
-    <ILRepack
-      TargetPlatformVersion="v2"
-      OutputType="SameAsPrimaryAssembly"
-      MainAssembly="$(TargetPath)"
-      OutputAssembly="$(TargetPath)"
-      InputAssemblies="@(InputAssemblies)"
-      WorkingDirectory="$(GameFolder)" />
-  </Target>
-
+    <ItemGroup>
+      <InputAssemblies
+        Include="$(TargetDir)\*.dll"
+        Exclude="$(TargetPath)" />
+    </ItemGroup>
+
+    <ILRepack
+      TargetPlatformVersion="v2"
+      OutputType="SameAsPrimaryAssembly"
+      MainAssembly="$(TargetPath)"
+      OutputAssembly="$(TargetPath)"
+      InputAssemblies="@(InputAssemblies)"
+      WorkingDirectory="$(GameFolder)" />
+  </Target>
+
   <Target Name="AfterBuild" DependsOnTargets="CopyArtifactsToInstallFolder" />
 
-  <Target Name="CopyArtifactsToInstallFolder" Condition=" '$(AssemblyName)' != 'SkyLib' ">
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-      <InstallFolder>..\Release\$(ProjectName)</InstallFolder>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-      <InstallFolder>$(ModFolder)\$(ProjectName)</InstallFolder>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <AnimFiles Include="$(ProjectDir)\anim\**\*.*" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(AnimFiles)"
-          DestinationFiles="@(AnimFiles->'$(InstallFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
-  </Target>
+  <Target Name="CopyArtifactsToInstallFolder" Condition=" '$(AssemblyName)' != 'SkyLib' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+      <InstallFolder>..\Release\$(ProjectName)</InstallFolder>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+      <InstallFolder>$(ModFolder)\$(ProjectName)</InstallFolder>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <AnimFiles Include="$(ProjectDir)\anim\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(AnimFiles)"
+          DestinationFiles="@(AnimFiles->'$(InstallFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
+  </Target>
 </Project>
