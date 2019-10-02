@@ -1,4 +1,6 @@
 ﻿using Harmony;
+using PeterHan.PLib;
+using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
@@ -14,11 +16,12 @@ namespace Drains
             public static void OnLoad()
             {
                 StartLogging();
+                PUtil.InitLibrary(false);
+                POptions.RegisterOptions(typeof(DrainSettings));
             }
         }
 
-        [HarmonyPatch(typeof(GeneratedBuildings))]
-        [HarmonyPatch(nameof(GeneratedBuildings.LoadGeneratedBuildings))]
+        [HarmonyPatch(typeof(GeneratedBuildings), nameof(GeneratedBuildings.LoadGeneratedBuildings))]
         public static class GeneratedBuildings_LoadGeneratedBuildings_Path
         {
             public static void Prefix()
@@ -33,8 +36,7 @@ namespace Drains
             }
         }
 
-        [HarmonyPatch(typeof(Db))]
-        [HarmonyPatch("Initialize")]
+        [HarmonyPatch(typeof(Db), "Initialize")]
         public static class Db_Initialize_Patch
         {
             public static void Prefix()
@@ -44,6 +46,16 @@ namespace Drains
                     AddBuildingToTech("SanitationSciences", DrainConfig.Id);
                     didStartUp_Db = true;
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(SelectToolHoverTextCard), "ShouldShowLiquidConduitOverlay")]
+        public static class SelectToolHoverTextCard_ShouldShowLiquidConduitOverlay_Patch
+        {
+            public static void Postfix(KSelectable selectable, ref bool __result)
+            {
+                if (selectable.GetComponent<Drain>() != null)
+                    __result = true;
             }
         }
     }

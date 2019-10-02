@@ -1,43 +1,39 @@
-﻿namespace Drains
-{
-    // Essentially Pump but with a couple tiny tweaks. Had to do this because C# doesn't support monkey patches or flexible subclassing.
+﻿using Harmony;
+using PeterHan.PLib;
 
+namespace Drains
+{
     public class Drain : KMonoBehaviour, ISim1000ms
     {
         private const float OperationalUpdateInterval = 1f;
 
-        public static readonly Operational.Flag PumpableFlag =
-            new Operational.Flag("vent", Operational.Flag.Type.Requirement);
+        private static readonly Operational.Flag DrainableFlag =
+            new Operational.Flag("Drainable", Operational.Flag.Type.Requirement);
 
-        [MyCmpGet] private ElementConsumer consumer;
-        [MyCmpGet] private ConduitDispenser dispenser;
+        private HandleVector<int>.Handle accumulatorHandle = HandleVector<int>.InvalidHandle;
         private float elapsedTime;
-
-        [MyCmpReq] private Operational operational;
-        private bool pumpable;
-        [MyCmpGet] private KSelectable selectable;
-        [MyCmpGet] private Storage storage;
-
-        public ConduitType conduitType => dispenser.conduitType;
 
         public void Sim1000ms(float dt)
         {
             elapsedTime += dt;
-            if (elapsedTime >= 1.0)
+            if (elapsedTime >= OperationalUpdateInterval)
             {
-                pumpable = UpdateOperational();
+                UpdateOperational();
                 elapsedTime = 0.0f;
             }
 
-            if (operational.IsOperational && pumpable)
+            if (operational.IsOperational)
             {
                 operational.SetActive(true);
+                anim.Play("built", KAnim.PlayMode.Paused);
             }
             else
             {
-                selectable.RemoveStatusItem(Db.Get().BuildingStatusItems.PumpingLiquidOrGas);
-                operational.SetActive(false);
+                anim.Play("clogged", KAnim.PlayMode.Paused);
             }
+
+            selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.PumpingLiquidOrGas, operational.IsOperational,
+                accumulatorHandle);
         }
 
         protected override void OnPrefabInit()
@@ -49,10 +45,9 @@
         protected override void OnSpawn()
         {
             base.OnSpawn();
-            elapsedTime = 0.0f;
-            pumpable = UpdateOperational();
-            dispenser.GetConduitManager().AddConduitUpdater(OnConduitUpdate,
-                ConduitFlowPriority.Last);
+            UpdateOperational();
+            dispenser.GetConduitManager().AddConduitUpdater(OnConduitUpdate, ConduitFlowPriority.Last);
+            accumulatorHandle = Traverse.Create(consumer).GetField<HandleVector<int>.Handle>("accumulator");
         }
 
         protected override void OnCleanUp()
@@ -61,43 +56,27 @@
             base.OnCleanUp();
         }
 
-        private bool UpdateOperational()
+        private void UpdateOperational()
         {
-            var expected_state = Element.State.Vacuum;
-            switch (dispenser.conduitType)
-            {
-                case ConduitType.Gas:
-                    expected_state = Element.State.Gas;
-                    break;
-                case ConduitType.Liquid:
-                    expected_state = Element.State.Liquid;
-                    break;
-            }
-
-            var flag = IsPumpable(expected_state, consumer.consumptionRadius);
-            selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.NoLiquidElementToPump, false);
-            operational.SetFlag(Pump.PumpableFlag, !storage.IsFull() && flag);
-            return flag;
-        }
-
-        private bool IsPumpable(Element.State expected_state, int radius)
-        {
-            var cell = Grid.PosToCell(transform.GetPosition());
-            for (var index1 = 0; index1 < (int) consumer.consumptionRadius; ++index1)
-            for (var index2 = 0; index2 < (int) consumer.consumptionRadius; ++index2)
-            {
-                var index3 = cell + index2 + Grid.WidthInCells * index1;
-                if (Grid.Element[index3].IsState(expected_state))
-                    return true;
-            }
-
-            return false;
+            var pos = Grid.PosToCell(transform.GetPosition());
+            var flag = !storage.IsFull() && Grid.Element[pos].IsState(Element.State.Liquid);
+            selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.NoLiquidElementToPump, !flag);
+            operational.SetFlag(DrainableFlag, flag);
         }
 
         private void OnConduitUpdate(float dt)
         {
             selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.ConduitBlocked,
-                dispenser.ConduitContents.mass > 0.0);
+                dispenser.ConduitContents.mass > 0f);
         }
+
+#pragma warning disable 649
+        [MyCmpGet] private ElementConsumer consumer;
+        [MyCmpGet] private ConduitDispenser dispenser;
+        [MyCmpGet] private Storage storage;
+        [MyCmpReq] private Operational operational;
+        [MyCmpGet] private KSelectable selectable;
+        [MyCmpGet] private KAnimControllerBase anim;
+#pragma warning restore 649
     }
 }
