@@ -2,43 +2,43 @@
 
 namespace Accountant
 {
-    class Packet
+    internal class Packet
     {
         public string msgtype;
     }
 
-    class DataPacket : Packet
+    internal class DataPacket : Packet
     {
+        public List<LedgerEntry> inventory;
+
         public DataPacket()
         {
             msgtype = "inv";
         }
-
-        public List<LedgerEntry> inventory;
     }
 
-    class LocPacket : Packet
+    internal class LocPacket : Packet
     {
+        public Dictionary<string, string> locs;
+
         public LocPacket()
         {
             msgtype = "loc";
         }
-
-        public Dictionary<string, string> locs;
     }
 
-    class RequestLocPacket : Packet
+    internal class RequestLocPacket : Packet
     {
         public List<string> itemnames;
     }
 
-    class BacklogPacket : Packet
+    internal class BacklogPacket : Packet
     {
+        public List<string> backlog;
+
         public BacklogPacket()
         {
             msgtype = "backlog";
         }
-
-        public List<string> backlog;
     }
 }

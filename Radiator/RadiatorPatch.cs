@@ -6,8 +6,8 @@ namespace Radiator
 {
     public class RadiatorPatch
     {
-        public static bool didStartUp_Building = false;
-        public static bool didStartUp_Db = false;
+        public static bool didStartUp_Building;
+        public static bool didStartUp_Db;
 
         public static class Mod_OnLoad
         {

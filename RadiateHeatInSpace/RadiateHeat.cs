@@ -1,40 +1,30 @@
 ﻿using System;
+using SkyLib;
 
 namespace RadiateHeatInSpace
 {
-    class RadiatesHeat : KMonoBehaviour, ISim1000ms
+    internal class RadiatesHeat : KMonoBehaviour, ISim1000ms
     {
-        public float emissivity = .9f;
-        public float surface_area = 1f;
-        private static double stefanBoltzmanConstant = 5.67e-8;
-        private Guid handle_radiating; // essentially a reference to a statusitem in particular
-        private Guid handle_notinspace;
-        [MyCmpReq] private KSelectable selectable; // does tooltip-related stuff
-        public CellOffset[] OccupyOffsets;
-
-        public float CurrentCooling { get; private set; }
-        private HandleVector<int>.Handle structureTemperature;
-
-        public StatusItem _radiating_status;
+        private static readonly double stefanBoltzmanConstant = 5.67e-8;
         public StatusItem _no_space_status;
 
-        protected override void OnSpawn()
-        {
-            base.OnSpawn();
+        public StatusItem _radiating_status;
+        public float emissivity = .9f;
+        private Guid handle_notinspace;
+        private Guid handle_radiating; // essentially a reference to a statusitem in particular
+        public CellOffset[] OccupyOffsets;
+        [MyCmpReq] private KSelectable selectable; // does tooltip-related stuff
+        private HandleVector<int>.Handle structureTemperature;
+        public float surface_area = 1f;
 
-            OccupyOffsets = new[]
-            {
-                new CellOffset(0, 0)
-            }; // i am lazy and will only check building root bc it's annoying to account for rotation
-            structureTemperature = GameComps.StructureTemperatures.GetHandle(gameObject);
-        }
+        public float CurrentCooling { get; private set; }
 
         public void Sim1000ms(float dt)
         {
-            float temp = gameObject.GetComponent<PrimaryElement>().Temperature;
+            var temp = gameObject.GetComponent<PrimaryElement>().Temperature;
             if (temp > 5f)
             {
-                double cooling = radiative_heat(temp);
+                var cooling = radiative_heat(temp);
                 if (CheckInSpace())
                 {
                     if (cooling > 1f)
@@ -48,10 +38,21 @@ namespace RadiateHeatInSpace
                 }
                 else
                 {
-                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float) 0, "Radiated", 1f);
-                    UpdateStatusItem(false);
+                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, 0, "Radiated", 1f);
+                    UpdateStatusItem();
                 }
             }
+        }
+
+        protected override void OnSpawn()
+        {
+            base.OnSpawn();
+
+            OccupyOffsets = new[]
+            {
+                new CellOffset(0, 0)
+            }; // i am lazy and will only check building root bc it's annoying to account for rotation
+            structureTemperature = GameComps.StructureTemperatures.GetHandle(gameObject);
         }
 
         private double radiative_heat(float temp)
@@ -64,12 +65,8 @@ namespace RadiateHeatInSpace
             // Check whether in spaaace
             var root_cell = Grid.PosToCell(this);
             foreach (var offset in OccupyOffsets)
-            {
-                if (!SkyLib.OniUtils.IsCellExposedToSpace(Grid.OffsetCell(root_cell, offset)))
-                {
+                if (!OniUtils.IsCellExposedToSpace(Grid.OffsetCell(root_cell, offset)))
                     return false;
-                }
-            }
 
             return true;
         }
@@ -89,27 +86,23 @@ namespace RadiateHeatInSpace
                 // Remove outdated status, if it exists
                 handle_notinspace = selectable.RemoveStatusItem(handle_notinspace);
                 // Update the existing callback
-                _radiating_status = new StatusItem($"RADIATESHEAT_RADIATING", "MISC", "", StatusItem.IconType.Info,
+                _radiating_status = new StatusItem("RADIATESHEAT_RADIATING", "MISC", "", StatusItem.IconType.Info,
                     NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
                 _radiating_status.resolveTooltipCallback = _FormatStatusCallback;
                 _radiating_status.resolveStringCallback = _FormatStatusCallback;
                 if (handle_radiating == Guid.Empty)
-                {
                     handle_radiating = selectable.AddStatusItem(_radiating_status, this);
-                }
             }
             else
             {
                 // Remove outdated status-
                 handle_radiating = selectable.RemoveStatusItem(handle_radiating);
 
-                _no_space_status = new StatusItem($"RADIATESHEAT_NOTINSPACE", "MISC", "", StatusItem.IconType.Info,
+                _no_space_status = new StatusItem("RADIATESHEAT_NOTINSPACE", "MISC", "", StatusItem.IconType.Info,
                     NotificationType.Neutral, false, OverlayModes.HeatFlow.ID);
                 // add the status item!
                 if (handle_notinspace == Guid.Empty)
-                {
                     handle_notinspace = selectable.AddStatusItem(_no_space_status, this);
-                }
             }
         }
     }

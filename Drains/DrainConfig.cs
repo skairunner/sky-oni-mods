@@ -3,29 +3,29 @@ using UnityEngine;
 
 namespace Drains
 {
-    class DrainConfig : IBuildingConfig
+    internal class DrainConfig : IBuildingConfig
     {
         public const string Id = "Drain";
         public const string DisplayName = "Drain";
         public const string Description = "";
-        public static string Effect = $"Slowly drains liquids into a pipe.";
+        public static string Effect = "Slowly drains liquids into a pipe.";
         public static float[] MASS = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
 
         public override BuildingDef CreateBuildingDef()
         {
             var def = BuildingTemplates.CreateBuildingDef(
-                id: Id,
-                width: 1,
-                height: 1,
-                anim: "drain_kanim",
-                hitpoints: BUILDINGS.HITPOINTS.TIER1,
-                construction_time: 30f,
-                construction_mass: MASS,
-                construction_materials: MATERIALS.ALL_METALS,
-                melting_point: 1600f,
-                build_location_rule: BuildLocationRule.Tile,
-                decor: BUILDINGS.DECOR.PENALTY.TIER0,
-                noise: NOISE_POLLUTION.NONE
+                Id,
+                1,
+                1,
+                "drain_kanim",
+                BUILDINGS.HITPOINTS.TIER1,
+                30f,
+                MASS,
+                MATERIALS.ALL_METALS,
+                1600f,
+                BuildLocationRule.Tile,
+                BUILDINGS.DECOR.PENALTY.TIER0,
+                NOISE_POLLUTION.NONE
             );
             def.UseStructureTemperature = false;
             def.Floodable = false;
@@ -62,21 +62,21 @@ namespace Drains
         {
             GeneratedBuildings.RemoveLoopingSounds(go);
             // MeshTile stuff
-            go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
+            go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
             go.AddComponent<SimTemperatureTransfer>();
             go.AddComponent<ZoneTile>();
             // Pump stuff
             go.AddOrGet<Storage>().capacityKg = 1f;
-            ElementConsumer elementConsumer = go.AddOrGet<ElementConsumer>();
+            var elementConsumer = go.AddOrGet<ElementConsumer>();
             elementConsumer.configuration = ElementConsumer.Configuration.AllLiquid;
             elementConsumer.consumptionRate = 0.1f;
             elementConsumer.storeOnConsume = true;
             elementConsumer.showInStatusPanel = false;
             elementConsumer.consumptionRadius = 1;
-            ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
+            var conduitDispenser = go.AddOrGet<ConduitDispenser>();
             conduitDispenser.conduitType = ConduitType.Liquid;
             conduitDispenser.alwaysDispense = true;
-            conduitDispenser.elementFilter = (SimHashes[]) null;
+            conduitDispenser.elementFilter = null;
             BuildingTemplates.DoPostConfigure(go);
             // add anim
             go.GetComponent<KBatchedAnimController>().initialAnim = "built";

@@ -9,6 +9,12 @@ namespace StoragePod
 {
     public class StoragePodOptions
     {
+        public StoragePodOptions()
+        {
+            podCapacity = 5000f;
+            coolPodCapacity = 50f;
+        }
+
         [Option("Pod Capacity", "How many kg of Solids a Storage Pod can store.")]
         [JsonProperty]
         public float podCapacity { get; set; }
@@ -16,18 +22,12 @@ namespace StoragePod
         [Option("Cool Pod Capacity", "How many kg of Solids a Cool Pod can store.")]
         [JsonProperty]
         public float coolPodCapacity { get; set; }
-
-        public StoragePodOptions()
-        {
-            podCapacity = 5000f;
-            coolPodCapacity = 50f;
-        }
     }
 
     public class StoragePodPatch
     {
-        public static bool didStartupBuilding = false;
-        public static bool didStartupDb = false;
+        public static bool didStartupBuilding;
+        public static bool didStartupDb;
 
         public static class Mod_OnLoad
         {

@@ -6,8 +6,8 @@ namespace WaterproofTransformer
 {
     public class DrywallPatch
     {
-        public static bool didStartupBuilding = false;
-        public static bool didStartupDb = false;
+        public static bool didStartupBuilding;
+        public static bool didStartupDb;
 
         public static class Mod_OnLoad
         {

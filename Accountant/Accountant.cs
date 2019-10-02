@@ -14,10 +14,10 @@ namespace Accountant
 
     public class Accountant
     {
-        static public WebSocketServer wss;
-        static public string ModName = "Accountant";
+        public static WebSocketServer wss;
+        public static string ModName = "Accountant";
         public static bool addedComponent = false;
-        static public AccountantData DATA = new AccountantData();
+        public static AccountantData DATA = new AccountantData();
 
         public static class Mod_OnLoad
         {

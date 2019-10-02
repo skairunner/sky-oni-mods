@@ -1,5 +1,8 @@
-﻿using ProcGen;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Database;
+using ProcGen;
+using STRINGS;
+using BUILDINGS = TUNING.BUILDINGS;
 
 // Heavily referencing CaiLib's utils.
 
@@ -9,21 +12,21 @@ namespace SkyLib
     {
         public static void AddBuildingToTech(string tech, string buildingid)
         {
-            var techlist = new List<string>(Database.Techs.TECH_GROUPING[tech]);
+            var techlist = new List<string>(Techs.TECH_GROUPING[tech]);
             techlist.Add(buildingid);
-            Database.Techs.TECH_GROUPING[tech] = techlist.ToArray();
+            Techs.TECH_GROUPING[tech] = techlist.ToArray();
         }
 
         public static void AddBuildingToBuildMenu(HashedString category, string buildingid, string addAfterId = null)
         {
-            var i = TUNING.BUILDINGS.PLANORDER.FindIndex(x => x.category == category);
+            var i = BUILDINGS.PLANORDER.FindIndex(x => x.category == category);
             if (i == -1)
             {
                 Logger.LogLine($"Could not find building category '{category}'");
                 return;
             }
 
-            var planorderlist = TUNING.BUILDINGS.PLANORDER[i].data as IList<string>;
+            var planorderlist = BUILDINGS.PLANORDER[i].data as IList<string>;
             if (planorderlist == null)
             {
                 Logger.LogLine($"Could not find planorder with the given index for '{category}'");
@@ -50,7 +53,7 @@ namespace SkyLib
         public static void AddBuildingStrings(string id, string name, string desc, string effect)
         {
             var id_up = id.ToUpperInvariant();
-            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{id_up}.NAME", STRINGS.UI.FormatAsLink(name, id));
+            Strings.Add($"STRINGS.BUILDINGS.PREFABS.{id_up}.NAME", UI.FormatAsLink(name, id));
             Strings.Add($"STRINGS.BUILDINGS.PREFABS.{id_up}.DESC", desc);
             Strings.Add($"STRINGS.BUILDINGS.PREFABS.{id_up}.EFFECT", effect);
         }

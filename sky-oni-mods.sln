@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BleachstoneRefinery", "Blea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpandedLights", "ExpandedLights\ExpandedLights.csproj", "{C0C58EEE-937C-4FA6-9FFC-277CCE97A69C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OilFish", "OilFish\OilFish.csproj", "{2E3BB633-834E-427D-8132-8A6EA8DBAA72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OilFish", "OilFish\OilFish.csproj", "{2E3BB633-834E-427D-8132-8A6EA8DBAA72}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meta", "Meta", "{603AF289-4ECC-4260-BEFC-BCA6F5E385A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -54,8 +54,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{59C477E4-0B98-4835-B94A-C96B39424514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59C477E4-0B98-4835-B94A-C96B39424514}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59C477E4-0B98-4835-B94A-C96B39424514}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{59C477E4-0B98-4835-B94A-C96B39424514}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{59C477E4-0B98-4835-B94A-C96B39424514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59C477E4-0B98-4835-B94A-C96B39424514}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66E16BC4-CC4D-48F2-9920-7CCFA97ABECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66E16BC4-CC4D-48F2-9920-7CCFA97ABECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66E16BC4-CC4D-48F2-9920-7CCFA97ABECE}.Release|Any CPU.ActiveCfg = Release|Any CPU

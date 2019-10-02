@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using static SkyLib.Logger;
@@ -10,10 +11,9 @@ namespace Accountant
 {
     public class AccountantData
     {
-        public Dictionary<string, string> name_mapping;
-        public Deque<string> history; // previous inventory states to be sent to a new client.
-
         public static AccountantData Instance;
+        public Deque<string> history; // previous inventory states to be sent to a new client.
+        public Dictionary<string, string> name_mapping;
 
         public AccountantData()
         {
@@ -22,23 +22,17 @@ namespace Accountant
             history = new Deque<string>(150);
         }
 
-        public static Deque<string> History
-        {
-            get { return Instance.history; }
-        }
+        public static Deque<string> History => Instance.history;
 
-        public static Dictionary<string, string> NameMapping
-        {
-            get { return Instance.name_mapping; }
-        }
+        public static Dictionary<string, string> NameMapping => Instance.name_mapping;
     }
 
-    class LedgerEntry
+    internal class LedgerEntry
     {
-        public string itemname;
-        public float total;
         public float in_use;
+        public string itemname;
         public float timestamp;
+        public float total;
 
         public LedgerEntry(string itemname, float total, float in_use, float timestamp = 0f)
         {
@@ -49,7 +43,7 @@ namespace Accountant
         }
     }
 
-    class AccountantSocket : WebSocketBehavior
+    internal class AccountantSocket : WebSocketBehavior
     {
         public static List<LedgerEntry> DumpInventory()
         {
@@ -57,19 +51,17 @@ namespace Accountant
             try
             {
                 var inv = WorldInventory.Instance;
-                var tags = inv.GetDiscovered();
+                HashSet<Tag> tags = inv.GetDiscovered();
                 output.Capacity = tags.Count;
                 var clock = GameClock.Instance.GetTime();
                 foreach (var tag in tags)
                 {
-                    string name = tag.Name;
+                    var name = tag.Name;
                     if (!AccountantData.NameMapping.ContainsKey(name))
-                    {
                         AccountantData.NameMapping.Add(name, tag.ProperName());
-                    }
 
-                    float total = inv.GetTotalAmount(tag);
-                    float inuse = MaterialNeeds.Instance.GetAmount(tag);
+                    var total = inv.GetTotalAmount(tag);
+                    var inuse = MaterialNeeds.Instance.GetAmount(tag);
                     output.Add(new LedgerEntry(tag.Name, total, inuse, clock));
                 }
 
@@ -88,11 +80,8 @@ namespace Accountant
             msg.inventory = DumpInventory();
             var dumped = DumpJson(msg);
 
-            var history = AccountantData.History;
-            if (history.Count == 150)
-            {
-                history.RemoveBack();
-            }
+            Deque<string> history = AccountantData.History;
+            if (history.Count == 150) history.RemoveBack();
 
             history.Add(dumped);
 
@@ -106,7 +95,7 @@ namespace Accountant
 
         public void BroadcastBacklog()
         {
-            var packet = new BacklogPacket()
+            var packet = new BacklogPacket
             {
                 backlog = AccountantData.Instance.history.ToList()
             };
@@ -116,10 +105,7 @@ namespace Accountant
         public void BroadcastLocstrings(List<string> itemnames)
         {
             var locstrings = new Dictionary<string, string>();
-            foreach (var name in itemnames)
-            {
-                locstrings[name] = AccountantData.NameMapping[name];
-            }
+            foreach (var name in itemnames) locstrings[name] = AccountantData.NameMapping[name];
 
             var packet = new LocPacket
             {
@@ -132,7 +118,7 @@ namespace Accountant
         {
             var ser = JsonSerializer.Create();
             var sb = new StringBuilder();
-            var writer = new System.IO.StringWriter(sb);
+            var writer = new StringWriter(sb);
 
             ser.Serialize(writer, o);
 

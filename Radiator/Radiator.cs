@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SkyLib;
+using STRINGS;
 
 namespace Radiator
 {
@@ -8,24 +10,73 @@ namespace Radiator
         protected static readonly Operational.Flag spaceExposureFlag =
             new Operational.Flag("InSpace", Operational.Flag.Type.Requirement);
 
-        private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
-        public ConduitType type = ConduitType.Liquid;
-        private int inputCell;
-        private int outputCell;
-        private static double stefanBoltzmanConstant = 5.67e-8;
-        private float emissivity = 0.9f;
-        private float surface_area = 8f;
-        private Guid statusHandle; // essentially a reference to a statusitem in particular
-        [MyCmpReq] private KSelectable selectable; // does tooltip-related stuff
-        [MyCmpReq] protected Operational operational;
-        private CellOffset[] radiatorOffsets; // the tiles that must be checked for vacuum
+        private static readonly double stefanBoltzmanConstant = 5.67e-8;
+        private readonly float emissivity = 0.9f;
+        private readonly float surface_area = 8f;
+        public StatusItem _no_space_status;
 
         public StatusItem _radiating_status;
-        public StatusItem _no_space_status;
+
+        private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+        private int inputCell;
+        [MyCmpReq] protected Operational operational;
+        private int outputCell;
+        private CellOffset[] radiatorOffsets; // the tiles that must be checked for vacuum
+        [MyCmpReq] private KSelectable selectable; // does tooltip-related stuff
+        private Guid statusHandle; // essentially a reference to a statusitem in particular
+
+        private HandleVector<int>.Handle structureTemperature;
+        public ConduitType type = ConduitType.Liquid;
 
         public float CurrentCooling { get; private set; }
 
-        private HandleVector<int>.Handle structureTemperature;
+        public void AddNetworks(ICollection<UtilityNetwork> networks)
+        {
+            var networkManager = Conduit.GetNetworkManager(type);
+            var networkForCell1 = networkManager.GetNetworkForCell(inputCell);
+            if (networkForCell1 != null)
+                networks.Add(networkForCell1);
+            var networkForCell2 = networkManager.GetNetworkForCell(outputCell);
+            if (networkForCell2 == null)
+                return;
+            networks.Add(networkForCell2);
+        }
+
+        public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
+        {
+            var flag = false;
+            var networkManager = Conduit.GetNetworkManager(type);
+            return flag || networks.Contains(networkManager.GetNetworkForCell(inputCell)) ||
+                   networks.Contains(networkManager.GetNetworkForCell(outputCell));
+        }
+
+        public int GetNetworkCell()
+        {
+            return inputCell;
+        }
+
+        public void Sim200ms(float dt)
+        {
+            var temp = gameObject.GetComponent<PrimaryElement>().Temperature;
+            if (temp < 5) return;
+
+            if (CheckInSpace())
+            {
+                var cooling = radiative_heat(temp) * 1;
+                if (cooling > 1f)
+                {
+                    CurrentCooling = (float) cooling;
+                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float) -cooling / 1000,
+                        BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, (float) -cooling / 1000);
+                }
+
+                UpdateStatusItem();
+            }
+            else
+            {
+                UpdateStatusItem(true);
+            }
+        }
 
         protected override void OnPrefabInit()
         {
@@ -46,7 +97,7 @@ namespace Radiator
                 new CellOffset(0, 2),
                 new CellOffset(0, 3)
             };
-            Conduit.GetFlowManager(type).AddConduitUpdater(ConduitUpdate, ConduitFlowPriority.Default);
+            Conduit.GetFlowManager(type).AddConduitUpdater(ConduitUpdate);
             structureTemperature = GameComps.StructureTemperatures.GetHandle(gameObject);
         }
 
@@ -84,7 +135,7 @@ namespace Radiator
                 liquid_newtemp = Math.Max(liquid_newtemp, panel_mat.Temperature);
             }
 
-            float delta = flowManager.AddElement(outputCell, contents.element, contents.mass, liquid_newtemp,
+            var delta = flowManager.AddElement(outputCell, contents.element, contents.mass, liquid_newtemp,
                 contents.diseaseIdx, contents.diseaseCount);
             panel_mat.Temperature = panel_newtemp;
             if (delta <= 0f) return;
@@ -92,68 +143,17 @@ namespace Radiator
             Game.Instance.accumulators.Accumulate(accumulator, contents.mass);
         }
 
-        public void AddNetworks(ICollection<UtilityNetwork> networks)
-        {
-            var networkManager = Conduit.GetNetworkManager(type);
-            var networkForCell1 = networkManager.GetNetworkForCell(inputCell);
-            if (networkForCell1 != null)
-                networks.Add(networkForCell1);
-            var networkForCell2 = networkManager.GetNetworkForCell(outputCell);
-            if (networkForCell2 == null)
-                return;
-            networks.Add(networkForCell2);
-        }
-
-        public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
-        {
-            bool flag = false;
-            var networkManager = Conduit.GetNetworkManager(type);
-            return flag || networks.Contains(networkManager.GetNetworkForCell(inputCell)) ||
-                   networks.Contains(networkManager.GetNetworkForCell(outputCell));
-        }
-
-        public int GetNetworkCell()
-        {
-            return inputCell;
-        }
-
         // returns how much heat is transfered in W
-        static float conductive_heat(Element from, float from_temp, Element panel_material, float panel_temp,
+        private static float conductive_heat(Element from, float from_temp, Element panel_material, float panel_temp,
             float area)
         {
-            float conductivity = Math.Min(from.thermalConductivity, panel_material.thermalConductivity);
+            var conductivity = Math.Min(from.thermalConductivity, panel_material.thermalConductivity);
             return conductivity * area * (from_temp - panel_temp) * 1f;
         }
 
-        double radiative_heat(float temp)
+        private double radiative_heat(float temp)
         {
             return Math.Pow(temp, 4) * stefanBoltzmanConstant * emissivity * surface_area * 0.2f;
-        }
-
-        public void Sim200ms(float dt)
-        {
-            float temp = gameObject.GetComponent<PrimaryElement>().Temperature;
-            if (temp < 5)
-            {
-                return;
-            }
-
-            if (CheckInSpace())
-            {
-                double cooling = radiative_heat(temp) * 1;
-                if (cooling > 1f)
-                {
-                    CurrentCooling = (float) cooling;
-                    GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, (float) -cooling / 1000,
-                        STRINGS.BUILDING.STATUSITEMS.OPERATINGENERGY.PIPECONTENTS_TRANSFER, (float) -cooling / 1000);
-                }
-
-                UpdateStatusItem(false);
-            }
-            else
-            {
-                UpdateStatusItem(true);
-            }
         }
 
         private bool CheckInSpace()
@@ -161,12 +161,8 @@ namespace Radiator
             // Check whether in spaaace
             var root_cell = Grid.PosToCell(this);
             foreach (var offset in radiatorOffsets)
-            {
-                if (!SkyLib.OniUtils.IsCellExposedToSpace(Grid.OffsetCell(root_cell, offset)))
-                {
+                if (!OniUtils.IsCellExposedToSpace(Grid.OffsetCell(root_cell, offset)))
                     return false;
-                }
-            }
 
             return true;
         }

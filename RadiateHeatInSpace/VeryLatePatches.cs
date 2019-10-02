@@ -9,12 +9,12 @@ namespace RadiateHeatInSpace
 {
     public class Patch : Attribute
     {
-        public string ConfName { get; set; }
-
         public Patch(string confName)
         {
             ConfName = confName;
         }
+
+        public string ConfName { get; set; }
     }
 
     public class VeryLatePatches
@@ -24,7 +24,7 @@ namespace RadiateHeatInSpace
             LogLine("Starting very late patches.");
             foreach (var methodInfo in typeof(VeryLatePatches).GetMethods())
             {
-                var attrs = methodInfo.GetCustomAttributes(typeof(Patch), false);
+                object[] attrs = methodInfo.GetCustomAttributes(typeof(Patch), false);
                 if (attrs.Length > 0)
                 {
                     var confName = ((Patch) attrs[0]).ConfName;
@@ -38,13 +38,10 @@ namespace RadiateHeatInSpace
         [CanBeNull]
         public static Type MaybeGetBuilding(string conf_name)
         {
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var type = asm.GetType(conf_name);
-                if (type != null)
-                {
-                    return type;
-                }
+                if (type != null) return type;
             }
 
             return null;
@@ -54,13 +51,9 @@ namespace RadiateHeatInSpace
         {
             var type = MaybeGetBuilding(conf_name);
             if (type != null)
-            {
                 harmony.Patch(type.GetMethod("DoPostConfigureComplete"), postfix: new HarmonyMethod(postfix));
-            }
             else
-            {
                 LogLine($"Couldn't find '{conf_name}' to patch, skipping.");
-            }
         }
 
         [Patch("ExpandedLights.FloodlightConfig")]

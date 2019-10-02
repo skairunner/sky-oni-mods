@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PeterHan.PLib.Lighting;
 using UnityEngine;
 
@@ -50,7 +51,7 @@ namespace ExpandedLights
         // A cone that starts light one tile offset from the source.
         public static void OffsetCone(GameObject source, LightingArgs arg)
         {
-            int sourceCell = arg.SourceCell;
+            var sourceCell = arg.SourceCell;
             var rotation = source.GetComponent<Rotatable>();
             var offset_dir = new Vector2I(0, 0);
             switch (rotation?.GetOrientation())
@@ -74,15 +75,15 @@ namespace ExpandedLights
                     break;
             }
 
-            int new_sourceCell = Grid.OffsetCell(sourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
+            var new_sourceCell = Grid.OffsetCell(sourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
             _LightConeHelper(source, new_sourceCell, arg.Range, arg.Brightness);
         }
 
         public static void LightCircle(GameObject source, LightingArgs arg)
         {
-            int sourceCell = arg.SourceCell;
-            int range = arg.Range;
-            var brightness = arg.Brightness;
+            var sourceCell = arg.SourceCell;
+            var range = arg.Range;
+            IDictionary<int, float> brightness = arg.Brightness;
             var octants = new OctantBuilder(brightness, sourceCell)
             {
                 Falloff = 0.5f,
@@ -124,7 +125,7 @@ namespace ExpandedLights
                     break;
             }
 
-            int new_sourceCell = Grid.OffsetCell(arg.SourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
+            var new_sourceCell = Grid.OffsetCell(arg.SourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
 
             _LightSemicircleHelper(source, new_sourceCell, arg.Range, orient, arg.Brightness);
         }
@@ -207,10 +208,7 @@ namespace ExpandedLights
             if (obj != null)
             {
                 var building = obj.GetComponent<Building>();
-                if (building != null && building.Def.PrefabID == "Door")
-                {
-                    return brightness * .7f;
-                }
+                if (building != null && building.Def.PrefabID == "Door") return brightness * .7f;
             }
 
             // Occlude slightly if mesh or airflow tile
@@ -219,20 +217,12 @@ namespace ExpandedLights
             {
                 var name = obj.GetComponent<Building>().Def.PrefabID;
                 if (name == "MeshTile")
-                {
                     return brightness * .9f;
-                }
-                else if (name == "GasPermeableMembrane")
-                {
-                    return brightness * .5f;
-                }
+                if (name == "GasPermeableMembrane") return brightness * .5f;
             }
 
             // Totally occlude if tile is solid.
-            if (Grid.IsValidCell(cell) && !Grid.Transparent[cell] && Grid.Solid[cell])
-            {
-                return 0f;
-            }
+            if (Grid.IsValidCell(cell) && !Grid.Transparent[cell] && Grid.Solid[cell]) return 0f;
 
             return brightness;
         }
@@ -242,10 +232,7 @@ namespace ExpandedLights
             IDictionary<int, float> brightness_map, float falloff, int width)
         {
             // If width is not odd, throw exception.
-            if (width < 0 || width % 2 != 1)
-            {
-                throw new System.Exception("Width of LinearLight must be odd number.");
-            }
+            if (width < 0 || width % 2 != 1) throw new Exception("Width of LinearLight must be odd number.");
 
             // First determine which way we're illuminating
             var rotation = source.GetComponent<Rotatable>();
@@ -279,10 +266,10 @@ namespace ExpandedLights
             var start_offset = -width / 2;
             var end_offset = width / 2;
             // Shoot parallel rays, terminating the loop whenever light is completely occluded.
-            for (int j = start_offset; j <= end_offset; j++)
+            for (var j = start_offset; j <= end_offset; j++)
             {
                 var brightness = 1f;
-                for (int i = 0; i < range; i++)
+                for (var i = 0; i < range; i++)
                 {
                     var total_offset = parallel_dir * i + perpendicular_dir * j;
                     var cell = Grid.OffsetCell(sourceCell, new CellOffset(total_offset.X, total_offset.Y));

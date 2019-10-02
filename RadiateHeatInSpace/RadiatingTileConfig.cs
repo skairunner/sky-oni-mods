@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RadiateHeatInSpace
 {
-    class RadiatorTileConfig : IBuildingConfig
+    internal class RadiatorTileConfig : IBuildingConfig
     {
         public const string Id = "RadiativeTile";
         public const string DisplayName = "Radiative Tile";
@@ -11,24 +11,24 @@ namespace RadiateHeatInSpace
         public const string Description =
             "Perfect for building a sauna, if the sauna were in space. On second thought, not so perfect for building a sauna.";
 
-        public static string Effect = $"A tile that passively radiates heat to space. More effective the hotter it is.";
+        public static string Effect = "A tile that passively radiates heat to space. More effective the hotter it is.";
         public static float[] MASS = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
 
         public override BuildingDef CreateBuildingDef()
         {
             var def = BuildingTemplates.CreateBuildingDef(
-                id: Id,
-                width: 1,
-                height: 1,
-                anim: "floor_basic_kanim",
-                hitpoints: BUILDINGS.HITPOINTS.TIER1,
-                construction_time: BUILDINGS.CONSTRUCTION_TIME_SECONDS.TIER0,
-                construction_mass: MASS,
-                construction_materials: MATERIALS.ANY_BUILDABLE,
-                melting_point: BUILDINGS.MELTING_POINT_KELVIN.TIER4,
-                build_location_rule: BuildLocationRule.Tile,
-                decor: BUILDINGS.DECOR.NONE,
-                noise: NOISE_POLLUTION.NONE
+                Id,
+                1,
+                1,
+                "floor_basic_kanim",
+                BUILDINGS.HITPOINTS.TIER1,
+                BUILDINGS.CONSTRUCTION_TIME_SECONDS.TIER0,
+                MASS,
+                MATERIALS.ANY_BUILDABLE,
+                BUILDINGS.MELTING_POINT_KELVIN.TIER4,
+                BuildLocationRule.Tile,
+                BUILDINGS.DECOR.NONE,
+                NOISE_POLLUTION.NONE
             );
             BuildingTemplates.CreateFoundationTileDef(def);
             def.BlockTileAtlas = Assets.GetTextureAtlas("tiles_solid");
@@ -62,7 +62,7 @@ namespace RadiateHeatInSpace
             rh.surface_area = 1f;
             // tile stuff
             BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
-            SimCellOccupier simCellOccupier = go.AddOrGet<SimCellOccupier>();
+            var simCellOccupier = go.AddOrGet<SimCellOccupier>();
             simCellOccupier.doReplaceElement = true;
             simCellOccupier.strengthMultiplier = 1.5f;
             simCellOccupier.movementSpeedMultiplier = DUPLICANTSTATS.MOVEMENT.BONUS_2;
@@ -75,7 +75,7 @@ namespace RadiateHeatInSpace
         public override void DoPostConfigureComplete(GameObject go)
         {
             BuildingTemplates.DoPostConfigure(go);
-            go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
+            go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
         }
 
         public override void DoPostConfigureUnderConstruction(GameObject go)

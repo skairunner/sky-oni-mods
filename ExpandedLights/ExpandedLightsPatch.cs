@@ -8,11 +8,11 @@ namespace ExpandedLights
 {
     public class ExpandedLightsPatch
     {
-        public static bool didStartUp_Building = false;
-        public static bool didStartUp_Db = false;
+        public static bool didStartUp_Building;
+        public static bool didStartUp_Db;
 
         /// <summary>
-        /// Light shape: Directed cone according to component rotation
+        ///     Light shape: Directed cone according to component rotation
         /// </summary>
         public static PLightShape DirectedCone,
             Beam5,

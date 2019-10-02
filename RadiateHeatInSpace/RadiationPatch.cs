@@ -9,14 +9,14 @@ namespace RadiateHeatInSpace
 {
     public class RadiatePatch
     {
-        public static bool didStartUp_Building = false;
-        public static bool didStartUp_Db = false;
+        public static bool didStartUp_Building;
+        public static bool didStartUp_Db;
 
         public class PatchedBuilding
         {
-            public Type type;
             public float emissivity = 0.9f;
             public float surface_area = 1f;
+            public Type type;
 
             public bool do_func(GameObject go)
             {
