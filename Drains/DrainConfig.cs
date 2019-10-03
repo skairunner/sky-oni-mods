@@ -7,7 +7,7 @@ namespace Drains
     {
         public const string Id = "Drain";
         public const string DisplayName = "Drain";
-        public const string Description = "";
+        public const string Description = "9 out of 10 plumbers recommend Drain® for its uncloggability. Our new Drain® companion product, Clog-Be-Gone™, will hit shelves soon.";
         public static string Effect = "Slowly drains liquids into a pipe.";
         public static float[] MASS = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
 

@@ -4,5 +4,6 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyTitle>Diseases Reimagined</AssemblyTitle>
     <Version>1.0.0</Version>
+    <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>

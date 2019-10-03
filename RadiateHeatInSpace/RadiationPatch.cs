@@ -108,7 +108,7 @@ namespace RadiateHeatInSpace
         }
 
         [HarmonyPatch(typeof(BatterySmartConfig), "DoPostConfigureComplete")]
-        public static class BatterySmartConfigConfig_Patch
+        public static class BatterySmartConfig_Patch
         {
             public static void Prefix(GameObject go)
             {
