@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
 using Harmony;
 using Klei.AI;
 using UnityEngine;
@@ -16,7 +18,35 @@ namespace DiseasesReimagined
             public static void OnLoad()
             {
                 StartLogging();
+                PDebug.LogAllExceptions();
             }
+        }
+        
+        /// <summary>
+        /// Utilities meant to help with debugging and developing mods.
+        /// </summary>
+        public sealed class PDebug {
+            /// <summary>
+            /// Adds a logger to all unhandled exceptions.
+            /// </summary>
+            public static void LogAllExceptions() {
+                PUtil.LogWarning("PLib in mod " + Assembly.GetCallingAssembly().GetName()?.Name + 
+                                 " is logging ALL unhandled exceptions!");
+                AppDomain.CurrentDomain.UnhandledException += OnThrown;
+            }
+
+            private static void OnThrown(object sender, UnhandledExceptionEventArgs e) {
+                var ex = e.ExceptionObject as Exception;
+                if (!e.IsTerminating) {
+                    Debug.LogError("Unhandled exception on Thread " + Thread.CurrentThread.Name);
+                    if (ex != null)
+                        Debug.LogException(ex);
+                    else
+                        Debug.LogError(e.ExceptionObject);
+                }
+            }
+
+            private PDebug() { }
         }
 
         [HarmonyPatch(typeof(BasicCureConfig), "CreatePrefab")]
@@ -50,6 +80,30 @@ namespace DiseasesReimagined
                 }
 
                 ___smi.sm.hasSupplies.Set(___treatments_available.Count > 0, ___smi);
+
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(DoctorStation), "IsTreatmentAvailable")]
+        public static class DoctorStation_IsTreatmentAvailable_Patch
+        {
+            public static bool Prefix(GameObject target, Dictionary<HashedString, Tag> ___treatments_available, ref bool __result)
+            {
+                Klei.AI.Sicknesses sicknesses = target.GetSicknesses();
+                if (sicknesses != null)
+                {
+                    foreach (SicknessInstance sicknessInstance in sicknesses)
+                    {
+                        if (___treatments_available.ContainsKey(sicknessInstance.Sickness.id))
+                        {
+                            __result = true;
+                            break;
+                        }
+                    }
+                }
+
+                __result = false;
 
                 return false;
             }
