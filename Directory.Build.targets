@@ -32,6 +32,10 @@
       WorkingDirectory="$(GameFolder)" />
   </Target>
 
+  <Target Name="Pdb2Mdb" AfterTargets="ILRepack">
+    <Exec Command="..\bin\pdb2mdb.exe $(TargetPath)" />
+  </Target>
+
   <Target Name="AfterBuild" DependsOnTargets="CopyArtifactsToInstallFolder" />
 
   <Target Name="CopyArtifactsToInstallFolder" Condition=" '$(AssemblyName)' != 'SkyLib' ">
@@ -52,7 +56,7 @@
           DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
 
     <Copy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " 
-          SourceFiles="$(TargetDir)\$(TargetName).pdb" 
-          DestinationFiles="$(InstallFolder)\$(TargetName).pdb" />
+          SourceFiles="$(TargetDir)\$(TargetName).pdb;$(TargetDir)\$(TargetFileName).mdb" 
+          DestinationFiles="$(InstallFolder)\$(TargetName).pdb;$(InstallFolder)\$(TargetFileName).mdb" />
   </Target>
 </Project>
