@@ -48,6 +48,11 @@
 
     <Copy SourceFiles="@(AnimFiles)"
           DestinationFiles="@(AnimFiles->'$(InstallFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
+    <Copy SourceFiles="$(TargetPath)" 
+          DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
+
+    <Copy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " 
+          SourceFiles="$(TargetDir)\$(TargetName).pdb" 
+          DestinationFiles="$(InstallFolder)\$(TargetName).pdb" />
   </Target>
 </Project>
