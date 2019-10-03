@@ -33,7 +33,7 @@
   </Target>
 
   <Target Name="Pdb2Mdb" AfterTargets="ILRepack">
-    <Exec Command="..\bin\pdb2mdb.exe $(TargetPath)" />
+    <Exec Command='..\util\pdb2mdb.exe "$(TargetPath)"' />
   </Target>
 
   <Target Name="AfterBuild" DependsOnTargets="CopyArtifactsToInstallFolder" />
