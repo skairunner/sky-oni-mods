@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Harmony;
 using Klei.AI;
+using PeterHan.PLib;
 using UnityEngine;
-using Sicknesses = Database.Sicknesses;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
-using PeterHan.PLib;
+using Sicknesses = Database.Sicknesses;
 
 namespace DiseasesReimagined
 {
@@ -18,14 +17,14 @@ namespace DiseasesReimagined
             public static void OnLoad()
             {
                 StartLogging();
-                
+
                 AddDiseaseName(SlimeLethalSickness.ID, "Slimelung - lethal");
                 AddDiseaseName(SlimeCoughSickness.ID, "Slimelung - cough");
-                AddDiseaseName(FoodpoisonVomiting.ID, "Food poisoning - vomiting");
+                AddDiseaseName(FoodPoisonVomiting.ID, "Food poisoning - vomiting");
                 
                 SkipNotifications.Skip(SlimeLethalSickness.ID);
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
-                SkipNotifications.Skip(FoodpoisonVomiting.ID);
+                SkipNotifications.Skip(FoodPoisonVomiting.ID);
             }
         }
 
@@ -36,17 +35,19 @@ namespace DiseasesReimagined
             {
                 var medinfo = __result.AddOrGet<MedicinalPill>().info;
                 // The basic cure now doesn't cure the base disease, only certain symptoms
-                medinfo.curedSicknesses = new List<string>(new []{ FoodpoisonVomiting.ID, SlimeCoughSickness.ID });
+                medinfo.curedSicknesses = new List<string>(new[] {FoodPoisonVomiting.ID, SlimeCoughSickness.ID});
             }
         }
 
         [HarmonyPatch(typeof(DoctorStation), "OnStorageChange")]
         public static class DoctorStation_OnStorageChange_Patch
         {
-            public static bool Prefix(DoctorStation __instance, Dictionary<HashedString, Tag> ___treatments_available, Storage ___storage, DoctorStation.StatesInstance ___smi)
+            public static bool Prefix(DoctorStation __instance, Dictionary<HashedString, Tag> ___treatments_available,
+                                      Storage ___storage, DoctorStation.StatesInstance ___smi)
             {
-                var docstation = Traverse.Create(__instance);
+                var docStation = Traverse.Create(__instance);
                 ___treatments_available.Clear();
+                
                 foreach (GameObject go in ___storage.items)
                 {
                     if (go.HasTag(GameTags.MedicalSupplies))
@@ -54,10 +55,10 @@ namespace DiseasesReimagined
                         Tag tag = go.PrefabID();
                         if (tag == "IntermediateCure")
                         {
-                            docstation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
+                            docStation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
                         }
                         if (tag == "AdvancedCure")
-                            docstation.CallMethod("AddTreatment", "ZombieSickness", tag);
+                            docStation.CallMethod("AddTreatment", ZombieSickness.ID, tag);
                     }
                 }
 
@@ -72,7 +73,7 @@ namespace DiseasesReimagined
         {
             public static void Postfix(Sicknesses __instance)
             {
-                __instance.Add(new FoodpoisonVomiting());
+                __instance.Add(new FoodPoisonVomiting());
                 __instance.Add(new SlimeCoughSickness());
                 __instance.Add(new SlimeLethalSickness());
             }
@@ -83,10 +84,9 @@ namespace DiseasesReimagined
         {
             public static void Postfix(FoodSickness __instance)
             {
-                Traverse
-                    .Create(__instance)
-                    .Method("AddSicknessComponent", new Type[] {typeof(Sickness.SicknessComponent)})
-                    .GetValue(new object[] {new AddSicknessComponent(FoodpoisonVomiting.ID, "Food poisoning")});
+                Traverse.Create(__instance)
+                        .CallMethod("AddSicknessComponent",
+                             new AddSicknessComponent(FoodPoisonVomiting.ID, "Food poisoning"));
             }
         }
 
@@ -95,15 +95,16 @@ namespace DiseasesReimagined
         {
             public static void Postfix(SlimeSickness __instance, ref List<Sickness.SicknessComponent> ___components)
             {
+                var sickness = Traverse.Create(__instance);
+
                 // Remove the vanilla SlimelungComponent
                 ___components = ___components.Where(comp => !(comp is SlimeSickness.SlimeLungComponent)).ToList();
 
                 // Then replace it with our own
-                var addcomp = Traverse
-                    .Create(__instance)
-                    .Method("AddSicknessComponent", new Type[] { typeof(Sickness.SicknessComponent) });
-                addcomp.GetValue(new object[] { new AddSicknessComponent(SlimeCoughSickness.ID, "Slimelung") });
-                addcomp.GetValue(new object[] { new AddSicknessComponent(SlimeLethalSickness.ID, "Slimelung") });
+                sickness.CallMethod("AddSicknessComponent",
+                    new AddSicknessComponent(SlimeCoughSickness.ID, "Slimelung"));
+                sickness.CallMethod("AddSicknessComponent",
+                    new AddSicknessComponent(SlimeLethalSickness.ID, "Slimelung"));
             }
         }
 
@@ -139,6 +140,7 @@ namespace DiseasesReimagined
                   .CallMethod<GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.TargetParameter>("GetStateTarget");
                 __instance.infected.Enter("DoNotification()", smi =>
                 {
+                    // if it's not to be skipped, (reluctantly) do the notification.
                     if (!SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id))
                     {
                         Notification notification = Traverse.Create(smi.master).GetField<Notification>("notification");

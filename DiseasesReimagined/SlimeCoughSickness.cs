@@ -9,10 +9,10 @@ namespace DiseasesReimagined
 
         public SlimeCoughSickness()
             : base(ID, SicknessType.Ailment, Severity.Minor, 0.00025f,
-                new List<InfectionVector>()
+                new List<InfectionVector>
                 {
                     InfectionVector.Inhalation
-                }, 6000f, null)
+                }, 6000f)
         {
             AddSicknessComponent(new SlimeSickness.SlimeLungComponent());
         }
