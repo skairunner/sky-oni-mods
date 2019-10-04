@@ -12,6 +12,7 @@ namespace DiseasesReimagined
 {
     class DiseasesPatch
     {
+        // misc bookkeeping
         public static class Mod_OnLoad
         {
             public static void OnLoad()
@@ -28,6 +29,7 @@ namespace DiseasesReimagined
             }
         }
 
+        // Modifies the Curative Tablet's valid cures
         [HarmonyPatch(typeof(BasicCureConfig), "CreatePrefab")]
         public static class BasicCureConfig_CreatePrefab_Patch
         {
@@ -39,6 +41,7 @@ namespace DiseasesReimagined
             }
         }
 
+        // Adds custom disease cures to the doctor stations
         [HarmonyPatch(typeof(DoctorStation), "OnStorageChange")]
         public static class DoctorStation_OnStorageChange_Patch
         {
@@ -68,6 +71,7 @@ namespace DiseasesReimagined
             }
         }
 
+        // Registers our new sicknesses to the DB
         [HarmonyPatch(typeof(Sicknesses), MethodType.Constructor, typeof(ResourceSet))]
         public static class Sicknesses_Constructor_Patch
         {
@@ -79,6 +83,7 @@ namespace DiseasesReimagined
             }
         }
 
+        // Enables food poisoning to give different symptoms when infected with it
         [HarmonyPatch(typeof(FoodSickness), MethodType.Constructor)]
         public static class FoodSickness_Constructor_Patch
         {
@@ -90,6 +95,7 @@ namespace DiseasesReimagined
             }
         }
 
+        // Enables Slimelung to give different symptoms when infected with it.
         [HarmonyPatch(typeof(SlimeSickness), MethodType.Constructor)]
         public static class SlimeSickness_Constructor_Patch
         {
@@ -108,6 +114,7 @@ namespace DiseasesReimagined
             }
         }
 
+        // Enables skipping notifications when infected
         [HarmonyPatch(typeof(SicknessInstance.States), "InitializeStates")]
         public static class SicknessInstance_States_InitializeStates_Patch
         {
