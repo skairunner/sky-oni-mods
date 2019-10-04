@@ -2,6 +2,7 @@
 using System.Linq;
 using Harmony;
 using Klei.AI;
+using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
 using UnityEngine;
 using static SkyLib.Logger;
@@ -152,6 +153,25 @@ namespace DiseasesReimagined
                     {
                         Notification notification = Traverse.Create(smi.master).GetField<Notification>("notification");
                         state_target.Get<Notifier>(smi).Add(notification, string.Empty);
+                    }
+                });
+            }
+        }
+
+        // Make food poisoning rapidly die on gas
+        [HarmonyPatch(typeof(FoodGerms), "PopulateElemGrowthInfo")]
+        public static class FoodGerms_PopulateElemGrowthInfo
+        {
+            public static void Postfix(FoodGerms __instance)
+            {
+                // Simplest method is to have food poisoning max population on air be 0
+                __instance.growthRules.ForEach(rule =>
+                {
+                    if ((rule as StateGrowthRule)?.state == Element.State.Gas)
+                    {
+                        rule.maxCountPerKG = 0;
+                        rule.minCountPerKG = 0;
+                        rule.overPopulationHalfLife = 5f;
                     }
                 });
             }
