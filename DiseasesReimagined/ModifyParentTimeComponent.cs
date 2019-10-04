@@ -8,13 +8,13 @@ namespace DiseasesReimagined
     // of the disease that has this component. Whew, what a mouthful.
     class ModifyParentTimeComponent : Sickness.SicknessComponent
     {
-        public string parentname;
-        public float percent_reduced;
+        public readonly string parentName;
+        public readonly float percentReduced;
 
-        public ModifyParentTimeComponent(string parentname, float percent_reduced)
+        public ModifyParentTimeComponent(string parentName, float percentReduced)
         {
-            this.parentname = parentname;
-            this.percent_reduced = percent_reduced;
+            this.parentName = parentName;
+            this.percentReduced = percentReduced;
         }
 
         public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
@@ -26,16 +26,14 @@ namespace DiseasesReimagined
         public override void OnCure(GameObject go, object instance_data)
         {
             // Modifies parent time on cure
+            var parent = Db.Get().Sicknesses.Get(parentName);
             var sicknesses = go.GetComponent<Modifiers>().sicknesses;
-            var parent = Db.Get().Sicknesses.Get(parentname);
-            if (parent != null && sicknesses.Has(parent))
-            {
-                var sickness = sicknesses.Get(parent);
-                var smi = Traverse.Create(sickness).Field("smi").GetValue<SicknessInstance.StatesInstance>();
-                var fraction_left = 1 - smi.sm.percentRecovered.Get(smi);
-                smi.sm.percentRecovered.Delta(fraction_left * percent_reduced, smi);
-            }
-            return;
+            if (parent == null || !sicknesses.Has(parent)) return;
+
+            var sickness = sicknesses.Get(parent);
+            var smi = Traverse.Create(sickness).Field("smi").GetValue<SicknessInstance.StatesInstance>();
+            var fraction_left = 1 - smi.sm.percentRecovered.Get(smi);
+            smi.sm.percentRecovered.Delta(fraction_left * percentReduced, smi);
         }
     }
 }
