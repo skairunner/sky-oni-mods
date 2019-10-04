@@ -64,6 +64,11 @@ namespace SkyLib
                 statusitem);
         }
 
+        public static void AddDiseaseName(string disease_id, string name)
+        {
+            Strings.Add($"STRINGS.DUPLICANTS.DISEASES.{disease_id.ToUpperInvariant()}.NAME", name);
+        }
+
         public static bool IsCellExposedToSpace(int cell)
         {
             // check in space biome, then check there is no drywall

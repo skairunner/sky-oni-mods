@@ -17,7 +17,6 @@ namespace DiseasesReimagined
                 }, 6100f, null)
         {
             fatalityDuration = 6000f;
-            AddSicknessComponent(new ModifyParentTimeComponent(SlimeSickness.ID, -1));
         }
     }
 }

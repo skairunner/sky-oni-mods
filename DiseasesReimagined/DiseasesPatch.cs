@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
+using System.Linq;
 using Harmony;
 using Klei.AI;
 using UnityEngine;
 using Sicknesses = Database.Sicknesses;
 using static SkyLib.Logger;
+using static SkyLib.OniUtils;
 using PeterHan.PLib;
 
 namespace DiseasesReimagined
@@ -18,35 +18,15 @@ namespace DiseasesReimagined
             public static void OnLoad()
             {
                 StartLogging();
-                PDebug.LogAllExceptions();
+                
+                AddDiseaseName(SlimeLethalSickness.ID, "Slimelung - lethal");
+                AddDiseaseName(SlimeCoughSickness.ID, "Slimelung - cough");
+                AddDiseaseName(FoodpoisonVomiting.ID, "Food poisoning - vomiting");
+                
+                SkipNotifications.Skip(SlimeLethalSickness.ID);
+                SkipNotifications.Skip(SlimeCoughSickness.ID);
+                SkipNotifications.Skip(FoodpoisonVomiting.ID);
             }
-        }
-        
-        /// <summary>
-        /// Utilities meant to help with debugging and developing mods.
-        /// </summary>
-        public sealed class PDebug {
-            /// <summary>
-            /// Adds a logger to all unhandled exceptions.
-            /// </summary>
-            public static void LogAllExceptions() {
-                PUtil.LogWarning("PLib in mod " + Assembly.GetCallingAssembly().GetName()?.Name + 
-                                 " is logging ALL unhandled exceptions!");
-                AppDomain.CurrentDomain.UnhandledException += OnThrown;
-            }
-
-            private static void OnThrown(object sender, UnhandledExceptionEventArgs e) {
-                var ex = e.ExceptionObject as Exception;
-                if (!e.IsTerminating) {
-                    Debug.LogError("Unhandled exception on Thread " + Thread.CurrentThread.Name);
-                    if (ex != null)
-                        Debug.LogException(ex);
-                    else
-                        Debug.LogError(e.ExceptionObject);
-                }
-            }
-
-            private PDebug() { }
         }
 
         [HarmonyPatch(typeof(BasicCureConfig), "CreatePrefab")]
@@ -72,38 +52,16 @@ namespace DiseasesReimagined
                     if (go.HasTag(GameTags.MedicalSupplies))
                     {
                         Tag tag = go.PrefabID();
-                        if (tag == "IntermediateCure") 
-                            docstation.CallMethod("AddTreatment", "SlimeLethalSickness", tag);
+                        if (tag == "IntermediateCure")
+                        {
+                            docstation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
+                        }
                         if (tag == "AdvancedCure")
                             docstation.CallMethod("AddTreatment", "ZombieSickness", tag);
                     }
                 }
 
                 ___smi.sm.hasSupplies.Set(___treatments_available.Count > 0, ___smi);
-
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(DoctorStation), "IsTreatmentAvailable")]
-        public static class DoctorStation_IsTreatmentAvailable_Patch
-        {
-            public static bool Prefix(GameObject target, Dictionary<HashedString, Tag> ___treatments_available, ref bool __result)
-            {
-                Klei.AI.Sicknesses sicknesses = target.GetSicknesses();
-                if (sicknesses != null)
-                {
-                    foreach (SicknessInstance sicknessInstance in sicknesses)
-                    {
-                        if (___treatments_available.ContainsKey(sicknessInstance.Sickness.id))
-                        {
-                            __result = true;
-                            break;
-                        }
-                    }
-                }
-
-                __result = false;
 
                 return false;
             }
@@ -135,33 +93,58 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(SlimeSickness), MethodType.Constructor)]
         public static class SlimeSickness_Constructor_Patch
         {
-            public static void Postfix(SlimeSickness __instance)
+            public static void Postfix(SlimeSickness __instance, ref List<Sickness.SicknessComponent> ___components)
             {
                 // Remove the vanilla SlimelungComponent
-                var comps = Traverse
-                    .Create(__instance)
-                    .Field("components")
-                    .GetValue<List<Sickness.SicknessComponent>>();
-                var idx = -1;
-                for (var i = 0; i < comps.Count; i++)
-                {
-                    if (comps[i].GetType().Name == "SlimelungComponent")
-                    {
-                        idx = i;
-                        break;
-                    }
-                }
+                ___components = ___components.Where(comp => !(comp is SlimeSickness.SlimeLungComponent)).ToList();
 
-                if (idx != -1)
-                {
-                    comps.RemoveAt(idx);
-                }
                 // Then replace it with our own
                 var addcomp = Traverse
                     .Create(__instance)
                     .Method("AddSicknessComponent", new Type[] { typeof(Sickness.SicknessComponent) });
                 addcomp.GetValue(new object[] { new AddSicknessComponent(SlimeCoughSickness.ID, "Slimelung") });
                 addcomp.GetValue(new object[] { new AddSicknessComponent(SlimeLethalSickness.ID, "Slimelung") });
+            }
+        }
+
+        [HarmonyPatch(typeof(SicknessInstance.States), "InitializeStates")]
+        public static class SicknessInstance_States_InitializeStates_Patch
+        {
+            public static void Postfix(SicknessInstance.States __instance)
+            {
+                var old_enterActions = __instance.infected.enterActions;
+                if (old_enterActions == null)
+                {
+                    return;
+                }
+                var new_enterActions = __instance.infected.enterActions = new List<StateMachine.Action>();
+                for (var i = 0; i < old_enterActions.Count; i++)
+                {
+                    if (old_enterActions[i].name != "DoNotification()")
+                    {
+                        new_enterActions.Add(old_enterActions[i]);
+                    }
+                    else
+                    {
+                        DoNotification(__instance);
+                    }
+                }
+            }
+
+            // DoNotification but with a custom version that checks the whitelist.
+            public static void DoNotification(SicknessInstance.States __instance)
+            {
+                var state_target = Traverse
+                  .Create(__instance.infected)
+                  .CallMethod<GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.TargetParameter>("GetStateTarget");
+                __instance.infected.Enter("DoNotification()", smi =>
+                {
+                    if (!SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id))
+                    {
+                        Notification notification = Traverse.Create(smi.master).GetField<Notification>("notification");
+                        state_target.Get<Notifier>(smi).Add(notification, string.Empty);
+                    }
+                });
             }
         }
     }
