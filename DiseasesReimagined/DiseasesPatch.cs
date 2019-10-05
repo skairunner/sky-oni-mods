@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Harmony;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
@@ -179,6 +181,184 @@ namespace DiseasesReimagined
                         rule.overPopulationHalfLife = 0.001f;
                     }
                 });
+            }
+        }
+
+        // Transfer germs from germy irrigation to the plant
+        [HarmonyPatch(typeof(PlantElementAbsorbers), "Sim200ms")]
+        public static class PlantElementAbsorbers_Sim200ms_Patch
+        {
+            public static void Prefix(ref List<PlantElementAbsorber> ___data, float dt,
+                ref bool ___updating)
+            {
+                // This variable is remapped to an instance variable so the store is not dead
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+                ___updating = true;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+                foreach (var absorber in ___data)
+                {
+                    var storage = absorber.storage;
+                    GameObject farmTile;
+                    if (storage != null && (farmTile = storage.gameObject) != null)
+                    {
+                        if (absorber.consumedElements == null)
+                        {
+                            var info = absorber.localInfo;
+                            InfectPlant(farmTile, info.massConsumptionRate * dt, absorber,
+                                info.tag);
+                        }
+                        else
+                            // Grrr LocalInfo is not convertible to ConsumeInfo
+                            foreach (var info in absorber.consumedElements)
+                                InfectPlant(farmTile, info.massConsumptionRate * dt, absorber,
+                                    info.tag);
+                    }
+                }
+                ___updating = false;
+            }
+
+            // Infect the plant with germs from the irrigation material
+            private static void InfectPlant(GameObject farmTile, float required,
+                PlantElementAbsorber absorber, Tag material)
+            {
+                var storage = absorber.storage;
+                GameObject plant;
+                PrimaryElement irrigant;
+                // Check all available items
+                while (required > 0.0f && (irrigant = storage.FindFirstWithMass(material)) !=
+                    null)
+                {
+                    float mass = irrigant.Mass, consumed = Mathf.Min(required, mass);
+                    int disease = irrigant.DiseaseCount;
+                    if (disease > 0 && (plant = farmTile.GetComponent<PlantablePlot>()?.
+                        Occupant) != null)
+                    {
+                        plant.GetComponent<PrimaryElement>()?.AddDisease(irrigant.DiseaseIdx,
+                            Mathf.RoundToInt(required * disease / mass), "Irrigation");
+                    }
+                    required -= consumed;
+                }
+            }
+        }
+
+        // Sink germ transfer
+        [HarmonyPatch(typeof(HandSanitizer.Work), "OnWorkTick")]
+        public static class HandSanitizer_Work_OnWorkTick_Patch
+        {
+            public static void Prefix(HandSanitizer.Work __instance, float dt)
+            {
+                GermySinkManager.Instance?.SinkWorkTick(__instance, dt);
+            }
+        }
+
+        [HarmonyPatch(typeof(HandSanitizer.Work), "OnStartWork")]
+        public static class HandSanitizer_Work_OnStartWork_Patch
+        {
+            public static void Prefix(HandSanitizer.Work __instance)
+            {
+                GermySinkManager.Instance?.StartGermyWork(__instance);
+            }
+        }
+
+        [HarmonyPatch(typeof(HandSanitizer.Work), "OnCompleteWork")]
+        public static class HandSanitizer_Work_OnCompleteWork_Patch
+        {
+            public static void Postfix(HandSanitizer.Work __instance, Worker worker)
+            {
+                GermySinkManager.Instance?.FinishGermyWork(__instance, worker);
+            }
+        }
+
+        // Shower germ transfer
+        [HarmonyPatch(typeof(Shower), "OnWorkTick")]
+        public static class Shower_OnWorkTick_Patch
+        {
+            public static void Prefix(Shower __instance, float dt)
+            {
+                GermySinkManager.Instance?.ShowerWorkTick(__instance, dt);
+            }
+        }
+
+        [HarmonyPatch(typeof(Shower), "OnStartWork")]
+        public static class Shower_OnStartWork_Patch
+        {
+            public static void Prefix(Shower __instance)
+            {
+                GermySinkManager.Instance?.StartGermyWork(__instance);
+            }
+        }
+
+        [HarmonyPatch(typeof(Shower), "OnAbortWork")]
+        public static class Shower_OnAbortWork_Patch
+        {
+            public static void Postfix(Shower __instance, Worker worker)
+            {
+                GermySinkManager.Instance?.FinishGermyWork(__instance, worker);
+            }
+        }
+
+        [HarmonyPatch(typeof(Shower), "OnCompleteWork")]
+        public static class Shower_OnCompleteWork_Patch
+        {
+            public static void Postfix(Shower __instance, Worker worker)
+            {
+                GermySinkManager.Instance?.FinishGermyWork(__instance, worker);
+            }
+        }
+
+        // Prevent OCD hand washing by observing the hand wash cooldown
+        [HarmonyPatch]
+        public static class WashHandsReactable_InternalCanBegin_Patch
+        {
+            public static void Postfix(GameObject new_reactor, ref bool __result)
+            {
+                var cooldown = new_reactor.GetComponent<WashCooldownComponent>();
+                if (cooldown != null && !cooldown.CanWash)
+                    __result = false;
+            }
+
+            public static MethodBase TargetMethod()
+            {
+                // Find private class by name
+                var parentType = typeof(HandSanitizer);
+                var childType = parentType.GetNestedType("WashHandsReactable", BindingFlags.
+                    NonPublic | BindingFlags.Instance);
+                if (childType == null)
+                    throw new InvalidOperationException("Could not patch hand wash class!");
+                try
+                {
+                    var targetMethod = childType.GetMethod("InternalCanBegin", BindingFlags.
+                        Public | BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (targetMethod == null)
+                        throw new InvalidOperationException("Could not patch hand wash method!");
+#if DEBUG
+                    PUtil.LogDebug("Patched hand wash method: " + targetMethod);
+#endif
+                    return targetMethod;
+                }
+                catch (AmbiguousMatchException e)
+                {
+                    throw new InvalidOperationException("Could not patch hand wash method!", e);
+                }
+            }
+        }
+
+        // Manage lifecycle of GermySinkManager
+        [HarmonyPatch(typeof(Game), "OnPrefabInit")]
+        public static class Game_OnPrefabInit_Patch
+        {
+            public static void Postfix()
+            {
+                GermySinkManager.CreateInstance();
+            }
+        }
+
+        [HarmonyPatch(typeof(Game), "DestroyInstances")]
+        public static class Game_DestroyInstances_Patch
+        {
+            public static void Postfix()
+            {
+                GermySinkManager.DestroyInstance();
             }
         }
     }
