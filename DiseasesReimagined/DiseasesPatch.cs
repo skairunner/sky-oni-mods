@@ -171,7 +171,7 @@ namespace DiseasesReimagined
                     {
                         rule.maxCountPerKG = 0;
                         rule.minCountPerKG = 0;
-                        rule.overPopulationHalfLife = 5f;
+                        rule.overPopulationHalfLife = 0.001f;
                     }
                 });
             }
