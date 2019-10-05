@@ -37,6 +37,9 @@ namespace DiseasesReimagined
                 AddStatusItem("FROSTBITTEN", "NOTIFICATION_NAME", "Frostbite", "CREATURES");
                 AddStatusItem("FROSTBITTEN", "NOTIFICATION_TOOLTIP", "Freezing " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " are hurting these Duplicants:", "CREATURES");
                 
+                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.NAME", "Frostbite Threshold");
+                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP", "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " at which a Duplicant will get frostbitten.");
+                
                 SkipNotifications.Skip(SlimeLethalSickness.ID);
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
                 SkipNotifications.Skip(FoodPoisonVomiting.ID);
@@ -271,6 +274,17 @@ namespace DiseasesReimagined
                 var frostbiteThreshold = new Attribute("FrostbiteThreshold", false, Attribute.Display.General, false);
                 frostbiteThreshold.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.None));
                 __instance.Add(frostbiteThreshold);
+            }
+        }
+        
+        // Add Atmo Suit frostbite immunity
+        [HarmonyPatch(typeof(AtmoSuitConfig), "CreateEquipmentDef")]
+        public static class AtmosuitConfig_CreateEquipmentDef_Patch
+        {
+            public static void Postfix(EquipmentDef __result)
+            {
+                __result.AttributeModifiers.Add(new AttributeModifier("FrostbiteThreshold", -1000f,
+                    EQUIPMENT.PREFABS.ATMO_SUIT.NAME));
             }
         }
     }
