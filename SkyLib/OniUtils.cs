@@ -58,9 +58,10 @@ namespace SkyLib
             Strings.Add($"STRINGS.BUILDINGS.PREFABS.{id_up}.EFFECT", effect);
         }
 
-        public static void AddStatusItem(string status_id, string stringtype, string statusitem)
+        public static void AddStatusItem(string status_id, string stringtype, string statusitem, string category = "MISC")
         {
-            Strings.Add($"STRINGS.MISC.STATUSITEMS.{status_id.ToUpperInvariant()}.{stringtype.ToUpperInvariant()}",
+            category = category.ToUpperInvariant();
+            Strings.Add($"STRINGS.{category}.STATUSITEMS.{status_id.ToUpperInvariant()}.{stringtype.ToUpperInvariant()}",
                 statusitem);
         }
 
