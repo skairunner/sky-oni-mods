@@ -7,8 +7,7 @@ using PeterHan.PLib;
 namespace DiseasesReimagined
 {
     using TempMonitorStateMachine = GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance,
-        IStateMachineTarget,
-        object>;
+        IStateMachineTarget, object>;
 
     // Patches for frostbite-related things
     class FrostbitePatch

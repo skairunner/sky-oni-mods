@@ -12,11 +12,7 @@ using static SkyLib.OniUtils;
 using Sicknesses = Database.Sicknesses;
 
 namespace DiseasesReimagined
-{   
-    using TempMonitorStateMachine = GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance,
-        IStateMachineTarget,
-        object>;
-    
+{
     // Patches for disease changes
     class DiseasesPatch
     {
@@ -181,6 +177,9 @@ namespace DiseasesReimagined
                         rule.overPopulationHalfLife = 0.001f;
                     }
                 });
+                var plasticRule = new ElementExposureRule(SimHashes.Polypropylene);
+                plasticRule.populationHalfLife = 300f;
+                __instance.exposureRules.Add(plasticRule);
             }
         }
 
