@@ -10,13 +10,6 @@ namespace DiseasesReimagined
     [SerializationConfig(MemberSerialization.OptIn)]
     public class UVCleaner : KMonoBehaviour, IEffectDescriptor, ISim200ms
     {
-        private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnOperationalChangedDelegate =
-            new EventSystem.IntraObjectHandler<UVCleaner>(
-                (component, data) => OnOperationalChanged(component));
-
-        private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnActiveChangedDelegate =
-            new EventSystem.IntraObjectHandler<UVCleaner>((component, data) => OnActiveChanged(component));
-
         #pragma warning disable CS0649
         // These are set magically, so we need to ignore the "never assigned to" warning.
         [MyCmpReq] private BuildingComplete building;
@@ -81,16 +74,15 @@ namespace DiseasesReimagined
             UpdateStatus();
         }
 
-        private static void OnOperationalChanged(UVCleaner cleaner)
+        private static void OnOperationalChanged(UVCleaner component, object data)
         {
-            if (!cleaner.operational.IsOperational)
-                return;
-            cleaner.UpdateState(0.0f);
+            if (component.operational.IsOperational)
+                component.UpdateState(0.0f);
         }
 
-        private static void OnActiveChanged(UVCleaner cleaner)
+        private static void OnActiveChanged(UVCleaner component, object data)
         {
-            cleaner.UpdateStatus();
+            component.UpdateStatus();
         }
 
         private void UpdateStatus()
@@ -121,5 +113,11 @@ namespace DiseasesReimagined
             List<Descriptor> descriptorList = new List<Descriptor>();
             return descriptorList;
         }
+
+        private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnOperationalChangedDelegate =
+            new EventSystem.IntraObjectHandler<UVCleaner>(OnOperationalChanged);
+
+        private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnActiveChangedDelegate =
+            new EventSystem.IntraObjectHandler<UVCleaner>(OnActiveChanged);
     }
 }

@@ -50,7 +50,6 @@ namespace DiseasesReimagined
         public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
         {
             go.AddOrGet<LoopingSounds>();
-            go.AddOrGet<UVCleaner>();
             var conduitConsumer = go.AddOrGet<ConduitConsumer>();
             conduitConsumer.conduitType = ConduitType.Liquid;
             conduitConsumer.consumptionRate = 5f;
@@ -58,6 +57,7 @@ namespace DiseasesReimagined
             defaultStorage.showInUI = true;
             defaultStorage.capacityKg = 2f * conduitConsumer.consumptionRate;
             defaultStorage.SetDefaultStoredItemModifiers(StoredItemModifiers);
+            go.AddOrGet<UVCleaner>();
         }
 
         public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
