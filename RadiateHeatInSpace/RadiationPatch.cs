@@ -34,6 +34,7 @@ namespace RadiateHeatInSpace
                 StartLogging();
 
                 PUtil.RegisterPostload(VeryLatePatches.DoVeryLatePatches);
+                PUtil.InitLibrary(false);
             }
 
             public static void AttachHeatComponent(GameObject go, float emissivity, float surface_area)
