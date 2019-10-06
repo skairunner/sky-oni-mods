@@ -3,6 +3,7 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using Klei;
+using Klei.AI;
 using UnityEngine;
 
 namespace DiseasesReimagined
@@ -10,6 +11,7 @@ namespace DiseasesReimagined
     [SerializationConfig(MemberSerialization.OptIn)]
     public class UVCleaner : KMonoBehaviour, IEffectDescriptor, ISim200ms
     {
+        private SunburnReactable reactable;
         #pragma warning disable CS0649
         // These are set magically, so we need to ignore the "never assigned to" warning.
         [MyCmpReq] private BuildingComplete building;
@@ -19,7 +21,7 @@ namespace DiseasesReimagined
 
         private int waterOutputCell = -1;
 
-        [MyCmpReq] protected Operational operational;
+        [MyCmpReq] public Operational operational;
 
         private Guid statusHandle;
 
@@ -44,6 +46,21 @@ namespace DiseasesReimagined
         {
             base.OnSpawn();
             waterOutputCell = building.GetUtilityOutputCell();
+            CreateNewReactable();
+        }
+
+        protected override void OnCleanUp()
+        {
+            if (reactable != null)
+            {
+                reactable.Cleanup();
+                reactable = null;
+            }
+        }
+
+        public void CreateNewReactable()
+        {
+            reactable = new SunburnReactable(this);
         }
 
         private void UpdateState(float dt)
@@ -103,7 +120,7 @@ namespace DiseasesReimagined
             {
                 if (statusHandle != Guid.Empty)
                 {
-                    statusHandle = selectable.ReplaceStatusItem(statusHandle, null);
+                    statusHandle = selectable.RemoveStatusItem(statusHandle);
                 }
             }
         }
@@ -119,5 +136,42 @@ namespace DiseasesReimagined
 
         private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnActiveChangedDelegate =
             new EventSystem.IntraObjectHandler<UVCleaner>(OnActiveChanged);
+    }
+
+    public class SunburnReactable : Reactable
+    {
+        private UVCleaner cleaner;
+        
+        public SunburnReactable(UVCleaner cleaner)
+            : base(cleaner.gameObject, nameof(SunburnReactable), Db.Get().ChoreTypes.Checkpoint, 3, 3)
+        {
+            this.cleaner = cleaner;
+            preventChoreInterruption = false;
+        }
+
+        public override bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition)
+        {
+            return cleaner.operational.IsOperational && !reactor.GetSicknesses().Has(Db.Get().Sicknesses.Sunburn);
+        }
+
+        public override void Update(float dt)
+        {
+            Cleanup(); // immediately cleanup, since getting the disease is all we wanted
+        }
+
+        protected override void InternalBegin()
+        {
+            var sickness = new SicknessExposureInfo(Db.Get().Sicknesses.Sunburn.Id, "UV Cleaner");
+            reactor.GetSicknesses().Infect(sickness);
+            cleaner.CreateNewReactable();
+        }
+
+        protected override void InternalEnd()
+        {
+        }
+
+        protected override void InternalCleanup()
+        {
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Klei.AI;
 using TUNING;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace DiseasesReimagined
     {
         public const string ID = "UVCleaner";
         public const string DisplayName = "UV Cleaner";
-        public const string Description = "";
+        public const string Description = "The sun is a deadly laser, blindingly bright and prone to inducing sunburn. Naturally, some duplicants decided to bottle it for water sanitization purposes.";
         public static string Effect = "Sterilizes liquids.";
 
         private static readonly List<Storage.StoredItemModifier> StoredItemModifiers =
@@ -34,8 +35,8 @@ namespace DiseasesReimagined
             var buildingDef = BuildingTemplates.CreateBuildingDef(ID, width, height, anim, hitpoints, construction_time,
                 mass, mats, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tieR2);
             BuildingTemplates.CreateElectricalBuildingDef(buildingDef);
-            buildingDef.EnergyConsumptionWhenActive = 480f;
-            buildingDef.SelfHeatKilowattsWhenActive = 8.0f;
+            buildingDef.EnergyConsumptionWhenActive = 320f;
+            buildingDef.SelfHeatKilowattsWhenActive = 6.0f;
             buildingDef.InputConduitType = ConduitType.Liquid;
             buildingDef.OutputConduitType = ConduitType.Liquid;
             buildingDef.Floodable = false;
