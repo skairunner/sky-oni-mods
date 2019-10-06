@@ -14,18 +14,20 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(Debug), "Assert", typeof(bool))]
         public static class Debug_Assert_Patch1
         {
-            public static void Postfix()
+            public static void Postfix(bool condition)
             {
-                SkyLib.Logger.LogLine(Environment.StackTrace);
+                if (!condition)
+                    SkyLib.Logger.LogLine(Environment.StackTrace);
             }
         }
 
         [HarmonyPatch(typeof(Debug), "Assert", typeof(bool), typeof(object))]
         public static class Debug_Assert_Patch2
         {
-            public static void Postfix()
+            public static void Postfix(bool condition)
             {
-                SkyLib.Logger.LogLine(Environment.StackTrace);
+                if (!condition)
+                    SkyLib.Logger.LogLine(Environment.StackTrace);
             }
         }
         
