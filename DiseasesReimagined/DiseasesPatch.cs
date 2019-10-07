@@ -24,9 +24,9 @@ namespace DiseasesReimagined
             {
                 StartLogging();
 
-                AddDiseaseName(SlimeLethalSickness.ID, "Slimelung - lethal");
-                AddDiseaseName(SlimeCoughSickness.ID, "Slimelung - cough");
-                AddDiseaseName(FoodPoisonVomiting.ID, "Food poisoning - vomiting");
+                AddDiseaseName(SlimeLethalSickness.ID, "Slimelung (lethal)");
+                AddDiseaseName(SlimeCoughSickness.ID, "Slimelung (cough)");
+                AddDiseaseName(FoodPoisonVomiting.ID, "Food Poisoning (vomiting)");
                 
                 SkipNotifications.Skip(SlimeLethalSickness.ID);
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
