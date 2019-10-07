@@ -47,7 +47,7 @@ namespace DiseasesReimagined
         {
             public static void Postfix()
             {
-                AddBuildingToTech("ValveMiniaturization", UVCleanerConfig.ID);
+                AddBuildingToTech("MedicineIII", UVCleanerConfig.ID);
             }
         }
     }
