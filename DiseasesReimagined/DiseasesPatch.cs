@@ -32,6 +32,13 @@ namespace DiseasesReimagined
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
                 SkipNotifications.Skip(FoodPoisonVomiting.ID);
             }
+            
+            // Helper method to find a specific attribute modifier
+            public static AttributeModifier FindAttributeModifier(List<Sickness.SicknessComponent> components, string id)
+            {
+                var attr_mod = (AttributeModifierSickness)components.Find(comp => comp is AttributeModifierSickness);
+                return Array.Find(attr_mod.Modifers, mod => mod.AttributeId == id);
+            }
         }
 
         // Modifies the Curative Tablet's valid cures
@@ -94,9 +101,15 @@ namespace DiseasesReimagined
         {
             public static void Postfix(FoodSickness __instance)
             {
-                Traverse.Create(__instance)
-                        .CallMethod("AddSicknessComponent",
-                             new AddSicknessComponent(FoodPoisonVomiting.ID, "Food poisoning"));
+                var trav = Traverse.Create(__instance);
+                trav.CallMethod("AddSicknessComponent",
+                    new AddSicknessComponent(FoodPoisonVomiting.ID, "Food poisoning"));
+                trav.CallMethod("AddSicknessComponent",
+                    new AttributeModifierSickness(new AttributeModifier[]
+                    {
+                        // 10% stress/cycle
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Food poisoning")
+                    }));
             }
         }
 
@@ -116,8 +129,43 @@ namespace DiseasesReimagined
                     new AddSicknessComponent(SlimeCoughSickness.ID, "Slimelung"));
                 sickness.CallMethod("AddSicknessComponent",
                     new AddSicknessComponent(SlimeLethalSickness.ID, "Slimelung"));
+                // Also add some minor stress
+                sickness.CallMethod("AddSicknessComponent",
+                    new AttributeModifierSickness(new AttributeModifier[]
+                    {
+                        // 10% stress/cycle
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Food poisoning")
+                    }));
             }
         }
+        
+        // Increases sunburn stress
+        [HarmonyPatch(typeof(Sunburn), MethodType.Constructor)]
+        public static class Sunburn_Constructor_Patch
+        {
+            public static void Postfix(ref List<Sickness.SicknessComponent> ___components)
+            {
+                var stressmod =
+                    Mod_OnLoad.FindAttributeModifier(___components, Db.Get().Amounts.Stress.deltaAttribute.Id);
+                Traverse.Create(stressmod).SetField("Value", .04166666666f); // 30% stress/cycle
+            }
+        }
+
+        [HarmonyPatch(typeof(ZombieSickness), MethodType.Constructor)]
+        public static class ZombieSickness_Constructor_Patch
+        {
+            public static void Postfix(ZombieSickness __instance)
+            {
+                // 20% stress/cycle
+                Traverse.Create(__instance)
+                        .CallMethod("AddSicknessComponent",
+                    new AttributeModifierSickness(new AttributeModifier[]
+                    {
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, "Food poisoning")
+                    }));
+            }
+        }
+        
 
         // Enables skipping notifications when infected
         [HarmonyPatch(typeof(SicknessInstance.States), "InitializeStates")]
