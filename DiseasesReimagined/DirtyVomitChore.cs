@@ -32,7 +32,6 @@ namespace DiseasesReimagined
             public readonly StatusItem statusItem;
             readonly SafetyQuery vomitCellQuery;
             public SimUtil.DiseaseInfo diseaseInfo;
-            int frontCell;
 
             public StatesInstance(
                 DirtyVomitChore master,
@@ -64,8 +63,8 @@ namespace DiseasesReimagined
 
                 var orientation = sm.vomiter.Get(smi).GetComponent<Facing>();
                 var posCell = Grid.PosToCell(orientation.transform.GetPosition());
-                var targetCell = orientation.GetFrontCell();
-                if (!CanEmitLiquid(targetCell))
+                int frontCell = orientation.GetFrontCell();
+                if (!CanEmitLiquid(frontCell))
                     frontCell = posCell;
 
                 var suit = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
