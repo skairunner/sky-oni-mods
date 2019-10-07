@@ -134,7 +134,7 @@ namespace DiseasesReimagined
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
                         // 10% stress/cycle
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Food poisoning")
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Slimelung")
                     }));
             }
         }
@@ -161,7 +161,7 @@ namespace DiseasesReimagined
                         .CallMethod("AddSicknessComponent",
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, "Food poisoning")
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, "Zombie spores")
                     }));
             }
         }
