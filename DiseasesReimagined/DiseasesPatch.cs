@@ -216,8 +216,9 @@ namespace DiseasesReimagined
         {
             public static void Postfix(FoodGerms __instance)
             {
+                var rules = __instance.growthRules;
                 // Simplest method is to have food poisoning max population on air be 0
-                __instance.growthRules.ForEach(rule =>
+                rules.ForEach(rule =>
                 {
                     if ((rule as StateGrowthRule)?.state == Element.State.Gas)
                     {
@@ -226,9 +227,84 @@ namespace DiseasesReimagined
                         rule.overPopulationHalfLife = 0.001f;
                     }
                 });
-                var plasticRule = new ElementExposureRule(SimHashes.Polypropylene);
-                plasticRule.populationHalfLife = 300f;
-                __instance.exposureRules.Add(plasticRule);
+                rules.Add(new ElementGrowthRule(SimHashes.Polypropylene)
+                {
+                    populationHalfLife = 300f,
+                    overPopulationHalfLife = 300f
+                });
+            }
+        }
+
+        // Buff zombie spores to diffuse on solids
+        [HarmonyPatch(typeof(ZombieSpores), "PopulateElemGrowthInfo")]
+        public static class ZombieSpores_PopulateElemGrowthInfo_Patch
+        {
+            public static void Postfix(ZombieSpores __instance)
+            {
+                var rules = __instance.growthRules;
+                foreach (var rule in rules)
+                    // Dying on Solid changed to spread around tiles
+                    if (rule is StateGrowthRule stateRule && stateRule.state == Element.State.
+                        Solid)
+                    {
+                        stateRule.minDiffusionCount = 20000;
+                        stateRule.diffusionScale = 0.001f;
+                        stateRule.minDiffusionInfestationTickCount = 1;
+                    }
+                // And it survives on lead and iron ore, but has a low overpop threshold
+                rules.Add(new ElementGrowthRule(SimHashes.Lead)
+                {
+                    underPopulationDeathRate = 0.0f,
+                    populationHalfLife = float.PositiveInfinity,
+                    overPopulationHalfLife = 300.0f,
+                    maxCountPerKG = 100.0f,
+                    diffusionScale = 0.001f,
+                    minDiffusionCount = 50000,
+                    minDiffusionInfestationTickCount = 1
+                });
+                rules.Add(new ElementGrowthRule(SimHashes.IronOre)
+                {
+                    underPopulationDeathRate = 0.0f,
+                    populationHalfLife = float.PositiveInfinity,
+                    overPopulationHalfLife = 300.0f,
+                    maxCountPerKG = 100.0f,
+                    diffusionScale = 0.001f,
+                    minDiffusionCount = 50000,
+                    minDiffusionInfestationTickCount = 1
+                });
+                // But gets rekt on abyssalite and neutronium
+                rules.Add(new ElementGrowthRule(SimHashes.Katairite)
+                {
+                    populationHalfLife = 5.0f,
+                    overPopulationHalfLife = 5.0f,
+                    minDiffusionCount = 1000000
+                });
+                rules.Add(new ElementGrowthRule(SimHashes.Unobtanium)
+                {
+                    populationHalfLife = 5.0f,
+                    overPopulationHalfLife = 5.0f,
+                    minDiffusionCount = 1000000
+                });
+                // -75% on plastic all germs
+                rules.Add(new ElementGrowthRule(SimHashes.Polypropylene)
+                {
+                    populationHalfLife = 300f,
+                    overPopulationHalfLife = 300f
+                });
+            }
+        }
+
+        // Make slimelung die on plastic
+        [HarmonyPatch(typeof(SlimeGerms), "PopulateElemGrowthInfo")]
+        public static class SlimeGerms_PopulateElemGrowthInfo
+        {
+            public static void Postfix(SlimeGerms __instance)
+            {
+                __instance.growthRules.Add(new ElementGrowthRule(SimHashes.Polypropylene)
+                {
+                    populationHalfLife = 300f,
+                    overPopulationHalfLife = 300f
+                });
             }
         }
 
@@ -236,7 +312,7 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(PlantElementAbsorbers), "Sim200ms")]
         public static class PlantElementAbsorbers_Sim200ms_Patch
         {
-            public static void Prefix(ref List<PlantElementAbsorber> ___data, float dt,
+            public static void Prefix(List<PlantElementAbsorber> ___data, float dt,
                 ref bool ___updating)
             {
                 // This variable is remapped to an instance variable so the store is not dead
@@ -468,12 +544,22 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(SeedProducer), "ProduceSeed")]
         public static class SeedProducer_ProduceSeed_Patch
         {
-            public static void Postfix(ref SeedProducer __instance, ref GameObject __result)
+            public static void Postfix(SeedProducer __instance, GameObject __result)
             {
                 var seed = __result;
                 var obj = __instance.gameObject;
                 if (seed != null && obj != null)
                     TransferByMassRatio(obj, seed);
+            }
+        }
+
+        // Sporechids spread spores onto their current tile
+        [HarmonyPatch(typeof(EvilFlower), "OnSpawn")]
+        public static class EvilFlower_OnSpawn_Patch
+        {
+            public static void Postfix(EvilFlower __instance)
+            {
+                __instance.gameObject?.AddOrGet<MoreEvilFlower>();
             }
         }
 
