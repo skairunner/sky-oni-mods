@@ -24,7 +24,7 @@ namespace DiseasesReimagined
         {
             var width = 2;
             var height = 2;
-            var anim = "liquidconditioner_kanim";
+            var anim = "uvcleaner_kanim";
             var hitpoints = 100;
             var construction_time = 120f;
             float[] mass = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
