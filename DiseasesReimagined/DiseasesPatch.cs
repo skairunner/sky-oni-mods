@@ -48,9 +48,9 @@ namespace DiseasesReimagined
         {
             public static void Postfix(GameObject __result)
             {
-                var medinfo = __result.AddOrGet<MedicinalPill>().info;
+                var medInfo = __result.AddOrGet<MedicinalPill>().info;
                 // The basic cure now doesn't cure the base disease, only certain symptoms
-                medinfo.curedSicknesses = new List<string>(new[] {FoodPoisonVomiting.ID, SlimeCoughSickness.ID});
+                medInfo.curedSicknesses = new List<string>(new[] {FoodPoisonVomiting.ID, SlimeCoughSickness.ID});
             }
         }
 
@@ -63,19 +63,14 @@ namespace DiseasesReimagined
             {
                 var docStation = Traverse.Create(__instance);
                 ___treatments_available.Clear();
-                
-                foreach (GameObject go in ___storage.items)
+
+                foreach (var tag in ___storage.items.Where(go => go.HasTag(GameTags.MedicalSupplies))
+                                              .Select(go => go.PrefabID()))
                 {
-                    if (go.HasTag(GameTags.MedicalSupplies))
-                    {
-                        Tag tag = go.PrefabID();
-                        if (tag == "IntermediateCure")
-                        {
-                            docStation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
-                        }
-                        if (tag == "AdvancedCure")
-                            docStation.CallMethod("AddTreatment", ZombieSickness.ID, tag);
-                    }
+                    if (tag == "IntermediateCure")
+                        docStation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
+                    if (tag == "AdvancedCure")
+                        docStation.CallMethod("AddTreatment", ZombieSickness.ID, tag);
                 }
 
                 ___smi.sm.hasSupplies.Set(___treatments_available.Count > 0, ___smi);
@@ -183,12 +178,11 @@ namespace DiseasesReimagined
         {
             public static void Postfix(SicknessInstance.States __instance)
             {
-                var old_enterActions = __instance.infected.enterActions;
-                if (old_enterActions == null)
-                {
-                    return;
-                }
-                var new_enterActions = __instance.infected.enterActions = new List<StateMachine.Action>();
+                List<StateMachine.Action> old_enterActions = __instance.infected.enterActions;
+                List<StateMachine.Action> new_enterActions =
+                    __instance.infected.enterActions = new List<StateMachine.Action>();
+                if (old_enterActions == null) return;
+
                 for (var i = 0; i < old_enterActions.Count; i++)
                 {
                     if (old_enterActions[i].name != "DoNotification()")
@@ -206,16 +200,17 @@ namespace DiseasesReimagined
             public static void DoNotification(SicknessInstance.States __instance)
             {
                 var state_target = Traverse
-                  .Create(__instance.infected)
-                  .CallMethod<GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.TargetParameter>("GetStateTarget");
+                                  .Create(__instance.infected)
+                                  .CallMethod<
+                                       GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance,
+                                           SicknessInstance, object>.TargetParameter>("GetStateTarget");
                 __instance.infected.Enter("DoNotification()", smi =>
                 {
                     // if it's not to be skipped, (reluctantly) do the notification.
-                    if (!SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id))
-                    {
-                        Notification notification = Traverse.Create(smi.master).GetField<Notification>("notification");
-                        state_target.Get<Notifier>(smi).Add(notification, string.Empty);
-                    }
+                    if (SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id)) return;
+
+                    var notification = Traverse.Create(smi.master).GetField<Notification>("notification");
+                    state_target.Get<Notifier>(smi).Add(notification, string.Empty);
                 });
             }
         }
