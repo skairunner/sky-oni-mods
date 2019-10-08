@@ -22,8 +22,8 @@ namespace DiseasesReimagined
 
         public override BuildingDef CreateBuildingDef()
         {
-            var width = 2;
-            var height = 2;
+            var width = 3;
+            var height = 3;
             var anim = "uvcleaner_kanim";
             var hitpoints = 100;
             var construction_time = 120f;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Klei;
 using Klei.AI;
 using STRINGS;
@@ -17,6 +18,10 @@ namespace DiseasesReimagined
         {
             AddSicknessComponent(new VomitComponent());
             AddSicknessComponent(new ModifyParentTimeComponent("FoodSickness", .8f));
+            AddSicknessComponent(new AttributeModifierSickness(new []
+            {
+                new AttributeModifier(Db.Get().Amounts.Stamina.deltaAttribute.Id, -0.08333333333f, "Vomiting")
+            }));
         }
     }
 
@@ -38,7 +43,7 @@ namespace DiseasesReimagined
         {
             return new List<Descriptor>
             {
-                new Descriptor(DUPLICANTS.DISEASES.SLIMESICKNESS.COUGH_SYMPTOM,
+                new Descriptor("Vomiting",
                     DUPLICANTS.DISEASES.SLIMESICKNESS.COUGH_SYMPTOM_TOOLTIP, Descriptor.DescriptorType.SymptomAidable)
             };
         }
@@ -73,6 +78,10 @@ namespace DiseasesReimagined
                         diseaseInfo,
                         chore => { FinishedVomit(vomiter); });
                 }
+                // Decrease kcal by half as well
+                var cals = Db.Get().Amounts.Calories.Lookup(vomiter);
+                // won't lose cals under 500
+                cals.SetValue(Math.Max(500, cals.value - 500));
             }
 
             void FinishedVomit(GameObject vomiter)

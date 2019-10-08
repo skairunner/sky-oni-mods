@@ -7,6 +7,7 @@ using Harmony;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
+using STRINGS;
 using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
@@ -99,14 +100,23 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(FoodSickness), MethodType.Constructor)]
         public static class FoodSickness_Constructor_Patch
         {
-            public static void Postfix(FoodSickness __instance)
+            public static void Postfix(FoodSickness __instance, List<Sickness.SicknessComponent> ___components)
             {
+                // Remove the old attr mods and replace with our values. Easier than modifying the AttrModSickness
+                ___components.RemoveAll(comp => comp is AttributeModifierSickness);
+                
                 var trav = Traverse.Create(__instance);
                 trav.CallMethod("AddSicknessComponent",
                     new AddSicknessComponent(FoodPoisonVomiting.ID, "Food poisoning"));
                 trav.CallMethod("AddSicknessComponent",
-                    new AttributeModifierSickness(new AttributeModifier[]
+                    new AttributeModifierSickness(new[]
                     {
+                        // 200% more bladder/cycle
+                        new AttributeModifier("BladderDelta", 0.3333333f, (string) DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
+                        // Twice the toilet use time
+                        new AttributeModifier("ToiletEfficiency", -1f, (string) DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
+                        // -30% stamina/cycle
+                        new AttributeModifier("StaminaDelta", -0.05f, (string) DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
                         // 10% stress/cycle
                         new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Food poisoning")
                     }));
@@ -122,7 +132,7 @@ namespace DiseasesReimagined
                 var sickness = Traverse.Create(__instance);
 
                 // Remove the vanilla SlimelungComponent
-                ___components = ___components.Where(comp => !(comp is SlimeSickness.SlimeLungComponent)).ToList();
+                ___components.RemoveAll(comp => comp is SlimeSickness.SlimeLungComponent);
 
                 // Then replace it with our own
                 sickness.CallMethod("AddSicknessComponent",
