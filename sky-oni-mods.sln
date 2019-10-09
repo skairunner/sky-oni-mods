@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSBuild", "MSBuild", "{9CF1
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonRevolution", "CarbonRevolution\CarbonRevolution.csproj", "{CAA9683A-35E9-4836-88D2-AACA2BCD0117}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3BB633-834E-427D-8132-8A6EA8DBAA72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
