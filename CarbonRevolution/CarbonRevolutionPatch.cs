@@ -36,7 +36,7 @@ namespace CarbonRevolution
         {
             public static void Postfix(GameObject go, Tag prefab_tag)
             {
-                var energyGenerator = go.AddOrGet<EnergyGenerator>();
+                var energyGenerator = go.GetComponent<EnergyGenerator>();
                 energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(
                     SimHashes.Carbon.CreateTag(), 
                     1f, 
@@ -50,12 +50,12 @@ namespace CarbonRevolution
         }
         
         // Make natural gas generators output more co2 and have a minimum output temp
-        [HarmonyPatch(typeof(MethaneGeneratorConfig), "ConfigureBuildingTemplate")]
-        public static class MethaneGeneratorConfig_ConfigureBuildingTemplate_Patch
+        [HarmonyPatch(typeof(MethaneGeneratorConfig), "DoPostConfigureComplete")]
+        public static class MethaneGeneratorConfig_DoPostConfigureComplete_Patch
         {
-            public static void Postfix(GameObject go, Tag prefab_tag)
+            public static void Postfix(GameObject go)
             {
-                var energyGenerator = go.AddOrGet<EnergyGenerator>();
+                var energyGenerator = go.GetComponent<EnergyGenerator>();
                 energyGenerator.formula = new EnergyGenerator.Formula()
                 {
                     inputs = new EnergyGenerator.InputItem[1]
