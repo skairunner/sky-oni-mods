@@ -78,10 +78,12 @@ namespace DiseasesReimagined
                         diseaseInfo,
                         chore => { FinishedVomit(vomiter); });
                 }
-                // Decrease kcal by half as well
+                // Decrease kcal as well
                 var cals = Db.Get().Amounts.Calories.Lookup(vomiter);
-                // won't lose cals under 500
-                cals.SetValue(Math.Max(500, cals.value - 500));
+                if (cals.value > 600)
+                {
+                    cals.SetValue(cals.value - 500);
+                }
             }
 
             void FinishedVomit(GameObject vomiter)

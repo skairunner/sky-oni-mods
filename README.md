@@ -16,6 +16,32 @@ Adds a new building that refines Chlorine into Bleachstone. Unlocked with Cataly
 
 600 g/s Chlorine + 3 g/s Copper = 600 g/s Bleachstone.
 
+### Carbon Revolution
+
+This mod adds more ways of getting and using our favorite molecule: CO2. Coal generators and natural gas generators are much less clean. On the flip side, CO2 can be removed from the air at an unprecendented rate, via plants and industrial processes, and you can even produce your own diamonds out of nothing but thin air. If you're looking for a heftier penalty for using fossil fuels as well as better ways of dealing with pollution, look no further. The Carbon Revolution is here.
+
+#### Tweaks
+
+**Coal Generator**: Outputs 250 g/s (up from 20 g/s) CO2.
+
+**Natural Gas Generator**: Outputs 140 g/s (up from 67.5 g/s) CO2.
+
+**Fertilizer Synthesizer**: Outputs 30 g/s (up from 10 g/s) Natural Gas.
+
+**Slicksters**: Slicksters now consume and produce twice as much.
+
+#### New content
+
+**Coalplant**: A new crop that consumes 100kg of hot (60 C to 125 C) CO2 over a 3 day growth period, and produces Coal. The Coal Nodule, its seed, can be produced at a Kiln from 100kg Coal and one Bristle Blossom Seed.
+
+**CO2 Crystallizer**: Higher powered version of the CO2 Skimmer. Unlocked with Catalytics, and consumes 360 W, 5 g/s Lime and 1 kg/s CO2. It also has twice the range of the Skimmer. It produces Refined Carbon and does not need a water input. Built with Refined Metals.
+
+**CFB Generator**: Lategame power source. Consumes 1 kg/s Refined Carbon and generates 2000 W, but also produces 80 kDTU/s. It can only be built with Ceramic and has an overheat temperature of 75 C, making it a challenge to keep it cool enough to continue generating power. It also generates 250 g/s CO2.
+
+**Diamond synthesis**: The Molecular Forge can transform 100 kg of Refined Carbon into 100 kg of Diamond at a steep price cost.
+
+Carbon Revolution is compatible with Piped Output!
+
 ### Drain
 
 Adds a new building to the Plumbing tab called the Drain, built with 100kg of metal. It passively pumps liquids inside it into pipes at a rate of 100g/s, and is thus useful for buildings that "dribble" liquid like the Natural Gas Generator, or for cleaning up Algae Terrarium automation.

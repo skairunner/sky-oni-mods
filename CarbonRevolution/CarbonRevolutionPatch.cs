@@ -26,7 +26,7 @@ namespace CarbonRevolution
                 
                 // Add Coalplant crop type
                 TUNING.CROPS.CROP_TYPES.Add(
-                    new Crop.CropVal("Carbon", 100f, 100));
+                    new Crop.CropVal("Carbon", 1800f, 100));
             }
         }
         
