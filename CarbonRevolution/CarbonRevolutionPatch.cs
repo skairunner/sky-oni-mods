@@ -64,7 +64,8 @@ namespace CarbonRevolution
                     },
                     outputs = new EnergyGenerator.OutputItem[2]
                     {
-                        new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.0675f, false, new CellOffset(1, 1), 313.15f),
+                        new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.0675f, 
+                          CompatabilityPatches.GEN_STORE_OUTPUTS, new CellOffset(1, 1), 313.15f),
                         new EnergyGenerator.OutputItem(
                             SimHashes.CarbonDioxide, 
                             0.140f, 

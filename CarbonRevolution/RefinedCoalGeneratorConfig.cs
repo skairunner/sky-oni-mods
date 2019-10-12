@@ -7,7 +7,7 @@ namespace CarbonRevolution
     {
         public const string ID = "RefinedCoalGenerator";
         public const string NAME = "CFB Generator";
-        public const string DESC = "Any allegations that a CFB Generator is just the boiler of a Oil Refinery is libel, slander and hearsay.";
+        public const string DESC = "Any allegations that a CFB Generator is just the boiler of a Oil Refinery are pure libel, slander and hearsay.";
         public const string EFFECT = "Burns Refined Carbon at a very high temperature, producing large amounts of power.";
         
         private const float REFINED_BURN_RATE = 1f;

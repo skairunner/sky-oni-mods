@@ -4,7 +4,7 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyTitle>Bleachstone Refinery</AssemblyTitle>
     <Version>1.1.0</Version>
-    <FileVersion>1.0</FileVersion>
+    <FileVersion>1.1.0</FileVersion>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>
