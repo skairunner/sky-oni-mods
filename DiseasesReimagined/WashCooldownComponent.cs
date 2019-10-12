@@ -7,7 +7,7 @@ namespace DiseasesReimagined
     public sealed class WashCooldownComponent : MonoBehaviour
     {
         // How long Duplicants must wait before washing again.
-        public const float WASH_COOLDOWN = 3.0f;
+        public const float WASH_COOLDOWN = 6.0f;
 
         public bool CanWash
         {
