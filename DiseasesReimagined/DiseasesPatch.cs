@@ -32,6 +32,9 @@ namespace DiseasesReimagined
                 SkipNotifications.Skip(SlimeLethalSickness.ID);
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
                 SkipNotifications.Skip(FoodPoisonVomiting.ID);
+
+                PUtil.InitLibrary(false);
+                PUtil.RegisterPostload(CompatPatch.CompatPatches);
             }
             
             // Helper method to find a specific attribute modifier
