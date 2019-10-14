@@ -26,7 +26,10 @@ namespace CarbonRevolution
                 
                 // Add Coalplant crop type
                 TUNING.CROPS.CROP_TYPES.Add(
-                    new Crop.CropVal("Carbon", 1800f, 100));
+                    new Crop.CropVal("Carbon", CoalPlantConfig.LIFECYCLE, (int)CoalPlantConfig.COAL_PRODUCED));
+                var RESONANT_NUM_SEEDS = ResonantPlantConfig.COAL_PRODUCED_TOTAL / ResonantPlantConfig.COAL_PER_SEED;
+                TUNING.CROPS.CROP_TYPES.Add(
+                    new Crop.CropVal(ResonantPlantConfig.SEED_ID, ResonantPlantConfig.LIFECYCLE, (int)RESONANT_NUM_SEEDS));
             }
         }
         
@@ -69,7 +72,7 @@ namespace CarbonRevolution
                         new EnergyGenerator.OutputItem(
                             SimHashes.CarbonDioxide, 
                             0.140f, 
-                            true,
+                             true,
                             new CellOffset(0, 2), 
                             383.15f)
                     }
@@ -120,10 +123,14 @@ namespace CarbonRevolution
         [HarmonyPatch(typeof(KilnConfig), "ConfgiureRecipes")]
         public static class KilnConfig_ConfgiureRecipes_Patch
         {
-            public const string RECIPE_DESC = "Where a Coal Nodule is planted, a Coalplant springs up.";
+            public const string COALPLANT_RECIPE_DESC = "Where a Coal Nodule is planted, a Bituminous Blossom springs up.";
+
+            public const string RESONANTPLANT_RECIPE_DESC =
+                "Smokestalk seeds are surprisingly heavy, and you can hear a sharp crack when the bud cracks its shell.";
                 
             public static void Postfix()
             {
+                // add bituminous blossom
                 var ingredients = new []
                 {
                     new ComplexRecipe.RecipeElement(SimHashes.RefinedCarbon.CreateTag(), 100f),
@@ -138,12 +145,61 @@ namespace CarbonRevolution
                 new ComplexRecipe(recipeID, ingredients, result)
                 {
                     time = 40f,
-                    description = string.Format(RECIPE_DESC),
+                    description = string.Format(COALPLANT_RECIPE_DESC),
                     fabricators = new List<Tag>()
                     {
                         TagManager.Create("Kiln")
                     },
                     nameDisplay = ComplexRecipe.RecipeNameDisplay.Result
+                };
+                // add smokestalk
+                var ingredients2 = new []
+                {
+                    new ComplexRecipe.RecipeElement(SimHashes.RefinedCarbon.CreateTag(), 400f),
+                    new ComplexRecipe.RecipeElement(SimHashes.Diamond.CreateTag(), 100f),
+                    new ComplexRecipe.RecipeElement(CoalPlantConfig.SEED_ID, 1f),
+                };
+                var result2 = new []
+                {
+                    new ComplexRecipe.RecipeElement(ResonantPlantConfig.SEED_ID, 1f)
+                };
+                string recipeID2 = ComplexRecipeManager.MakeRecipeID("Kiln", ingredients2, result2);
+                
+                new ComplexRecipe(recipeID2, ingredients2, result2)
+                {
+                    time = 40f,
+                    description = string.Format(RESONANTPLANT_RECIPE_DESC),
+                    fabricators = new List<Tag>()
+                    {
+                        TagManager.Create("Kiln")
+                    },
+                    nameDisplay = ComplexRecipe.RecipeNameDisplay.Result
+                };
+            }
+        }
+
+        [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
+        public static class RockCrusherConfig_COnfigureBuildingTemplate_Patch
+        {
+            private const string RECIPE_DESC = ""; 
+            public static void Postfix()
+            {   
+                ComplexRecipe.RecipeElement[] ingredients2 = new ComplexRecipe.RecipeElement[1]
+                {
+                    new ComplexRecipe.RecipeElement(ResonantPlantConfig.SEED_ID, 1f)
+                };
+                ComplexRecipe.RecipeElement[] results2 = new ComplexRecipe.RecipeElement[1]
+                {
+                    new ComplexRecipe.RecipeElement(SimHashes.Carbon.CreateTag(), ResonantPlantConfig.COAL_PER_SEED)
+                };
+                new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("RockCrusher", (IList<ComplexRecipe.RecipeElement>) ingredients2, (IList<ComplexRecipe.RecipeElement>) results2), ingredients2, results2)
+                {
+                    time = 40f,
+                    description = RECIPE_DESC,
+                    nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult
+                }.fabricators = new List<Tag>()
+                {
+                    TagManager.Create("RockCrusher")
                 };
             }
         }

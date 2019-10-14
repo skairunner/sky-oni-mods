@@ -7,21 +7,23 @@
         private static readonly EventSystem.IntraObjectHandler<CoalPlant> OnWiltRecoverDelegate = 
             new EventSystem.IntraObjectHandler<CoalPlant>(OnWiltRecover);
 
+        [MyCmpReq] private ElementConsumer consumer;
+        
         protected override void OnSpawn()
         {
             base.OnSpawn();
-            Subscribe(-724860998, OnWiltDelegate);
-            Subscribe(712767498, OnWiltRecoverDelegate);
+            Subscribe(GameHashes.Wilt.GetHashCode(), OnWiltDelegate);
+            Subscribe(GameHashes.WiltRecover.GetHashCode(), OnWiltRecoverDelegate);
         }
 
         private static void OnWilt(CoalPlant plant, object data = null)
         {
-            plant.gameObject.GetComponent<ElementConsumer>().EnableConsumption(false);
+            plant.consumer.EnableConsumption(false);
         }
 
         private static void OnWiltRecover(CoalPlant plant, object data = null)
         {
-            plant.gameObject.GetComponent<ElementConsumer>().EnableConsumption(true);
+            plant.consumer.EnableConsumption(true);
         }
 
         public class StatesInstance : GameStateMachine<States, StatesInstance, CoalPlant, object>.GameInstance
@@ -45,4 +47,14 @@
         }
     }
 
+    public class PingSometimes : KMonoBehaviour, ISim200ms
+    {
+        [MyCmpReq] private Storage storage;
+        [MyCmpReq] private ElementConsumer consumer;
+        
+        public void Sim200ms(float dt)
+        {
+            System.Console.WriteLine($"{consumer.elementToConsume.ToString()} {consumer.enabled} {consumer.consumedMass}");
+        }
+    }
 }

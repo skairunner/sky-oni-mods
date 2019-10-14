@@ -5,27 +5,28 @@ using CREATURES = STRINGS.CREATURES;
 
 namespace CarbonRevolution
 {
-    public class CoalPlantConfig : IEntityConfig
+    public class ResonantPlantConfig : IEntityConfig
     {
         public const float LIFECYCLE = 2400f; // 4 cycles
-        public const float COAL_PRODUCED = 120;
-        public const float CO2_PER_SECOND = COAL_PRODUCED / LIFECYCLE * 1.25f;
+        public const float COAL_PRODUCED_TOTAL = 1000f;
+        public const float COAL_PER_SEED = 250f;
+        public const float CO2_PER_SECOND = COAL_PRODUCED_TOTAL / LIFECYCLE * 1.25f;
         public const float K = 273.15f;
-        public const float MIN_GROW_TEMP = K + 60;
-        public const float MAX_GROW_TEMP = K + 125;
+        public const float MIN_GROW_TEMP = K + 140;
+        public const float MAX_GROW_TEMP = K + 300;
         
-        public const string ID = "CoalPlant";
-        public const string NAME = "Bituminous Blossom";
-        public const string DESC = "Bituminous Blossoms are curious crops that grow in hot, CO2-rich atmospheres and produce lumps of coal.";
+        public const string ID = "ResonantPlant";
+        public const string NAME = "Smokestalk";
+        public const string DESC = "Smokestalks thrive best planted directly in flue or chimney outputs. The large amount of carbon they sequester can be recovered as coal by crushing the seeds. Smokestalks can also be eaten as light, summery salad, paired best with asbestos, because asbestos are the bestos.";
         
-        public const string SEED_ID = "CoalPlantSeed";
-        public const string SEED_NAME = "Coal Nodule";
-        public const string SEED_DESC = "Flaky and bonfire-scented, Coal Nodules grow into Bituminous Blossoms when they're buried in the ground.";
+        public const string SEED_ID = "ResonantPlantSeed";
+        public const string SEED_NAME = "Smokey Core";
+        public const string SEED_DESC = "Smokey Cores grow into Smokestalks when they're planted in hot, CO2-rich environments. Experiments have concluded that they cannot be made into popcorn.";
 
         public GameObject CreatePrefab()
         {
-            var placedEntity = EntityTemplates.CreatePlacedEntity(ID, NAME, DESC, 1f, Assets.GetAnim("coalplant_kanim"),
-                "idle_empty", Grid.SceneLayer.BuildingFront, 1, 2, DECOR.PENALTY.TIER1);
+            var placedEntity = EntityTemplates.CreatePlacedEntity(ID, NAME, DESC, 1f, Assets.GetAnim("resonantplant_kanim"),
+                "idle_empty", Grid.SceneLayer.BuildingFront, 1, 2, DECOR.NONE);
             EntityTemplates.ExtendEntityToBasicPlant(placedEntity, K,
                 MIN_GROW_TEMP,
                 MAX_GROW_TEMP ,
@@ -34,7 +35,7 @@ namespace CarbonRevolution
                 false, 
                 0f, 
                 0.15f, 
-                "Carbon");
+                SEED_ID);
 
             var pressureVulnerable = placedEntity.AddOrGet<PressureVulnerable>();
             pressureVulnerable.Configure((float) 0.15f, (float) 0f, 99000f, 99900f, new[]
@@ -44,15 +45,15 @@ namespace CarbonRevolution
 
             Storage storage = placedEntity.AddOrGet<Storage>();
             storage.showInUI = false;
-            storage.capacityKg = 1f;
+            storage.capacityKg = 2f;
 
             var elementConsumer = placedEntity.AddOrGet<ElementConsumer>();
             elementConsumer.showInStatusPanel = true;
             elementConsumer.showDescriptor = true;
             elementConsumer.storeOnConsume = false;
-            elementConsumer.elementToConsume = SimHashes.CarbonDioxide;
             elementConsumer.configuration = ElementConsumer.Configuration.Element;
-            elementConsumer.consumptionRadius = (byte) 4;
+            elementConsumer.elementToConsume = SimHashes.CarbonDioxide;
+            elementConsumer.consumptionRadius = 4;
             elementConsumer.sampleCellOffset = new Vector3(0.0f, 1f);
             elementConsumer.consumptionRate = CO2_PER_SECOND;
             
@@ -64,7 +65,7 @@ namespace CarbonRevolution
                             SEED_ID,
                             SEED_NAME,
                             SEED_DESC,
-                            Assets.GetAnim((HashedString) "seed_coalplant_kanim"),
+                            Assets.GetAnim((HashedString) "seed_resonantplant_kanim"),
                         "object", 0, new List<Tag>
                         {
                             GameTags.CropSeed
@@ -73,14 +74,15 @@ namespace CarbonRevolution
                         0.25f,
                         null, string.Empty
                     ), 
-                "Coalplant_preview", 
-                Assets.GetAnim("coalplant_kanim"),
+                "Resonantplant_preview", 
+                Assets.GetAnim("resonantplant_kanim"),
                 "place", 1, 2);
-            SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "Coalplant_harvest",
+            SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "resonantplant_harvest",
                 NOISE_POLLUTION.CREATURES.TIER3);
-            SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "Coalplant_grow",
+            SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "resonantplant_grow",
                 NOISE_POLLUTION.CREATURES.TIER3);
             placedEntity.AddOrGet<CoalPlant>();
+            placedEntity.AddOrGet<PingSometimes>();
             
             return placedEntity;
         }
