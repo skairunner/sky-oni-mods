@@ -26,7 +26,7 @@ namespace DiseasesReimagined
                 AddStatusItem("FROSTBITTEN", "NOTIFICATION_TOOLTIP", "Freezing " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " are hurting these Duplicants:", "CREATURES");
                 
                 Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.NAME", "Frostbite Threshold");
-                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP", "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " at which a Duplicant will get frostbitten.");
+                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP", "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " at which a Duplicant will be frostbitten.");
             }
         }
         
@@ -35,7 +35,6 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(ExternalTemperatureMonitor), "InitializeStates")]
         public static class ExternalTemperatureMonitor_InitializeStates_Patch
         {
-            
             public const float BaseFrostbiteThreshold = 253.1f;
             public static TempMonitorStateMachine.State frostbite = new TempMonitorStateMachine.State();
             public static TempMonitorStateMachine.State transitionToFrostbite = new TempMonitorStateMachine.State();
@@ -82,9 +81,9 @@ namespace DiseasesReimagined
                 transitionToFrostbite.defaultState = __instance.GetDefaultState();
                 trav.SetField("sm", __instance);
                 trav.SetField("root", __instance.root);
-                // if we're in frostbite temps, we might be frostbited.
+                // if we're in frostbite temps, we might be frostbitten
 
-                __instance.tooCool.Transition(transitionToFrostbite, isFrostbite);
+                __instance.tooCool.Transition(transitionToFrostbite, smi => isFrostbite(smi) && smi.timeinstate > 6.0f);
 
                 transitionToFrostbite
                     .Transition(__instance.tooCool, smi => !isFrostbite(smi))
@@ -95,7 +94,7 @@ namespace DiseasesReimagined
                     });
 
                 frostbite
-                   .Transition(__instance.tooCool, smi => !isFrostbite(smi)) // to leave frostbite state
+                   .Transition(__instance.tooCool, smi => !isFrostbite(smi) && smi.timeinstate > 6.0f) // to leave frostbite state
                    .ToggleExpression(Db.Get().Expressions.Cold) // brr
                    .ToggleThought(Db.Get().Thoughts.Cold) // I'm thinking of brr
                    .ToggleStatusItem(Frostbitten, smi => smi)
@@ -109,8 +108,10 @@ namespace DiseasesReimagined
         {
             public static void Postfix(Database.Attributes __instance)
             {
-                var frostbiteThreshold = new Attribute("FrostbiteThreshold", false, Attribute.Display.General, false);
-                frostbiteThreshold.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.None));
+                var frostbiteThreshold = new Attribute("FrostbiteThreshold", false,
+                    Attribute.Display.General, false);
+                frostbiteThreshold.SetFormatter(new StandardAttributeFormatter(
+                    GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.None));
                 __instance.Add(frostbiteThreshold);
             }
         }
@@ -121,8 +122,8 @@ namespace DiseasesReimagined
         {
             public static void Postfix(EquipmentDef __result)
             {
-                __result.AttributeModifiers.Add(new AttributeModifier("FrostbiteThreshold", -1000f,
-                    EQUIPMENT.PREFABS.ATMO_SUIT.NAME));
+                __result.AttributeModifiers.Add(new AttributeModifier("FrostbiteThreshold",
+                    -200.0f, EQUIPMENT.PREFABS.ATMO_SUIT.NAME));
             }
         }
     }
