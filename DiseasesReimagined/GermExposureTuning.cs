@@ -18,19 +18,19 @@ namespace DiseasesReimagined
                 // must also be modified to add a new exposure method
                 thresholds = new Dictionary<ExposureType, GermExposureThresholds>(16)
                 {
-                    // [0] = Food Poisoning
-                    { types[0], new GermExposureThresholds(0, 500, 0) },
-                    // [1] = Slimelung
+                    // [0] = Food Poisoning (+2)
+                    { types[0], new GermExposureThresholds(0, 100, 0) },
+                    // [1] = Slimelung (+4)
                     { types[1], new GermExposureThresholds(0, 1000, 1000) },
-                    // [2] = Zombie spores
-                    { types[2], new GermExposureThresholds(1, 1, 100) },
-                    // [3] = Allergies
+                    // [2] = Zombie spores (-2)
+                    { types[2], new GermExposureThresholds(100, 100, 100) },
+                    // [3] = Allergies (0)
                     { types[3], new GermExposureThresholds(0, 0, 50) },
-                    // [4] = Smelled flowers
+                    // [4] = Smelled flowers (0)
                     { types[4], new GermExposureThresholds(0, 0, 1) }
                 };
             else
-                PUtil.LogWarning("Germ exposure deactivated - invalid default germ exposures!");
+                PUtil.LogWarning("Germ exposure deactivated, invalid default germ exposures!");
         }
 
         // Gets the threshold for infecting a duplicant via each vector.
