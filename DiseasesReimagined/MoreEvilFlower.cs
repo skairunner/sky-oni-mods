@@ -15,11 +15,13 @@ namespace DiseasesReimagined
 
         // These are populated automatically
 #pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable CS0649
         [MyCmpGet]
         private WiltCondition isWilted;
 
         [MyCmpGet]
         private UprootedMonitor uprooted;
+#pragma warning restore CS0649
 #pragma warning restore IDE0044 // Add readonly modifier
 
         protected override void OnSpawn()

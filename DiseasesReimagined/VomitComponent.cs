@@ -17,7 +17,7 @@ namespace DiseasesReimagined
             : base(ID, SicknessType.Ailment, Severity.Minor, 1f, vectors, 1020f)
         {
             AddSicknessComponent(new VomitComponent());
-            AddSicknessComponent(new ModifyParentTimeComponent("FoodSickness", .8f));
+            AddSicknessComponent(new ModifyParentTimeComponent(FoodSickness.ID, .8f));
             AddSicknessComponent(new AttributeModifierSickness(new []
             {
                 new AttributeModifier(Db.Get().Amounts.Stamina.deltaAttribute.Id, -0.08333333333f, "Vomiting")
@@ -43,14 +43,17 @@ namespace DiseasesReimagined
         {
             return new List<Descriptor>
             {
-                new Descriptor("Vomiting",
-                    DUPLICANTS.DISEASES.SLIMESICKNESS.COUGH_SYMPTOM_TOOLTIP, Descriptor.DescriptorType.SymptomAidable)
+                new Descriptor("Vomiting", DUPLICANTS.DISEASES.FOODSICKNESS.
+                    VOMIT_SYMPTOM_TOOLTIP, Descriptor.DescriptorType.SymptomAidable)
             };
         }
 
         public class StatesInstance : GameStateMachine<States, StatesInstance, SicknessInstance, object>.GameInstance
         {
             public float lastVomitTime;
+
+            // The number of germs vomited.
+            public const int GermCount = 10000;
 
             public StatesInstance(SicknessInstance master)
                 : base(master)
@@ -59,31 +62,27 @@ namespace DiseasesReimagined
 
             public void Vomit(GameObject vomiter)
             {
+                var diseaseList = Db.Get().Diseases;
                 var chore_provider = vomiter.GetComponent<ChoreProvider>();
+                var sickness = Db.Get().Sicknesses.FoodSickness;
                 if (chore_provider != null)
                 {
-                    var notification = new Notification(
-                        "Vomiting",
-                        NotificationType.Bad,
-                        HashedString.Invalid,
-                        (notificationList, data) => "These Duplicants are vomiting from Food Poisoning." +
-                                                    notificationList.ReduceMessages(false));
+                    var notification = new Notification("Vomiting",
+                        NotificationType.Bad, HashedString.Invalid,
+                        (notificationList, data) => "These Duplicants are vomiting from " +
+                        sickness.Name + ":" + notificationList.ReduceMessages(false));
                     var diseaseInfo = new SimUtil.DiseaseInfo
-                        {idx = Db.Get().Diseases.GetIndex("FoodPoisoning"), count = 10000};
-                    new DirtyVomitChore(
-                        Db.Get().ChoreTypes.StressVomit,
-                        chore_provider,
-                        Db.Get().DuplicantStatusItems.Vomiting,
-                        notification,
-                        diseaseInfo,
+                    {
+                        idx = diseaseList.GetIndex(diseaseList.FoodGerms.id), count = 0
+                    };
+                    new DirtyVomitChore(Db.Get().ChoreTypes.Vomit, chore_provider,
+                        Db.Get().DuplicantStatusItems.Vomiting, notification, diseaseInfo,
                         chore => { FinishedVomit(vomiter); });
                 }
                 // Decrease kcal as well
                 var cals = Db.Get().Amounts.Calories.Lookup(vomiter);
                 if (cals.value > 600)
-                {
                     cals.SetValue(cals.value - 500);
-                }
             }
 
             void FinishedVomit(GameObject vomiter)
