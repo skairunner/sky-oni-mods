@@ -5,6 +5,7 @@ using Harmony;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
+using ReimaginationTeam.Reimagination;
 using STRINGS;
 using UnityEngine;
 using static SkyLib.Logger;
@@ -31,7 +32,7 @@ namespace DiseasesReimagined
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
                 SkipNotifications.Skip(FoodPoisonVomiting.ID);
 
-                PUtil.InitLibrary(false);
+                ImaginationLoader.Init(typeof(DiseasesPatch));
                 PUtil.RegisterPostload(CompatPatch.CompatPatches);
             }
             
