@@ -1,0 +1,102 @@
+name: STRINGS.WORLDS.MOON.NAME
+description: STRINGS.WORLDS.MOON.DESCRIPTION
+spriteName: Asteroid_icysandstone
+coordinatePrefix: MOON
+difficulty: 0
+tier: 0
+
+disableWorldTraits: true
+worldsize:
+  X: 352
+  Y: 384
+layoutMethod: PowerTree
+
+# List all the zone files to load
+subworldFiles:
+  - name: subworlds/moon/Core
+  - name: subworlds/moon/LunarSurface
+  - name: subworlds/moon/Lunar
+  - name: subworlds/sandstone/SandstoneStartFrigid
+  - name: subworlds/sandstone/SandstoneFrigid
+  - name: subworlds/sandstone/SandstoneMiniMetalFrigid
+  - name: subworlds/sandstone/SandstoneMiniWaterFrigid
+  - name: subworlds/sandstone/SandstoneMiniAlgaeFrigid
+  - name: subworlds/marsh/MarshFrigid
+  - name: subworlds/jungle/JungleFrigid
+  - name: subworlds/frozen/FrozenFrigid
+  - name: subworlds/Impenetrable
+  - name: subworlds/oil/OilPocketsFrigid
+  - name: subworlds/space/SpaceFrigid
+  - name: subworlds/space/SurfaceFrigid
+  - name: subworlds/ocean/OceanFrigid
+  - name: subworlds/rust/RustFrigid
+  - name: subworlds/forest/ForestFrigid
+
+startSubworldName: subworlds/sandstone/SandstoneStartFrigid
+startingBaseTemplate: sandstoneBase
+startingBasePositionHorizontal:
+  min: 0.4
+  max: 0.5
+startingBasePositionVertical:
+  min: 0.4
+  max: 0.55
+
+globalFeatureTemplates:
+  feature_geyser_generic: 16
+
+# When we are converting unknown cells, this will give us the options, processed in this order, the effects are cumlative
+unknownCellsAllowedSubworlds:
+  - tagcommand: Default
+    command: Replace
+    subworldNames:
+      - subworlds/sandstone/SandstoneStartFrigid
+  - tagcommand: DistanceFromTag
+    tag: AtStart
+    minDistance: 1
+    maxDistance: 1
+    command: Replace
+    subworldNames:
+      - subworlds/sandstone/SandstoneMiniMetalFrigid
+      - subworlds/sandstone/SandstoneMiniWaterFrigid
+      - subworlds/sandstone/SandstoneMiniAlgaeFrigid
+  - tagcommand: DistanceFromTag
+    tag: AtStart
+    minDistance: 2
+    maxDistance: 2
+    command: Replace
+    subworldNames:
+      - subworlds/moon/Lunar
+  - tagcommand: DistanceFromTag
+    tag: AtStart
+    minDistance: 3
+    maxDistance: 999
+    command: Replace
+    subworldNames:
+      - subworlds/moon/Lunar
+      - subworlds/moon/DeepLunar
+  - tagcommand: AtTag
+    tag: AtSurface
+    command: Replace
+    subworldNames:
+      - subworlds/space/SpaceFrigid
+  - tagcommand: AtTag
+    tag: AtDepths
+    command: Replace
+    subworldNames:
+      - subworlds/moon/Core
+      - subworlds/moon/MagmaCore
+# add more Space Biome.
+  - tagcommand: DistanceFromTag
+    tag: AtSurface
+    minDistance: 1
+    maxDistance: 3
+    command: Replace
+    subworldNames:
+      - subworlds/space/SpaceFrigid
+  - tagcommand: DistanceFromTag
+    tag: AtSurface
+    minDistance: 4
+    maxDistance: 4
+    command: Replace
+    subworldNames:
+      - subworlds/moon/LunarSurface

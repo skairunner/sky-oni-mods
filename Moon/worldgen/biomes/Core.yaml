@@ -1,0 +1,30 @@
+TerrainBiomeLookupTable:
+  # keys to remove from in-memory structure when this file is loaded
+  remove: [] 
+  # elements to add from in-memory structure when this file is loaded
+  add:
+    CoreRock:
+    - content: IgneousRock
+      bandSize: 1
+    - content: Magma
+      bandSize: 0.4
+      overrides:
+        massOverride: 5000
+    - content: IronOre
+      bandSize: 0.1
+    - content: Sulfur
+      bandSize: 0.05
+    CoreIron:
+    - content: IgneousRock
+      bandSize: 0.1
+    - content: Iron
+      bandSize: 0.8
+      overrides:
+        massOverride: 600
+    - content: AluminumOre
+      bandSize: 0.05
+    CoreMagmaSpindles:
+    - content: IgneousRock
+      bandSize: 0.3
+    - content: Magma
+      bandSize: 1

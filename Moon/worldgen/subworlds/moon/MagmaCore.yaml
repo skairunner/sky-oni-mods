@@ -1,0 +1,16 @@
+biomeNoise: noise/Twisty
+temperatureRange: ExtremelyHot
+minChildCount: 4
+density:
+  min: 35
+  max: 45
+sampleBehaviour: PoissonDisk
+biomes:
+  - name: biomes/Core/CoreMagmaSpindles
+    weight: 1
+    #overrides:
+    #  massMultiplier: 50
+tags:
+  - IgnoreCaveOverride
+  - NoGlobalFeatureSpawning
+zoneType: MagmaCore

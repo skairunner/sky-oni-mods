@@ -1,0 +1,23 @@
+biomeNoise: noise/Generic
+temperatureRange: ExtremelyCold
+minChildCount: 4
+density:
+  min: 35
+  max: 45
+features:
+  - type: features/moon/HeliumDeposit
+  - type: features/SprinkleOfOxyRock
+sampleBehaviour: PoissonDisk
+biomes:
+  - name: biomes/Moon/Lunar
+    weight: 1
+  - name: biomes/Moon/LunarRock
+    weight: 1
+  - name: biomes/Moon/LunarOre
+    weight: 0.5
+    #overrides:
+    #  massMultiplier: 50
+tags:
+  - IgnoreCaveOverride
+  - NoGlobalFeatureSpawning
+zoneType: MagmaCore

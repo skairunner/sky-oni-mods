@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <AssemblyTitle>Moon</AssemblyTitle>
+    <Version>1.1.0</Version>
+    <UsesPLib>true</UsesPLib>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="worldgen\biomes" />
+    <Folder Include="worldgen\subworlds" />
+  </ItemGroup>
+</Project>

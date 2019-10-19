@@ -1,0 +1,18 @@
+biomeNoise: noise/subworldFrozen
+temperatureRange: ExtremelyCold
+minChildCount: 4
+density:
+  min: 35
+  max: 45
+sampleBehaviour: PoissonDisk
+biomes:
+  - name: biomes/Moon/LunarRock
+    weight: 1
+  - name: biomes/Moon/LunarOre
+    weight: 2
+    #overrides:
+    #  massMultiplier: 50
+tags:
+  - IgnoreCaveOverride
+  - NoGlobalFeatureSpawning
+zoneType: MagmaCore
