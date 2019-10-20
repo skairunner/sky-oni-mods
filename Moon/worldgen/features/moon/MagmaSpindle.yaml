@@ -1,0 +1,35 @@
+﻿tags:
+  - AllowExceedNodeBorders
+shape: Splat
+borders:
+  - 1
+  - 1
+blobSize:
+  min: 4
+  max: 8
+ElementChoiceGroups:
+  RoomCenterElements:
+    selectionMethod: WeightedResample
+    choices:
+      - element: Magma
+        weight: 1
+        overrides:
+          massOverride: 500
+      - element: SulfurGas
+        weight: 0.2
+        overrides:
+          massOverride: 250
+  RoomBorderChoices0:
+    selectionMethod: WeightedResample
+    choices:
+      - element: IgneousRock
+        weight: 1
+      - element: Granite
+        weight: 0.2
+  RoomBorderChoices1:
+    selectionMethod: WeightedResample
+    choices:
+      - element: AluminumOre
+        weight: 1
+      - element: IgneousRock
+        weight: 0.2

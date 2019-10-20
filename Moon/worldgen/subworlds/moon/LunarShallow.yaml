@@ -1,20 +1,16 @@
-biomeNoise: noise/subworldFrozen
+﻿biomeNoise: noise/Generic
 temperatureRange: ExtremelyCold
 minChildCount: 4
 density:
   min: 40
-  max: 60
-pdWeight: 0.4
+  max: 70
 sampleBehaviour: PoissonDisk
 biomes:
   - name: biomes/Moon/LunarRego
     weight: 1
-    tags:
-      - Mole
-    #overrides:
-    #  massMultiplier: 50
+  - name: Biomes/Moon/Lunar
 tags:
   - IgnoreCaveOverride
   - NoGlobalFeatureSpawning
   - ErodePointToBorderInv
-zoneType: Space
+zoneType: FrozenWastes

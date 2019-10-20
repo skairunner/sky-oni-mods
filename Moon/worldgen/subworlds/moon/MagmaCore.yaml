@@ -1,12 +1,14 @@
-biomeNoise: noise/Twisty
+biomeNoise: noise/OilField
 temperatureRange: ExtremelyHot
 minChildCount: 4
 density:
   min: 35
   max: 45
+features:
+  - type: features/moon/MagmaSpindle
 sampleBehaviour: PoissonDisk
 biomes:
-  - name: biomes/Core/CoreMagmaSpindles
+  - name: biomes/MoonarCore/CoreRock
     weight: 1
     #overrides:
     #  massMultiplier: 50

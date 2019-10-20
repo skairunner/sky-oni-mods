@@ -6,10 +6,6 @@ TerrainBiomeLookupTable:
     CoreRock:
     - content: IgneousRock
       bandSize: 1
-    - content: Magma
-      bandSize: 0.4
-      overrides:
-        massOverride: 5000
     - content: IronOre
       bandSize: 0.1
     - content: Sulfur
@@ -23,8 +19,3 @@ TerrainBiomeLookupTable:
         massOverride: 600
     - content: AluminumOre
       bandSize: 0.05
-    CoreMagmaSpindles:
-    - content: IgneousRock
-      bandSize: 0.3
-    - content: Magma
-      bandSize: 1

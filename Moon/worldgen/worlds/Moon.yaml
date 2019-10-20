@@ -16,23 +16,22 @@ subworldFiles:
   - name: subworlds/moon/Core
   - name: subworlds/moon/LunarSurface
   - name: subworlds/moon/Lunar
-  - name: subworlds/sandstone/SandstoneStartFrigid
-  - name: subworlds/sandstone/SandstoneFrigid
-  - name: subworlds/sandstone/SandstoneMiniMetalFrigid
-  - name: subworlds/sandstone/SandstoneMiniWaterFrigid
-  - name: subworlds/sandstone/SandstoneMiniAlgaeFrigid
-  - name: subworlds/marsh/MarshFrigid
-  - name: subworlds/jungle/JungleFrigid
-  - name: subworlds/frozen/FrozenFrigid
+  - name: subworlds/sandstone/SandstoneStart
+  - name: subworlds/sandstone/Sandstone
+  - name: subworlds/sandstone/SandstoneMiniMetal
+  - name: subworlds/sandstone/SandstoneMiniWater
+  - name: subworlds/sandstone/SandstoneMiniAlgae
+  - name: subworlds/jungle/Jungle
+  - name: subworlds/frozen/Frozen
   - name: subworlds/Impenetrable
-  - name: subworlds/oil/OilPocketsFrigid
-  - name: subworlds/space/SpaceFrigid
-  - name: subworlds/space/SurfaceFrigid
-  - name: subworlds/ocean/OceanFrigid
-  - name: subworlds/rust/RustFrigid
-  - name: subworlds/forest/ForestFrigid
+  - name: subworlds/oil/OilPockets
+  - name: subworlds/space/Space
+  - name: subworlds/space/Surface
+  - name: subworlds/ocean/Ocean
+  - name: subworlds/rust/Rust
+  - name: subworlds/forest/Forest
 
-startSubworldName: subworlds/sandstone/SandstoneStartFrigid
+startSubworldName: subworlds/sandstone/SandstoneStart
 startingBaseTemplate: sandstoneBase
 startingBasePositionHorizontal:
   min: 0.4
@@ -46,45 +45,50 @@ globalFeatureTemplates:
 
 # When we are converting unknown cells, this will give us the options, processed in this order, the effects are cumlative
 unknownCellsAllowedSubworlds:
+# start biomes
   - tagcommand: Default
     command: Replace
     subworldNames:
-      - subworlds/sandstone/SandstoneStartFrigid
+      - subworlds/sandstone/SandstoneStart
   - tagcommand: DistanceFromTag
     tag: AtStart
     minDistance: 1
     maxDistance: 1
     command: Replace
     subworldNames:
-      - subworlds/sandstone/SandstoneMiniMetalFrigid
-      - subworlds/sandstone/SandstoneMiniWaterFrigid
-      - subworlds/sandstone/SandstoneMiniAlgaeFrigid
+      - subworlds/sandstone/SandstoneMiniMetal
+      - subworlds/sandstone/SandstoneMiniWater
+      - subworlds/sandstone/SandstoneMiniAlgae
+# entire map
   - tagcommand: DistanceFromTag
     tag: AtStart
-    minDistance: 2
-    maxDistance: 2
-    command: Replace
-    subworldNames:
-      - subworlds/moon/Lunar
-  - tagcommand: DistanceFromTag
-    tag: AtStart
-    minDistance: 3
+    minDistance: 1
     maxDistance: 999
     command: Replace
     subworldNames:
       - subworlds/moon/Lunar
+# near surface
+  - tagcommand: DistanceFromTag
+    tag: AtSurface
+    minDistance: 5 # because our surface is very low and effectively starts at 4
+    maxDistance: 6
+    command: Replace
+    subworldNames:
+      - subworlds/moon/LunarShallow
+# near core
+  - tagcommand: DistanceFromTag
+    tag: AtDepths
+    minDistance: 1
+    maxDistance: 3
+    command: Replace
+    subworldNames:
       - subworlds/moon/DeepLunar
+# space
   - tagcommand: AtTag
     tag: AtSurface
     command: Replace
     subworldNames:
-      - subworlds/space/SpaceFrigid
-  - tagcommand: AtTag
-    tag: AtDepths
-    command: Replace
-    subworldNames:
-      - subworlds/moon/Core
-      - subworlds/moon/MagmaCore
+      - subworlds/space/Space
 # add more Space Biome.
   - tagcommand: DistanceFromTag
     tag: AtSurface
@@ -92,7 +96,15 @@ unknownCellsAllowedSubworlds:
     maxDistance: 3
     command: Replace
     subworldNames:
-      - subworlds/space/SpaceFrigid
+      - subworlds/space/Space
+# moon's core
+  - tagcommand: AtTag
+    tag: AtDepths
+    command: Replace
+    subworldNames:
+#      - subworlds/moon/Core
+      - subworlds/moon/MagmaCore
+# surface regolith layer
   - tagcommand: DistanceFromTag
     tag: AtSurface
     minDistance: 4

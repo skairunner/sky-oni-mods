@@ -1,5 +1,5 @@
 biomeNoise: noise/Generic
-temperatureRange: ExtremelyCold
+temperatureRange: VeryHot
 minChildCount: 4
 density:
   min: 35
@@ -7,9 +7,9 @@ density:
 avoidRadius: 50.0
 sampleBehaviour: PoissonDisk
 biomes:
-  - name: biomes/Core/CoreRock
+  - name: biomes/MoonarCore/CoreRock
     weight: 1
-  - name: biomes/Core/CoreIron
+  - name: biomes/MoonarCore/CoreIron
     weight: 3
     #overrides:
     #  massMultiplier: 50

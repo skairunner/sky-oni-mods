@@ -4,13 +4,16 @@ borders:
   - 1
 blobSize:
   min: 1.0
-  max: 2.2
+  max: 2.0
+borderOverride: rocky
 ElementChoiceGroups:
   RoomCenterElements:
     selectionMethod: WeightedResample
     choices:
       - element: Helium
         weight: 1
+        overrides:
+          massOverride: 100
   RoomBorderChoices0:
     selectionMethod: WeightedResample
     choices:

@@ -1,5 +1,5 @@
 biomeNoise: noise/Generic
-temperatureRange: ExtremelyCold
+temperatureRange: ExtremelyCold 
 minChildCount: 4
 density:
   min: 35
@@ -11,13 +11,11 @@ sampleBehaviour: PoissonDisk
 biomes:
   - name: biomes/Moon/Lunar
     weight: 1
-  - name: biomes/Moon/LunarRock
-    weight: 1
-  - name: biomes/Moon/LunarOre
+  - name: biomes/Moon/LunarShallowOre
     weight: 0.5
     #overrides:
     #  massMultiplier: 50
 tags:
   - IgnoreCaveOverride
   - NoGlobalFeatureSpawning
-zoneType: MagmaCore
+zoneType: Sandstone
