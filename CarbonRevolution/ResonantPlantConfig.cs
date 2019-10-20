@@ -82,7 +82,6 @@ namespace CarbonRevolution
             SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "resonantplant_grow",
                 NOISE_POLLUTION.CREATURES.TIER3);
             placedEntity.AddOrGet<CoalPlant>();
-            placedEntity.AddOrGet<PingSometimes>();
             
             return placedEntity;
         }

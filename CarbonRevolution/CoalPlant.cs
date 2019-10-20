@@ -46,15 +46,4 @@
             }
         }
     }
-
-    public class PingSometimes : KMonoBehaviour, ISim200ms
-    {
-        [MyCmpReq] private Storage storage;
-        [MyCmpReq] private ElementConsumer consumer;
-        
-        public void Sim200ms(float dt)
-        {
-            System.Console.WriteLine($"{consumer.elementToConsume.ToString()} {consumer.enabled} {consumer.consumedMass}");
-        }
-    }
 }

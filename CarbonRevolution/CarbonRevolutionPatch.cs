@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Harmony;
 using PeterHan.PLib;
+using PeterHan.PLib.Options;
 using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
@@ -19,6 +21,8 @@ namespace CarbonRevolution
                 StartLogging();
                 PUtil.InitLibrary(false);
                 PUtil.RegisterPostload(CompatabilityPatches.DoPatches);
+                POptions.RegisterOptions(typeof(CarbonOption));
+
                 Traverse.Create<OilFloaterConfig>().Field<float>("KG_ORE_EATEN_PER_CYCLE").Value = 40f;
                 Traverse.Create<OilFloaterConfig>().Field<float>("CALORIES_PER_KG_OF_ORE").Value = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / 40f;
                 Traverse.Create<OilFloaterHighTempConfig>().Field<float>("KG_ORE_EATEN_PER_CYCLE").Value = 40f;
@@ -45,7 +49,7 @@ namespace CarbonRevolution
                     1f, 
                     600f, 
                     SimHashes.CarbonDioxide, 
-                    0.25f, 
+                    CarbonOption.Instance.CO2_coalgen, 
                     CompatabilityPatches.GEN_STORE_OUTPUTS, 
                     new CellOffset(1, 2), 
                     383.15f);
@@ -71,12 +75,86 @@ namespace CarbonRevolution
                           CompatabilityPatches.GEN_STORE_OUTPUTS, new CellOffset(1, 1), 313.15f),
                         new EnergyGenerator.OutputItem(
                             SimHashes.CarbonDioxide, 
-                            0.140f, 
+                            CarbonOption.Instance.CO2_natgasgen, 
                              true,
                             new CellOffset(0, 2), 
                             383.15f)
                     }
                 };
+            }
+        }
+
+        [HarmonyPatch(typeof(PetroleumGeneratorConfig), "DoPostConfigureComplete")]
+        public static class PetroleumGeneratorConfig_DoPostConfigureComplete_Patch {
+            public static void Postfix(GameObject go)
+            {
+                go.GetComponent<EnergyGenerator>()
+                  .formula = new EnergyGenerator.Formula()
+                {
+                    inputs = new []
+                    {
+                        new EnergyGenerator.InputItem(GameTags.CombustibleLiquid, 2f, 20f)
+                    },
+                    outputs = new []
+                    {
+                        new EnergyGenerator.OutputItem(
+                            SimHashes.CarbonDioxide, 
+                            CarbonOption.Instance.CO2_petrolgen, 
+                            CompatabilityPatches.GEN_STORE_OUTPUTS, 
+                            new CellOffset(0, 3), 
+                            383.15f),
+                        new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, false, new CellOffset(1, 1), 313.15f)
+                    }
+                };
+            }
+        }
+        
+        [HarmonyPatch(typeof(WoodGasGeneratorConfig), "DoPostConfigureComplete")]
+        public static class WoodGasGeneratorConfig_DoPostConfigureComplete_Patch {
+            public static void Postfix(GameObject go)
+            {
+                go.GetComponent<EnergyGenerator>()
+                  .formula = EnergyGenerator.CreateSimpleFormula(
+                    WoodLogConfig.TAG, 
+                    1.2f, 
+                    720f, 
+                    SimHashes.CarbonDioxide, 
+                    CarbonOption.Instance.CO2_lumbergen, 
+                    CompatabilityPatches.GEN_STORE_OUTPUTS, new CellOffset(0, 1), 383.15f);
+            }
+        }
+
+        [HarmonyPatch(typeof(GourmetCookingStationConfig), "ConfigureBuildingTemplate")]
+        public static class GourmetCookingStationConfig_ConfigureBuildingTemplate_Patch
+        {
+            public static void Postfix(GameObject go)
+            {
+                go.GetComponent<ElementConverter>()
+                  .outputElements = new []
+                {
+                    new ElementConverter.OutputElement(CarbonOption.Instance.CO2_gasrange, SimHashes.CarbonDioxide, 348.15f, false, false, 0.0f, 3f, 1f, byte.MaxValue, 0)
+                };
+            }
+        }
+
+        [HarmonyPatch(typeof(EthanolDistilleryConfig), "ConfigureBuildingTemplate")]
+        public static class EthanolDistilleryConfig_ConfigureBuildingTemplate_Patch
+        {
+            public static void Postfix(GameObject go)
+            {
+                var outputs = go.GetComponent<ElementConverter>()
+                  .outputElements;
+                outputs
+                   .Where(element => element.elementHash != SimHashes.CarbonDioxide)
+                   .Add(new ElementConverter.OutputElement(
+                        CarbonOption.Instance.CO2_ethanoldistiller, 
+                        SimHashes.CarbonDioxide, 
+                        348.15f, 
+                        false, 
+                        CompatabilityPatches.GEN_STORE_OUTPUTS, 
+                        0.0f, 
+                        3f, 1f, byte.MaxValue, 0)
+                    );
             }
         }
 

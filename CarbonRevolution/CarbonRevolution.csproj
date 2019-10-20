@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
-    <AssemblyTitle>Bleachstone Refinery</AssemblyTitle>
+    <AssemblyTitle>Carbon Revolution</AssemblyTitle>
     <Version>1.1.0</Version>
     <FileVersion>1.2.0</FileVersion>
     <UsesPLib>true</UsesPLib>
