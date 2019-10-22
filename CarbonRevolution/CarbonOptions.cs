@@ -26,7 +26,7 @@ namespace CarbonRevolution
 
         private static float Clamp(float a, float x, float b)
         {
-            return Math.Max(a, Math.Max(x, b));
+            return Math.Max(a, Math.Min(x, b));
         }
 
         public CarbonOption()

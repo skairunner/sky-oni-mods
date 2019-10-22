@@ -103,7 +103,7 @@ namespace CarbonRevolution
                             CompatabilityPatches.GEN_STORE_OUTPUTS, 
                             new CellOffset(0, 3), 
                             383.15f),
-                        new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, false, new CellOffset(1, 1), 313.15f)
+                        new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, CompatabilityPatches.GEN_STORE_OUTPUTS, new CellOffset(1, 1), 313.15f)
                     }
                 };
             }
@@ -153,7 +153,7 @@ namespace CarbonRevolution
                         false, 
                         CompatabilityPatches.GEN_STORE_OUTPUTS, 
                         0.0f, 
-                        3f, 1f, byte.MaxValue, 0)
+                        3f)
                     );
             }
         }
