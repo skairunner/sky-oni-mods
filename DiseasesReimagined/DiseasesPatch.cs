@@ -24,9 +24,12 @@ namespace DiseasesReimagined
             {
                 StartLogging();
 
-                AddDiseaseName(SlimeLethalSickness.ID, "Slimelung (lethal)");
-                AddDiseaseName(SlimeCoughSickness.ID, "Slimelung (cough)");
-                AddDiseaseName(FoodPoisonVomiting.ID, "Food Poisoning (vomiting)");
+                AddDiseaseName(SlimeLethalSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME +
+                    " (lethal)");
+                AddDiseaseName(SlimeCoughSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME +
+                    " (cough)");
+                AddDiseaseName(FoodPoisonVomiting.ID, DUPLICANTS.DISEASES.FOODSICKNESS.NAME +
+                    " (vomiting)");
                 
                 SkipNotifications.Skip(SlimeLethalSickness.ID);
                 SkipNotifications.Skip(SlimeCoughSickness.ID);
@@ -104,18 +107,18 @@ namespace DiseasesReimagined
                 
                 var trav = Traverse.Create(__instance);
                 trav.CallMethod("AddSicknessComponent",
-                    new AddSicknessComponent(FoodPoisonVomiting.ID, "Food poisoning"));
+                    new AddSicknessComponent(FoodPoisonVomiting.ID, DUPLICANTS.DISEASES.FOODSICKNESS.NAME));
                 trav.CallMethod("AddSicknessComponent",
                     new AttributeModifierSickness(new[]
                     {
                         // 200% more bladder/cycle
-                        new AttributeModifier("BladderDelta", 0.3333333f, (string) DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
+                        new AttributeModifier("BladderDelta", 0.3333333f, DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
                         // Twice the toilet use time
-                        new AttributeModifier("ToiletEfficiency", -1f, (string) DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
+                        new AttributeModifier("ToiletEfficiency", -1f, DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
                         // -30% stamina/cycle
-                        new AttributeModifier("StaminaDelta", -0.05f, (string) DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
+                        new AttributeModifier("StaminaDelta", -0.05f, DUPLICANTS.DISEASES.FOODSICKNESS.NAME),
                         // 10% stress/cycle
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Food poisoning")
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, DUPLICANTS.DISEASES.FOODSICKNESS.NAME)
                     }));
             }
         }
@@ -133,15 +136,15 @@ namespace DiseasesReimagined
 
                 // Then replace it with our own
                 sickness.CallMethod("AddSicknessComponent",
-                    new AddSicknessComponent(SlimeCoughSickness.ID, "Slimelung"));
+                    new AddSicknessComponent(SlimeCoughSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME));
                 sickness.CallMethod("AddSicknessComponent",
-                    new AddSicknessComponent(SlimeLethalSickness.ID, "Slimelung"));
+                    new AddSicknessComponent(SlimeLethalSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME));
                 // Also add some minor stress
                 sickness.CallMethod("AddSicknessComponent",
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
                         // 10% stress/cycle
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, "Slimelung")
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME)
                     }));
             }
         }
@@ -168,7 +171,7 @@ namespace DiseasesReimagined
                         .CallMethod("AddSicknessComponent",
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, "Zombie spores")
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, DUPLICANTS.DISEASES.ZOMBIESICKNESS.NAME)
                     }));
             }
         }

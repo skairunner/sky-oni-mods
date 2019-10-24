@@ -3,6 +3,7 @@ using static SkyLib.OniUtils;
 using Harmony;
 using Klei.AI;
 using PeterHan.PLib;
+using UnityEngine;
 
 namespace DiseasesReimagined
 {
@@ -12,6 +13,8 @@ namespace DiseasesReimagined
     // Patches for frostbite-related things
     class FrostbitePatch
     {
+        public const float BaseFrostbiteThreshold = 253.1f;
+        
         // Add strings and status items for Frostbite
         public static class Mod_OnLoad
         {
@@ -29,13 +32,16 @@ namespace DiseasesReimagined
                 Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP", "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " at which a Duplicant will be frostbitten.");
             }
         }
-        
-        
+
+        public static float GetFrostbiteThreshold(ExternalTemperatureMonitor.Instance data)
+        {
+            return data.attributes.GetValue("FrostbiteThreshold") + BaseFrostbiteThreshold;
+        }
+
         // Add Frostbite that is Scalding but for cold
         [HarmonyPatch(typeof(ExternalTemperatureMonitor), "InitializeStates")]
         public static class ExternalTemperatureMonitor_InitializeStates_Patch
         {
-            public const float BaseFrostbiteThreshold = 253.1f;
             public static TempMonitorStateMachine.State frostbite = new TempMonitorStateMachine.State();
             public static TempMonitorStateMachine.State transitionToFrostbite = new TempMonitorStateMachine.State();
             
@@ -56,11 +62,6 @@ namespace DiseasesReimagined
                 return str;
             }};
             
-            public static float GetFrostbiteThreshold(ExternalTemperatureMonitor.Instance data)
-            {
-                return data.attributes.GetValue("FrostbiteThreshold") + BaseFrostbiteThreshold;
-            }
-
             public static bool isFrostbite(ExternalTemperatureMonitor.Instance data)
             {
                 // a bit of a kludge, because for some reason Average External Temperature doesn't update for Frostbite
@@ -83,7 +84,7 @@ namespace DiseasesReimagined
                 trav.SetField("root", __instance.root);
                 // if we're in frostbite temps, we might be frostbitten
 
-                __instance.tooCool.Transition(transitionToFrostbite, smi => isFrostbite(smi) && smi.timeinstate > 6.0f);
+                __instance.tooCool.Transition(transitionToFrostbite, smi => isFrostbite(smi) && smi.timeinstate > 3.0f);
 
                 transitionToFrostbite
                     .Transition(__instance.tooCool, smi => !isFrostbite(smi))
@@ -94,11 +95,63 @@ namespace DiseasesReimagined
                     });
 
                 frostbite
-                   .Transition(__instance.tooCool, smi => !isFrostbite(smi) && smi.timeinstate > 6.0f) // to leave frostbite state
+                   .Transition(__instance.tooCool, smi => !isFrostbite(smi) && smi.timeinstate > 3.0f) // to leave frostbite state
                    .ToggleExpression(Db.Get().Expressions.Cold) // brr
                    .ToggleThought(Db.Get().Thoughts.Cold) // I'm thinking of brr
                    .ToggleStatusItem(Frostbitten, smi => smi)
                    .Update("ColdDamage", (smi, dt) => smi.ScaldDamage(dt), UpdateRate.SIM_1000ms);
+            }
+        }
+
+        // Frostbite and scald damage depending on temperature
+        [HarmonyPatch(typeof(ExternalTemperatureMonitor.Instance), "ScaldDamage")]
+        public static class ExternalTemperatureMonitor_Instance_ScaldDamage_Patch
+        {
+            // Minimum pressure in grams
+            public const float MIN_PRESSURE = 1.0f;
+
+            // Gets the average external pressure of the cells occupied by the creature
+            public static float GetCurrentExternalPressure(ExternalTemperatureMonitor.Instance instance)
+            {
+                int cell = Grid.PosToCell(instance.gameObject);
+                var area = instance.occupyArea;
+                float pressure = Grid.Pressure[cell];
+                if (area != null)
+                {
+                    float total = 0f;
+                    int n = 0;
+                    foreach (CellOffset offset in area.OccupiedCellsOffsets)
+                    {
+                        int newCell = Grid.OffsetCell(cell, offset);
+                        if (Grid.IsValidCell(newCell))
+                        {
+                            total += Grid.Pressure[newCell];
+                            n++;
+                        }
+                    }
+                    pressure = total / System.Math.Max(1.0f, n);
+                }
+                return pressure;
+            }
+
+            public static bool Prefix(ExternalTemperatureMonitor.Instance __instance, float dt,
+                float ___lastScaldTime)
+            {
+                float now = Time.time;
+                var hp = __instance.health;
+                // Avoid damage for pressures < threshold
+                bool pressure = GetCurrentExternalPressure(__instance) > MIN_PRESSURE;
+                if (hp != null && now - ___lastScaldTime > 5.0f && pressure)
+                {
+                    float temp = __instance.AverageExternalTemperature;
+                    // For every 5 C outside the limits, damage 1HP more
+                    float damage = System.Math.Max(0.0f, 0.2f * (temp - __instance.
+                        GetScaldingThreshold())) + System.Math.Max(0.0f, 0.2f * (
+                        GetFrostbiteThreshold(__instance) - temp));
+                    if (damage > 0.0f)
+                        hp.Damage(damage * dt);
+                }
+                return pressure;
             }
         }
 
