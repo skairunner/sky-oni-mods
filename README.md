@@ -32,7 +32,9 @@ This mod adds more ways of getting and using our favorite molecule: CO2. Coal ge
 
 #### New content
 
-**Coalplant**: A new crop that consumes 100kg of hot (60 C to 125 C) CO2 over a 3 day growth period, and produces Coal. The Coal Nodule, its seed, can be produced at a Kiln from 100kg Coal and one Bristle Blossom Seed.
+**Bituminous Blossom**: A new crop that consumes 125kg of hot (60 C to 125 C) CO2 over a 4 day growth period (effectively 52 g/s), and produces 100kg of Coal. The Coal Nodule, its seed, can be produced at a Kiln from 100kg Coal and one Bristle Blossom Seed.
+
+**Smokestalk**: A new crop that consumes 1250kg of very hot (140 to 300 C) CO2 over a 4 day growth period (effectively 520 g/s), and produces four Smokey Cores, which can each be processed in a Rock Crusher for a total of 1000 kg of Coal (250 kg/Core). The Smokey Core is also the seed of the Smokestalk, and can be produced in a Kiln with 400kg Refined Carbon, 100kg Diamond, and 1 Carbon Nodule.
 
 **CO2 Crystallizer**: Higher powered version of the CO2 Skimmer. Unlocked with Catalytics, and consumes 360 W, 5 g/s Lime and 1 kg/s CO2. It also has twice the range of the Skimmer. It produces Refined Carbon and does not need a water input. Built with Refined Metals.
 
@@ -106,6 +108,16 @@ Aside from radiating heat into space, the Radiator can also be used as a more co
 ### Raincheck (Printing Pod time refund)
 
 Lets you take a raincheck on the Printing Pod. When you reject all items, it recharges faster, defaulting to 66% refunded.
+
+## Rock Crusher Configurator
+
+Can config the following recipes at a Rock Crusher:
+
+* % of Fossil that is turned into Lime
+* % of Metal Ore that is turned into Refined Metal
+* Amount of Table Salt produced in grams from Salt
+
+The configuration can be found in the Mod Menu after you enable the mod. You must restart before the effects of the configuration are reflected, due to quirks of the game engine. 
 
 ### Storage Pod
 
