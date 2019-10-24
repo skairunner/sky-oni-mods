@@ -54,6 +54,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlastFurnace", "BlastFurnac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moon", "Moon\Moon.csproj", "{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FossilLimeConfiguration", "FossilLimeConfiguration\FossilLimeConfiguration.csproj", "{B82A95A0-E97F-4B6C-B254-A33BF63163F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +134,10 @@ Global
 		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
