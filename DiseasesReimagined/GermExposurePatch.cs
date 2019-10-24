@@ -176,10 +176,10 @@ namespace DiseasesReimagined
         }
 
         /// <summary>
-		/// Applied to DiseaseInfoScreen to replace the immune system information with our
+        /// Applied to DiseaseInfoScreen to replace the immune system information with our
         /// mod's version.
-		/// </summary>
-		[HarmonyPatch(typeof(DiseaseInfoScreen), "CreateImmuneInfo")]
+        /// </summary>
+        [HarmonyPatch(typeof(DiseaseInfoScreen), "CreateImmuneInfo")]
         public static class DiseaseInfoScreen_CreateImmuneInfo_Patch
         {
             /// <summary>
@@ -195,9 +195,9 @@ namespace DiseasesReimagined
         }
 
         /// <summary>
-		/// Applied to DuplicantStatusItems to adjust the tool tip for disease contraction.
-		/// </summary>
-		[HarmonyPatch(typeof(DuplicantStatusItems), "CreateStatusItems")]
+        /// Applied to DuplicantStatusItems to adjust the tool tip for disease contraction.
+        /// </summary>
+        [HarmonyPatch(typeof(DuplicantStatusItems), "CreateStatusItems")]
         public static class DuplicantStatusItems_CreateStatusItems_Patch
         {
             /// <summary>
@@ -210,10 +210,10 @@ namespace DiseasesReimagined
         }
 
         /// <summary>
-		/// Applied to GermExposureMonitor to replace the disease injection with our integrated
+        /// Applied to GermExposureMonitor to replace the disease injection with our integrated
         /// exposure monitor.
-		/// </summary>
-		[HarmonyPatch(typeof(GermExposureMonitor.Instance), "InjectDisease")]
+        /// </summary>
+        [HarmonyPatch(typeof(GermExposureMonitor.Instance), "InjectDisease")]
         public static class GermExposureMonitor_Instance_InjectDisease_Patch
         {
             /// <summary>
@@ -230,10 +230,10 @@ namespace DiseasesReimagined
         }
 
         /// <summary>
-		/// Applied to GermExposureMonitor.Instance to infect using integrated exposure when
+        /// Applied to GermExposureMonitor.Instance to infect using integrated exposure when
         /// the Duplicant wakes up.
-		/// </summary>
-		[HarmonyPatch(typeof(GermExposureMonitor.Instance), "OnSleepFinished")]
+        /// </summary>
+        [HarmonyPatch(typeof(GermExposureMonitor.Instance), "OnSleepFinished")]
         public static class GermExposureMonitor_Instance_OnSleepFinished_Patch
         {
             /// <summary>
@@ -249,9 +249,9 @@ namespace DiseasesReimagined
         }
 
         /// <summary>
-		/// Applied to MinionConfig to add disease integration monitors to every Duplicant.
-		/// </summary>
-		[HarmonyPatch(typeof(MinionConfig), "CreatePrefab")]
+        /// Applied to MinionConfig to add disease integration monitors to every Duplicant.
+        /// </summary>
+        [HarmonyPatch(typeof(MinionConfig), "CreatePrefab")]
         public static class MinionConfig_CreatePrefab_Patch
         {
             /// <summary>
