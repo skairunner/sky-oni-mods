@@ -11,6 +11,12 @@ namespace DiseasesReimagined
     [SerializationConfig(MemberSerialization.OptIn)]
     public class UVCleaner : KMonoBehaviour, IEffectDescriptor, ISim200ms
     {
+        // The germ fraction to remove.
+        public const float GERM_REMOVAL = 0.95f;
+
+        // Fewer than this many germs left are destroyed completely.
+        public const float MIN_GERMS_PER_KG = 50.0f;
+
         private SunburnReactable reactable;
         #pragma warning disable CS0649
         // These are set magically, so we need to ignore the "never assigned to" warning.
@@ -63,31 +69,38 @@ namespace DiseasesReimagined
             reactable = new SunburnReactable(this);
         }
 
-        private void UpdateState(float dt)
+        private void UpdateState(float _)
         {
-            var flag = consumer.IsSatisfied;
-
-            var items = storage.items;
-            for (var index = 0; index < items.Count; ++index)
+            var hasLiquid = consumer.IsSatisfied;
+            byte invalid = SimUtil.DiseaseInfo.Invalid.idx;
+            foreach (var item in storage.items)
             {
-                var component = items[index].GetComponent<PrimaryElement>();
-                if (component.Mass > 0.0 && component.Element.IsLiquid)
+                var pe = item.GetComponent<PrimaryElement>();
+                float mass = pe.Mass;
+                // Is it liquid?
+                if (mass > 0.0f && pe.Element.IsLiquid)
                 {
-                    flag = true;
-                    var num1 =
-                        Game.Instance.liquidConduitFlow
-                       .AddElement(waterOutputCell, component.ElementID, component.Mass, component.Temperature,
-                                 SimUtil.DiseaseInfo.Invalid.idx, 0);
-                    component.KeepZeroMassObject = true;
-                    var num2 = num1 / component.Mass;
-                    var num3 = (int) (component.DiseaseCount * (double) num2);
-                    component.Mass -= num1;
-                    component.ModifyDiseaseCount(-num3, "UVCleaner.UpdateState");
+                    byte germID = pe.DiseaseIdx;
+                    // Remove the fraction and destroy if too few
+                    int oldGerms = pe.DiseaseCount, newGerms = Mathf.RoundToInt((1.0f -
+                        GERM_REMOVAL) * oldGerms);
+                    if (germID == invalid || newGerms < MIN_GERMS_PER_KG * 5.0f)
+                    {
+                        newGerms = 0;
+                        germID = invalid;
+                    }
+                    float newMass = Game.Instance.liquidConduitFlow.AddElement(waterOutputCell,
+                        pe.ElementID, pe.Mass, pe.Temperature, germID, newGerms);
+                    hasLiquid = true;
+                    pe.KeepZeroMassObject = true;
+                    // Remove the germs from the input
+                    int removeGerms = Mathf.RoundToInt(oldGerms * (newMass / pe.Mass));
+                    pe.Mass -= newMass;
+                    pe.ModifyDiseaseCount(-removeGerms, "UVCleaner.UpdateState");
                     break;
                 }
             }
-
-            operational.SetActive(flag);
+            operational.SetActive(hasLiquid);
             UpdateStatus();
         }
 

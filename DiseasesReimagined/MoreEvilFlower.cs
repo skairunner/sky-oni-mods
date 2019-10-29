@@ -42,7 +42,7 @@ namespace DiseasesReimagined
                 if (Grid.IsValidCell(cell) && Grid.Solid[cell])
                     // Flower is growing and on a solid cell, infect it!
                     SimMessages.ModifyDiseaseOnCell(cell, disease, Mathf.RoundToInt(
-                        GERMS_PER_SECOND / dt));
+                        GERMS_PER_SECOND * dt));
             }
         }
     }
