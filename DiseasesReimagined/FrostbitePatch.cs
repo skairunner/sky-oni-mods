@@ -11,10 +11,8 @@ namespace DiseasesReimagined
         IStateMachineTarget, object>;
 
     // Patches for frostbite-related things
-    class FrostbitePatch
+    public static class FrostbitePatch
     {
-        public const float BaseFrostbiteThreshold = 253.1f;
-        
         // Add strings and status items for Frostbite
         public static class Mod_OnLoad
         {
@@ -23,19 +21,50 @@ namespace DiseasesReimagined
                 AddStatusItem("FROSTBITTEN", "NAME", "Frostbite", "CREATURES");
                 AddStatusItem("FROSTBITTEN",
                     "TOOLTIP",
-                    "Current external " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is perilously low [<b>{ExternalTemperature}</b> / <b>{TargetTemperature}</b>]",
+                    "Current external " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD +
+                    " is perilously low [<b>{ExternalTemperature}</b> / <b>{TargetTemperature}</b>]",
                     "CREATURES");
                 AddStatusItem("FROSTBITTEN", "NOTIFICATION_NAME", "Frostbite", "CREATURES");
-                AddStatusItem("FROSTBITTEN", "NOTIFICATION_TOOLTIP", "Freezing " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " are hurting these Duplicants:", "CREATURES");
+                AddStatusItem("FROSTBITTEN", "NOTIFICATION_TOOLTIP", "Freezing " +
+                    UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD +
+                    " are hurting these Duplicants:", "CREATURES");
                 
-                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.NAME", "Frostbite Threshold");
-                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP", "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " at which a Duplicant will be frostbitten.");
+                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.NAME",
+                    "Frostbite Threshold");
+                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP",
+                    "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD +
+                    " at which a Duplicant will be frostbitten.");
             }
+        }
+
+        // Gets the average external pressure of the cells occupied by the creature
+        public static float GetCurrentExternalPressure(ExternalTemperatureMonitor.Instance instance)
+        {
+            int cell = Grid.PosToCell(instance.gameObject);
+            var area = instance.occupyArea;
+            float pressure = Grid.Pressure[cell];
+            if (area != null)
+            {
+                float total = 0f;
+                int n = 0;
+                foreach (CellOffset offset in area.OccupiedCellsOffsets)
+                {
+                    int newCell = Grid.OffsetCell(cell, offset);
+                    if (Grid.IsValidCell(newCell))
+                    {
+                        total += Grid.Pressure[newCell];
+                        n++;
+                    }
+                }
+                pressure = total / System.Math.Max(1.0f, n);
+            }
+            return pressure;
         }
 
         public static float GetFrostbiteThreshold(ExternalTemperatureMonitor.Instance data)
         {
-            return data.attributes.GetValue("FrostbiteThreshold") + BaseFrostbiteThreshold;
+            return data.attributes.GetValue("FrostbiteThreshold") + GermExposureTuning.
+                BASE_FROSTBITE_THRESHOLD;
         }
 
         // Add Frostbite that is Scalding but for cold
@@ -64,10 +93,11 @@ namespace DiseasesReimagined
             
             public static bool isFrostbite(ExternalTemperatureMonitor.Instance data)
             {
-                // a bit of a kludge, because for some reason Average External Temperature doesn't update for Frostbite
-                // even though it does for Scalding.
+                // a bit of a kludge, because for some reason Average External Temperature
+                // does not update for Frostbite even though it does for Scalding.
                 var exttemp = data.GetCurrentExternalTemperature;
-                return exttemp < GetFrostbiteThreshold(data);
+                return exttemp < GetFrostbiteThreshold(data) &&
+                    GetCurrentExternalPressure(data) >= GermExposureTuning.MIN_PRESSURE;
             }
 
             public static void Postfix(ExternalTemperatureMonitor __instance)
@@ -107,46 +137,21 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(ExternalTemperatureMonitor.Instance), "ScaldDamage")]
         public static class ExternalTemperatureMonitor_Instance_ScaldDamage_Patch
         {
-            // Minimum pressure in grams
-            public const float MIN_PRESSURE = 1.0f;
-
-            // Gets the average external pressure of the cells occupied by the creature
-            public static float GetCurrentExternalPressure(ExternalTemperatureMonitor.Instance instance)
-            {
-                int cell = Grid.PosToCell(instance.gameObject);
-                var area = instance.occupyArea;
-                float pressure = Grid.Pressure[cell];
-                if (area != null)
-                {
-                    float total = 0f;
-                    int n = 0;
-                    foreach (CellOffset offset in area.OccupiedCellsOffsets)
-                    {
-                        int newCell = Grid.OffsetCell(cell, offset);
-                        if (Grid.IsValidCell(newCell))
-                        {
-                            total += Grid.Pressure[newCell];
-                            n++;
-                        }
-                    }
-                    pressure = total / System.Math.Max(1.0f, n);
-                }
-                return pressure;
-            }
-
             public static bool Prefix(ExternalTemperatureMonitor.Instance __instance, float dt,
                 float ___lastScaldTime)
             {
                 float now = Time.time;
                 var hp = __instance.health;
                 // Avoid damage for pressures < threshold
-                bool pressure = GetCurrentExternalPressure(__instance) > MIN_PRESSURE;
+                bool pressure = GetCurrentExternalPressure(__instance) > GermExposureTuning.
+                    MIN_PRESSURE;
                 if (hp != null && now - ___lastScaldTime > 5.0f && pressure)
                 {
-                    float temp = __instance.AverageExternalTemperature;
+                    float temp = __instance.AverageExternalTemperature, mult =
+                        GermExposureTuning.DAMAGE_PER_K;
                     // For every 5 C outside the limits, damage 1HP more
-                    float damage = System.Math.Max(0.0f, 0.2f * (temp - __instance.
-                        GetScaldingThreshold())) + System.Math.Max(0.0f, 0.2f * (
+                    float damage = System.Math.Max(0.0f, mult * (temp - __instance.
+                        GetScaldingThreshold())) + System.Math.Max(0.0f, mult * (
                         GetFrostbiteThreshold(__instance) - temp));
                     if (damage > 0.0f)
                         hp.Damage(damage * dt);

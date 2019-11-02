@@ -7,7 +7,7 @@ using static SkyLib.OniUtils;
 
 namespace DiseasesReimagined
 {
-    class BuildingsPatch
+    public static class BuildingsPatch
     {
         public static class Mod_OnLoad
         {
@@ -39,8 +39,8 @@ namespace DiseasesReimagined
         {
             public static void Postfix()
             {
-                AddBuildingStrings(UVCleanerConfig.ID, UVCleanerConfig.DisplayName, UVCleanerConfig.Description,
-                    UVCleanerConfig.Effect);
+                AddBuildingStrings(UVCleanerConfig.ID, UVCleanerConfig.DISPLAY_NAME, UVCleanerConfig.DESCRIPTION,
+                    UVCleanerConfig.EFFECT);
                 AddBuildingToBuildMenu("Medical", UVCleanerConfig.ID);
             }
         }

@@ -15,7 +15,7 @@ using Sicknesses = Database.Sicknesses;
 namespace DiseasesReimagined
 {
     // Patches for disease changes
-    class DiseasesPatch
+    public static class DiseasesPatch
     {
         // misc bookkeeping
         public static class Mod_OnLoad
@@ -56,6 +56,24 @@ namespace DiseasesReimagined
                 var medInfo = __result.AddOrGet<MedicinalPill>().info;
                 // The basic cure now doesn't cure the base disease, only certain symptoms
                 medInfo.curedSicknesses = new List<string>(new[] {FoodPoisonVomiting.ID, SlimeCoughSickness.ID});
+            }
+        }
+
+        /// <summary>
+        /// Applied to Db to add a germ resistance debuff to "Dead Tired".
+        /// </summary>
+        [HarmonyPatch(typeof(Db), "Initialize")]
+        public static class Db_Initialize_Patch
+        {
+            /// <summary>
+            /// Applied after Initialize runs.
+            /// </summary>
+            internal static void Postfix(Db __instance)
+            {
+                var effect = __instance.effects.Get("TerribleSleep");
+                if (effect != null)
+                    effect.Add(new AttributeModifier(__instance.Attributes.GermResistance.Id,
+                        GermExposureTuning.GERM_RESIST_TIRED, effect.Name));
             }
         }
 
@@ -155,8 +173,8 @@ namespace DiseasesReimagined
         {
             public static void Postfix(ref List<Sickness.SicknessComponent> ___components)
             {
-                var stressmod =
-                    Mod_OnLoad.FindAttributeModifier(___components, Db.Get().Amounts.Stress.deltaAttribute.Id);
+                var stressmod = Mod_OnLoad.FindAttributeModifier(___components, Db.Get().
+                    Amounts.Stress.deltaAttribute.Id);
                 Traverse.Create(stressmod).SetField("Value", .04166666666f); // 30% stress/cycle
             }
         }
@@ -228,15 +246,15 @@ namespace DiseasesReimagined
             {
                 var rules = __instance.growthRules;
                 // Simplest method is to have food poisoning max population on air be 0
-                rules.ForEach(rule =>
+                foreach (var rule in rules)
                 {
                     if ((rule as StateGrowthRule)?.state == Element.State.Gas)
                     {
                         rule.maxCountPerKG = 0;
                         rule.minCountPerKG = 0;
-                        rule.overPopulationHalfLife = 0.001f;
+                        rule.overPopulationHalfLife = 1f;
                     }
-                });
+                }
                 rules.Add(new ElementGrowthRule(SimHashes.Polypropylene)
                 {
                     populationHalfLife = 300f,

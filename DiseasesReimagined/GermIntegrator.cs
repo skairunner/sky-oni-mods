@@ -23,9 +23,6 @@ namespace DiseasesReimagined
             Sickness.InfectionVector.Exposure, Sickness.InfectionVector.Inhalation
         };
 
-        // The exponential factor for disease contraction chances
-        private const float FACTOR = 0.5f;
-
         // Adjusts the threshold for germ resistance.
         public static float AdjustedThreshold(int threshold, float resistance)
         {
@@ -53,8 +50,8 @@ namespace DiseasesReimagined
             float adjThres = AdjustedThreshold(threshold, resistance), overTotal = Mathf.Floor(
                 total - adjThres);
             // threshold of 1 is instant infection
-            return (overTotal > 0.0f) ? ((threshold < 2) ? 1.0f : (1.0f - Mathf.Exp(-FACTOR *
-                overTotal / adjThres))) : 0.0f;
+            return (overTotal > 0.0f) ? ((threshold < 2) ? 1.0f : (1.0f - Mathf.Exp(
+                -GermExposureTuning.CONTRACT_FACTOR * overTotal / adjThres))) : 0.0f;
         }
 
         // Cached attribute for germ resistance.
