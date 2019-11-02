@@ -8,9 +8,6 @@ namespace DiseasesReimagined
     // Manages transferring germs from sink or shower materials to their users.
     internal sealed class GermySinkManager : IDisposable
     {
-        // The fraction of germs to transfer to the Duplicant washing there.
-        public const float GERMS_TO_TRANSFER = 0.25f;
-
         // The only instance of this class.
         public static GermySinkManager Instance { get; private set; }
 
@@ -54,8 +51,8 @@ namespace DiseasesReimagined
                 var dupe = obj.GetComponent<PrimaryElement>();
                 if (count > 0)
                 {
-                    dupe.AddDisease(germs.idx, Mathf.RoundToInt(GERMS_TO_TRANSFER * count),
-                        "GermySinkManager.FinishGermyWork");
+                    dupe.AddDisease(germs.idx, Mathf.RoundToInt(GermExposureTuning.
+                        SINK_GERMS_TO_TRANSFER * count), "GermySinkManager.FinishGermyWork");
                     obj.AddOrGet<WashCooldownComponent>().OnWashComplete();
                 }
             }

@@ -52,9 +52,6 @@ namespace DiseasesReimagined
         {
             public float lastVomitTime;
 
-            // The number of germs vomited.
-            public const int GermCount = 10000;
-
             public StatesInstance(SicknessInstance master)
                 : base(master)
             {
@@ -73,7 +70,8 @@ namespace DiseasesReimagined
                         sickness.Name + ":" + notificationList.ReduceMessages(false));
                     var diseaseInfo = new SimUtil.DiseaseInfo
                     {
-                        idx = diseaseList.GetIndex(diseaseList.FoodGerms.id), count = 0
+                        idx = diseaseList.GetIndex(diseaseList.FoodGerms.id), count =
+                        GermExposureTuning.FP_GERMS_VOMITED
                     };
                     new DirtyVomitChore(Db.Get().ChoreTypes.Vomit, chore_provider,
                         Db.Get().DuplicantStatusItems.Vomiting, notification, diseaseInfo,
@@ -81,8 +79,9 @@ namespace DiseasesReimagined
                 }
                 // Decrease kcal as well
                 var cals = Db.Get().Amounts.Calories.Lookup(vomiter);
-                if (cals.value > 600)
-                    cals.SetValue(cals.value - 500);
+                float curKcal = cals.value;
+                if (curKcal > GermExposureTuning.KCAL_LOST_VOMIT + 100.0f)
+                    cals.SetValue(curKcal - GermExposureTuning.KCAL_LOST_VOMIT);
             }
 
             void FinishedVomit(GameObject vomiter)
@@ -99,15 +98,15 @@ namespace DiseasesReimagined
             public override void InitializeStates(out BaseState default_state)
             {
                 default_state = Vomit;
-                Vomit.DefaultState(Vomit.normal); //.TagTransition(GameTags.NoOxygen, notbreathing);
+                Vomit.DefaultState(Vomit.normal);
                 Vomit.normal.Enter("SetVomitTime", smi =>
                 {
-                    if (smi.lastVomitTime >= (double) Time.time)
+                    if (smi.lastVomitTime >= Time.time)
                         return;
                     smi.lastVomitTime = Time.time;
                 }).Update("Vomit", (smi, dt) =>
                 {
-                    if (Time.time - (double) smi.lastVomitTime <= 120.0)
+                    if (Time.time - smi.lastVomitTime <= GermExposureTuning.FP_VOMIT_INTERVAL)
                         return;
                     smi.GoTo(Vomit.vomit);
                 }, UpdateRate.SIM_4000ms);

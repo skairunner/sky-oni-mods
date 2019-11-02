@@ -7,9 +7,6 @@ namespace DiseasesReimagined
     // tile on which they stand.
     public sealed class MoreEvilFlower : KMonoBehaviour, ISim4000ms
     {
-        // How many germs per second to infect the tile it is standing on.
-        private const float GERMS_PER_SECOND = 1000.0f;
-
         // The cached disease index to use for infection.
         private byte disease = SimUtil.DiseaseInfo.Invalid.idx;
 
@@ -42,7 +39,7 @@ namespace DiseasesReimagined
                 if (Grid.IsValidCell(cell) && Grid.Solid[cell])
                     // Flower is growing and on a solid cell, infect it!
                     SimMessages.ModifyDiseaseOnCell(cell, disease, Mathf.RoundToInt(
-                        GERMS_PER_SECOND * dt));
+                        GermExposureTuning.SPORECHID_GERMS_PER_S * dt));
             }
         }
     }

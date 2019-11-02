@@ -6,9 +6,6 @@ namespace DiseasesReimagined
     // if it has not been long enough since then.
     public sealed class WashCooldownComponent : MonoBehaviour
     {
-        // How long Duplicants must wait before washing again.
-        public const float WASH_COOLDOWN = 6.0f;
-
         public bool CanWash
         {
             get
@@ -22,7 +19,7 @@ namespace DiseasesReimagined
 
         public void OnWashComplete()
         {
-            NextWashTime = GameClock.Instance.GetTime() + WASH_COOLDOWN;
+            NextWashTime = GameClock.Instance.GetTime() + GermExposureTuning.WASH_COOLDOWN;
         }
     }
 }

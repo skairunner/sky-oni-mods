@@ -1,5 +1,4 @@
 ﻿using KSerialization;
-using STRINGS;
 using System;
 using System.Collections.Generic;
 using Klei;
@@ -44,8 +43,8 @@ namespace DiseasesReimagined
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
-            Subscribe(-592767678, OnOperationalChangedDelegate);
-            Subscribe(824508782, OnActiveChangedDelegate);
+            Subscribe((int)GameHashes.OperationalChanged, OnOperationalChangedDelegate);
+            Subscribe((int)GameHashes.ActiveChanged, OnActiveChangedDelegate);
         }
 
         protected override void OnSpawn()
@@ -90,12 +89,12 @@ namespace DiseasesReimagined
                         germID = invalid;
                     }
                     float newMass = Game.Instance.liquidConduitFlow.AddElement(waterOutputCell,
-                        pe.ElementID, pe.Mass, pe.Temperature, germID, newGerms);
+                        pe.ElementID, mass, pe.Temperature, germID, newGerms);
                     hasLiquid = true;
                     pe.KeepZeroMassObject = true;
                     // Remove the germs from the input
-                    int removeGerms = Mathf.RoundToInt(oldGerms * (newMass / pe.Mass));
-                    pe.Mass -= newMass;
+                    int removeGerms = Mathf.RoundToInt(oldGerms * (newMass / mass));
+                    pe.Mass = mass - newMass;
                     pe.ModifyDiseaseCount(-removeGerms, "UVCleaner.UpdateState");
                     break;
                 }
@@ -140,8 +139,7 @@ namespace DiseasesReimagined
 
         public List<Descriptor> GetDescriptors(BuildingDef def)
         {
-            List<Descriptor> descriptorList = new List<Descriptor>();
-            return descriptorList;
+            return new List<Descriptor>();
         }
 
         private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnOperationalChangedDelegate =
@@ -151,9 +149,12 @@ namespace DiseasesReimagined
             new EventSystem.IntraObjectHandler<UVCleaner>(OnActiveChanged);
     }
 
-    public class SunburnReactable : Reactable
+    /// <summary>
+    /// Burns Duplicants who dare pass too close to a running cleaner.
+    /// </summary>
+    public sealed class SunburnReactable : Reactable
     {
-        private UVCleaner cleaner;
+        private readonly UVCleaner cleaner;
         
         public SunburnReactable(UVCleaner cleaner)
             : base(cleaner.gameObject, nameof(SunburnReactable), Db.Get().ChoreTypes.Checkpoint, 3, 3)
@@ -164,7 +165,8 @@ namespace DiseasesReimagined
 
         public override bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition)
         {
-            return cleaner.operational.IsOperational && !reactor.GetSicknesses().Has(Db.Get().Sicknesses.Sunburn);
+            return cleaner.operational.IsOperational && !reactor.GetSicknesses().Has(Db.Get().
+                Sicknesses.Sunburn);
         }
 
         public override void Update(float dt)
@@ -174,7 +176,8 @@ namespace DiseasesReimagined
 
         protected override void InternalBegin()
         {
-            var sickness = new SicknessExposureInfo(Db.Get().Sicknesses.Sunburn.Id, "UV Cleaner");
+            var sickness = new SicknessExposureInfo(Db.Get().Sicknesses.Sunburn.Id,
+                UVCleanerConfig.DISPLAY_NAME);
             reactor.GetSicknesses().Infect(sickness);
             cleaner.CreateNewReactable();
         }

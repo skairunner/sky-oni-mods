@@ -3,16 +3,38 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
-using Klei.AI;
-using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
 using UnityEngine;
 
 namespace DiseasesReimagined
 {
-    public class PlantsPatch
+    public static class PlantsPatch
     {
-        
+        // Transfers germs from one object to another using their mass ratios
+        public static void TransferByMassRatio(GameObject parent, GameObject child)
+        {
+            if (parent == null)
+                throw new ArgumentNullException("parent");
+            if (child == null)
+                throw new ArgumentNullException("child");
+            PrimaryElement parentElement = parent.GetComponent<PrimaryElement>(),
+                childElement = child.GetComponent<PrimaryElement>();
+            float seedMass;
+            int germs, subGerms;
+            // Distribute the germs by mass ratio if there are any
+            if (parentElement != null && childElement != null && (seedMass = childElement.
+                Mass) > 0.0f && (germs = parentElement.DiseaseCount) > 0)
+            {
+                byte disease = parentElement.DiseaseIdx;
+                subGerms = Mathf.RoundToInt(germs * seedMass / (seedMass +
+                    parentElement.Mass));
+                // Seed germs
+                childElement.AddDisease(disease, subGerms, "TransferToChild");
+                // Plant germs
+                parentElement.AddDisease(disease, -subGerms, "TransferFromParent");
+            }
+        }
+
         // Transfer germs from germy irrigation to the plant
         [HarmonyPatch(typeof(PlantElementAbsorbers), "Sim200ms")]
         public static class PlantElementAbsorbers_Sim200ms_Patch
@@ -33,13 +55,13 @@ namespace DiseasesReimagined
                         if (absorber.consumedElements == null)
                         {
                             var info = absorber.localInfo;
-                            InfectPlant(farmTile, info.massConsumptionRate * dt, absorber,
+                            InfectPlant(farmTile, info.massConsumptionRate * dt, storage,
                                 info.tag);
                         }
                         else
                             // Grrr LocalInfo is not convertible to ConsumeInfo
                             foreach (var info in absorber.consumedElements)
-                                InfectPlant(farmTile, info.massConsumptionRate * dt, absorber,
+                                InfectPlant(farmTile, info.massConsumptionRate * dt, storage,
                                     info.tag);
                     }
                 }
@@ -48,9 +70,8 @@ namespace DiseasesReimagined
 
             // Infect the plant with germs from the irrigation material
             private static void InfectPlant(GameObject farmTile, float required,
-                PlantElementAbsorber absorber, Tag material)
+                Storage storage, Tag material)
             {
-                var storage = absorber.storage;
                 GameObject plant;
                 PrimaryElement irrigant;
                 // Check all available items
@@ -80,31 +101,6 @@ namespace DiseasesReimagined
             }
         }
         
-        // Transfers germs from one object to another using their mass ratios
-        public static void TransferByMassRatio(GameObject parent, GameObject child)
-        {
-            if (parent == null)
-                throw new ArgumentNullException("parent");
-            if (child == null)
-                throw new ArgumentNullException("child");
-            PrimaryElement parentElement = parent.GetComponent<PrimaryElement>(),
-                childElement = child.GetComponent<PrimaryElement>();
-            float seedMass;
-            int germs, subGerms;
-            // Distribute the germs by mass ratio if there are any
-            if (parentElement != null && childElement != null && (seedMass = childElement.
-                Mass) > 0.0f && (germs = parentElement.DiseaseCount) > 0)
-            {
-                byte disease = parentElement.DiseaseIdx;
-                subGerms = Mathf.RoundToInt(germs * seedMass / (seedMass +
-                    parentElement.Mass));
-                // Seed germs
-                childElement.AddDisease(disease, subGerms, "TransferToChild");
-                // Plant germs
-                parentElement.AddDisease(disease, -subGerms, "TransferFromParent");
-            }
-        }
-
         // Transfer germs from plant to fruit
         [HarmonyPatch(typeof(Crop), "SpawnFruit")]
         public static class Crop_SpawnFruit_Patch

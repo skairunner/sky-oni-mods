@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Klei.AI;
 using TUNING;
 using UnityEngine;
 
@@ -8,9 +7,9 @@ namespace DiseasesReimagined
     public class UVCleanerConfig : IBuildingConfig
     {
         public const string ID = "UVCleaner";
-        public const string DisplayName = "UV Cleaner";
-        public const string Description = "The sun is a deadly laser, blindingly bright and prone to inducing sunburn. Naturally, some duplicants decided to bottle it for water sanitization purposes.";
-        public static string Effect = "Sterilizes liquids.";
+        public static LocString DISPLAY_NAME = "UV Cleaner";
+        public static LocString DESCRIPTION = "The sun is a deadly laser, blindingly bright and prone to inducing sunburn. Naturally, some duplicants decided to bottle it for water sanitization purposes.";
+        public static LocString EFFECT = "Sterilizes liquids.";
 
         private static readonly List<Storage.StoredItemModifier> StoredItemModifiers =
             new List<Storage.StoredItemModifier>
