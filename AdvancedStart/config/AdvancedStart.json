@@ -1,0 +1,61 @@
+{
+  "startSkillPoints": 7,
+  "startAttributeBoost": 8,
+  "startTechs": [
+    "FarmingTech",
+    "FineDining",
+    "Agriculture",
+    "Ranching",
+    
+    "PowerRegulation",
+    "Combustion",
+    "ImprovedCombustion",
+    "AdvancedPowerRegulation",
+    "PrettyGoodConductors",
+    
+    "BasicRefinement",
+    "RefinedObjects",
+    "Smelting",
+    
+    "Jobs",
+    "AdvancedResearch",
+    
+    "MedicineI",
+    
+    "LiquidPiping",
+    "ImprovedOxygen",
+    "SanitationSciences",
+    "AdvancedFiltration",
+    "ImprovedPlumbing",
+    
+    "GasPiping",
+    "PressureManagement",
+    "ImprovedGasPiping",
+    
+    "Suits",
+    
+    "InteriorDecor",
+    "Artistry",
+    "Clothing",
+    
+    "LogicControl",
+    "GenericSensors"
+  ],
+  "startItems": {
+    "steel": 1000.0,
+    "copper": 1000.0,
+    "carbon": 2000.0,
+    "water": 2000.0,
+    "polypropylene": 550.0,
+    "cuprite": 2500.0,
+    "fruitcake": 5.0,
+    "hatchBaby": 3,
+    "dreckoBaby": 2,
+    "prickleflowerseed": 6,
+    "dirt": 1000.0,
+    "fertilizer": 1000.0,
+    "sand": 1000.0,
+    "goldamalgam": 1000.0,
+    "algae": 1000.0 
+  }
+}

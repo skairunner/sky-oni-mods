@@ -70,6 +70,7 @@ namespace AdvancedStart
         {
             public static void Postfix(int headquartersCell)
             {
+                
                 new CarePackageInfo("steel", 1001f, null).Deliver(Grid.CellToPosCBC(headquartersCell, Grid.SceneLayer.Move));
                 foreach (var tech in Db.Get().Techs.resources)
                 {
