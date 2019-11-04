@@ -79,5 +79,11 @@ namespace RadiateHeatInSpace
         {
             RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, 0.6f, 0.4f);
         }
+
+        [Patch("rlane.MeteorDefenseLaserConfig ")]
+        public static void Patch_MeteorDefenseLaser(GameObject go)
+        {
+            RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, .2f, 3f);
+        }
     }
 }
