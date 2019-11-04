@@ -6,7 +6,7 @@
     <Version>2.1.0</Version>
     <AssemblyName>SkyLib</AssemblyName>
     <RootNamespace>SkyLib</RootNamespace>
-    <UsesPLib>true</UsesPLib>
+    <UsesPLib>false</UsesPLib>
     <UsesSkyLib>false</UsesSkyLib>
   </PropertyGroup>
 </Project>

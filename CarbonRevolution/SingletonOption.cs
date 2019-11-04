@@ -1,7 +1,7 @@
 ﻿using PeterHan.PLib;
 using PeterHan.PLib.Options;
 
-namespace SkyLib
+namespace CarbonRevolution
 {
     public class SingletonOption<T> where T: class, new()
     {
