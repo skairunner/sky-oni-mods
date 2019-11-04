@@ -47,6 +47,7 @@ namespace StoragePod
             storage.storageFilters = STORAGEFILTERS.NOT_EDIBLE_SOLIDS;
             storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
             storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
+            storage.allowSublimation = false;
             go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.StorageLocker;
             go.AddOrGet<StorageLocker>();
             var config = POptions.ReadSettings<StoragePodOptions>();
