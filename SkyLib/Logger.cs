@@ -11,8 +11,8 @@ namespace SkyLib
 
         public static string GetModVersion(Assembly mod)
         {
-            return ((AssemblyInformationalVersionAttribute)
-                mod.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)[0]).InformationalVersion;
+            return ((AssemblyFileVersionAttribute)
+                mod.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false)[0]).Version;
         }
 
         // Start only once per instance.
