@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <AssemblyTitle>Advanced Start</AssemblyTitle>
+    <Version>1.1.0</Version>
+    <UsesPLib>true</UsesPLib>
+  </PropertyGroup>
+</Project>
