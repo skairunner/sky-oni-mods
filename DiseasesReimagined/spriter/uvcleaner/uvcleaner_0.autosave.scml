@@ -940,10 +940,10 @@
             </timeline>
             <timeline id="14" name="wire_0_000">
                 <key id="0" spin="0">
-                    <object folder="0" file="13" x="-347" y="306"/>
+                    <object folder="0" file="13" x="-395.918367" y="345.918367" angle="0"/>
                 </key>
                 <key id="1" time="594" spin="0">
-                    <object folder="0" file="13" x="265" y="101"/>
+                    <object folder="0" file="13" x="307.142857" y="81.632653" angle="0"/>
                 </key>
             </timeline>
         </animation>
