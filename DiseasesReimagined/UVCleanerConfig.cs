@@ -11,6 +11,9 @@ namespace DiseasesReimagined
         public static LocString DESCRIPTION = "The sun is a deadly laser, blindingly bright and prone to inducing sunburn. Naturally, some duplicants decided to bottle it for water sanitization purposes.";
         public static LocString EFFECT = "Sterilizes liquids.";
 
+        public static int LUX = 500;
+        public static int RADIUS = 3;
+
         private static readonly List<Storage.StoredItemModifier> StoredItemModifiers =
             new List<Storage.StoredItemModifier>
             {
@@ -62,7 +65,11 @@ namespace DiseasesReimagined
 
         public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
         {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);
+            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);       
+            var lightShapePreview = go.AddComponent<LightShapePreview>();
+            lightShapePreview.lux = LUX;
+            lightShapePreview.radius = RADIUS;
+            lightShapePreview.shape = LightShape.Circle;
         }
 
         public override void DoPostConfigureUnderConstruction(GameObject go)
@@ -75,6 +82,17 @@ namespace DiseasesReimagined
             GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);
             go.AddOrGet<LogicOperationalController>();
             go.AddOrGetDef<PoweredActiveController.Def>();
+            var light2D = go.AddOrGet<Light2D>();
+            light2D.overlayColour = LIGHT2D.FLOORLAMP_OVERLAYCOLOR;
+            light2D.Color = new Color(120/255f, 100/255f, 120/255f);
+            light2D.Range = RADIUS;
+            light2D.Angle = 2.6f;
+            light2D.Direction = LIGHT2D.FLOORLAMP_DIRECTION;
+            light2D.Offset = new Vector2(0.05f, 2.5f);
+            light2D.shape = BuildingsPatch.uvlight.GetKLightShape();
+            light2D.drawOverlay = false;
+            light2D.Lux = LUX;
+            go.AddOrGetDef<LightController.Def>();
         }
     }
 }

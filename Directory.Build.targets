@@ -49,12 +49,15 @@
     <ItemGroup>
       <AnimFiles Include="$(ProjectDir)\anim\**\*.*" />
       <WorldgenFiles Include="$(ProjectDir)\worldgen\**\*.*" />
+      <ConfigFiles Include="$(ProjectDir)\config\*.*"/>
     </ItemGroup>
 
     <Copy SourceFiles="@(AnimFiles)"
           DestinationFiles="@(AnimFiles->'$(InstallFolder)\anim\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(WorldgenFiles)"
         DestinationFiles="@(WorldgenFiles->'$(InstallFolder)\worldgen\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ConfigFiles)"
+        DestinationFiles="@(ConfigFiles->'$(InstallFolder)\config\%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(TargetPath)" 
           DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
 

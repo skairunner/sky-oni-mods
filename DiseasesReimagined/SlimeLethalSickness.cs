@@ -12,9 +12,10 @@ namespace DiseasesReimagined
                 new List<InfectionVector>
                 {
                     InfectionVector.Inhalation
-                }, 6100f)
+                }, 3700f)
         {
-            fatalityDuration = 6000f;
+            fatalityDuration = 3600f;
+            AddSicknessComponent(new ModifyParentTimeComponent(SlimeSickness.ID, .5f));
         }
     }
-}
+} 

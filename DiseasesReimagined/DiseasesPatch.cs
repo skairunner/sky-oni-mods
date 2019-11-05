@@ -145,9 +145,10 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(SlimeSickness), MethodType.Constructor)]
         public static class SlimeSickness_Constructor_Patch
         {
-            public static void Postfix(SlimeSickness __instance, ref List<Sickness.SicknessComponent> ___components)
+            public static void Postfix(SlimeSickness __instance, ref List<Sickness.SicknessComponent> ___components, float ___sicknessDuration)
             {
                 var sickness = Traverse.Create(__instance);
+                ___sicknessDuration = 3600f;
 
                 // Remove the vanilla SlimelungComponent
                 ___components.RemoveAll(comp => comp is SlimeSickness.SlimeLungComponent);

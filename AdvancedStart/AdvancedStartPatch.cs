@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using Harmony;
 using static SkyLib.Logger;
 using PeterHan.PLib;
+using PeterHan.PLib.Options;
 using TUNING;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ namespace AdvancedStart
             {
                 StartLogging();
                 PUtil.InitLibrary(false);
+                POptions.RegisterOptions(typeof(AdvancedStartOptions));
             }
         }
 
@@ -36,7 +38,8 @@ namespace AdvancedStart
             {
                 __instance.Apply(go);
                 var resume = go.GetComponent<MinionResume>();
-                resume.AddExperience(XPForSkillPoints(7));
+                var config = AdvancedStartOptions.GetConfig();
+                resume.AddExperience(XPForSkillPoints(config.startSkillPoints));
             }
 
             public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> method)
@@ -54,12 +57,13 @@ namespace AdvancedStart
         {
             public static void Postfix(MinionStartingStats __instance, bool is_starter_minion)
             {
+                var config = AdvancedStartOptions.GetConfig();
                 if (is_starter_minion)
                 {
                     // Set all stats to 10.
                     foreach (var attribute in DUPLICANTSTATS.ALL_ATTRIBUTES)
                     {
-                        __instance.StartingLevels[attribute] += 10;
+                        __instance.StartingLevels[attribute] += config.startAttributeBoost;
                     }
                 }
             }
@@ -70,11 +74,21 @@ namespace AdvancedStart
         {
             public static void Postfix(int headquartersCell)
             {
-                new CarePackageInfo("steel", 1001f, null).Deliver(Grid.CellToPosCBC(headquartersCell, Grid.SceneLayer.Move));
+                var config = AdvancedStartOptions.GetConfig();
+                var techMap = new Dictionary<string, Tech>();
                 foreach (var tech in Db.Get().Techs.resources)
                 {
-                    Research.Instance.GetOrAdd(tech).Purchased();
-                    break;
+                    techMap[tech.Id] = tech;
+                }
+                foreach (var tech in config.startTechs)
+                {
+                    Research.Instance.GetOrAdd(techMap[tech]).Purchased();
+                }
+
+                var target = Grid.CellToPosCBC(headquartersCell, Grid.SceneLayer.Move);
+                foreach (var entry in config.startItems)
+                {
+                    new CarePackageInfo(entry.Key, entry.Value, null).Deliver(target);
                 }
             }    
         }

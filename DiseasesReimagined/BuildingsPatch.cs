@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Harmony;
 using PeterHan.PLib;
+using PeterHan.PLib.Lighting;
 using UnityEngine;
 using static SkyLib.OniUtils;
 
@@ -9,9 +11,39 @@ namespace DiseasesReimagined
 {
     public static class BuildingsPatch
     {
+        public static PLightShape uvlight; 
+            
         public static class Mod_OnLoad
         {
-            public static void OnLoad() {}
+            
+            public static void OnLoad()
+            {
+                uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi", SemicircleLight);
+            }
+        }
+        
+        public static void SemicircleLight(GameObject source, LightingArgs arg)
+        {
+            SemicircleDownHelper(
+                source,
+                arg.SourceCell,
+                arg.Range,
+                arg.Brightness
+            );
+        }
+        
+        private static void SemicircleDownHelper(GameObject source, int sourceCell, int range, 
+            IDictionary<int, float> brightness)
+        {
+            var octants = new OctantBuilder(brightness, sourceCell)
+            {
+                Falloff = 0.5f,
+                SmoothLight = true
+            };
+            octants.AddOctant(range, DiscreteShadowCaster.Octant.E_SE);
+            octants.AddOctant(range, DiscreteShadowCaster.Octant.S_SE);
+            octants.AddOctant(range, DiscreteShadowCaster.Octant.S_SW);
+            octants.AddOctant(range, DiscreteShadowCaster.Octant.W_SW);
         }
 
         [HarmonyPatch(typeof(Debug), "Assert", typeof(bool))]
