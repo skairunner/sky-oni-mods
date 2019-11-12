@@ -71,8 +71,8 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(ExternalTemperatureMonitor), "InitializeStates")]
         public static class ExternalTemperatureMonitor_InitializeStates_Patch
         {
-            public static TempMonitorStateMachine.State frostbite = new TempMonitorStateMachine.State();
-            public static TempMonitorStateMachine.State transitionToFrostbite = new TempMonitorStateMachine.State();
+            public static TempMonitorStateMachine.State frostbite;
+            public static TempMonitorStateMachine.State transitionToFrostbite;
             
             public static StatusItem Frostbitten = new StatusItem(
                 "FROSTBITTEN",
@@ -103,19 +103,9 @@ namespace DiseasesReimagined
             public static void Postfix(ExternalTemperatureMonitor __instance)
             {
                 Frostbitten.AddNotification();
-                var trav = Traverse.Create(frostbite);
-                trav.SetField("sm", __instance);
-                frostbite.defaultState = __instance.GetDefaultState();
-                trav.SetField("root", __instance.root);
-                
-                trav = Traverse.Create(transitionToFrostbite);
-                transitionToFrostbite.defaultState = __instance.GetDefaultState();
-                trav.SetField("sm", __instance);
-                trav.SetField("root", __instance.root);
-                // if we're in frostbite temps, we might be frostbitten
-
+                frostbite = __instance.CreateState(nameof(frostbite));
+                transitionToFrostbite = __instance.CreateState(nameof(transitionToFrostbite));
                 __instance.tooCool.Transition(transitionToFrostbite, smi => isFrostbite(smi) && smi.timeinstate > 3.0f);
-
                 transitionToFrostbite
                     .Transition(__instance.tooCool, smi => !isFrostbite(smi))
                     .Transition(frostbite, smi =>
@@ -123,7 +113,6 @@ namespace DiseasesReimagined
                         // If in a frostbite-valid state and stays there for 1s, we are now frostbitten
                         return isFrostbite(smi) && smi.timeinstate > 1.0;
                     });
-
                 frostbite
                    .Transition(__instance.tooCool, smi => !isFrostbite(smi) && smi.timeinstate > 3.0f) // to leave frostbite state
                    .ToggleExpression(Db.Get().Expressions.Cold) // brr
