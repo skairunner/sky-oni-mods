@@ -2,7 +2,7 @@
 
 The source code for my Oxygen Not Included mods.
 
-Many thanks to Peter Han and Cairath for their help and also for graciously letting me reference their code. I wouldn't have been able to mod ONI without their help. In particular, the build system used in this solution was originally written by Cairath.
+Many thanks to Peter Han and Cairath for their help and also for graciously letting me reference their code. I wouldn't have been able to mod ONI without their help.
 
 ## Issues
 
