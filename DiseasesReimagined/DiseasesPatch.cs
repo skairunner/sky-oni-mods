@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Harmony;
+﻿using Harmony;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
+using PeterHan.PLib.Lighting;
 using ReimaginationTeam.Reimagination;
 using STRINGS;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
@@ -37,6 +38,8 @@ namespace DiseasesReimagined
 
                 ImaginationLoader.Init(typeof(DiseasesPatch));
                 PUtil.RegisterPostload(CompatPatch.CompatPatches);
+				BuildingsPatch.uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi",
+                    BuildingsPatch.SemicircleLight);
             }
             
             // Helper method to find a specific attribute modifier
