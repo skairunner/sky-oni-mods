@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Harmony;
+﻿using Harmony;
 using PeterHan.PLib;
 using PeterHan.PLib.Lighting;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using static SkyLib.OniUtils;
 
@@ -12,16 +12,7 @@ namespace DiseasesReimagined
     public static class BuildingsPatch
     {
         public static PLightShape uvlight; 
-            
-        public static class Mod_OnLoad
-        {
-            
-            public static void OnLoad()
-            {
-                uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi", SemicircleLight);
-            }
-        }
-        
+
         public static void SemicircleLight(GameObject source, LightingArgs arg)
         {
             SemicircleDownHelper(
@@ -46,30 +37,10 @@ namespace DiseasesReimagined
             octants.AddOctant(range, DiscreteShadowCaster.Octant.W_SW);
         }
 
-        [HarmonyPatch(typeof(Debug), "Assert", typeof(bool))]
-        public static class Debug_Assert_Patch1
-        {
-            public static void Postfix(bool condition)
-            {
-                if (!condition)
-                    SkyLib.Logger.LogLine(Environment.StackTrace);
-            }
-        }
-
-        [HarmonyPatch(typeof(Debug), "Assert", typeof(bool), typeof(object))]
-        public static class Debug_Assert_Patch2
-        {
-            public static void Postfix(bool condition)
-            {
-                if (!condition)
-                    SkyLib.Logger.LogLine(Environment.StackTrace);
-            }
-        }
-        
         [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
         public static class GeneratedBuildings_LoadGeneratedBuildings_Path
         {
-            public static void Postfix()
+            public static void Prefix()
             {
                 AddBuildingStrings(UVCleanerConfig.ID, UVCleanerConfig.DISPLAY_NAME, UVCleanerConfig.DESCRIPTION,
                     UVCleanerConfig.EFFECT);
@@ -80,12 +51,11 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(Db),"Initialize")]
         public static class Db_Initialize_Patch
         {
-            public static void Postfix()
+            public static void Prefix()
             {
                 AddBuildingToTech("MedicineIII", UVCleanerConfig.ID);
             }
         }
-        
         
         // Sink germ transfer
         [HarmonyPatch(typeof(HandSanitizer.Work), "OnWorkTick")]
