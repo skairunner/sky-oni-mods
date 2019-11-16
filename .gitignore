@@ -16,6 +16,7 @@ tags
 
 # Generated files
 .idea/**/contentModel.xml
+**/output/
 
 # Sensitive or high-churn files
 .idea/**/dataSources/

@@ -165,7 +165,7 @@ namespace DiseasesReimagined
 
         public override bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition)
         {
-            return cleaner.operational.IsOperational && !reactor.GetSicknesses().Has(Db.Get().
+            return cleaner.operational.IsActive && !reactor.GetSicknesses().Has(Db.Get().
                 Sicknesses.Sunburn);
         }
 
