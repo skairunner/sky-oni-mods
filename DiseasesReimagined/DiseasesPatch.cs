@@ -19,35 +19,32 @@ namespace DiseasesReimagined
     public static class DiseasesPatch
     {
         // misc bookkeeping
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
+            StartLogging();
 
-                AddDiseaseName(SlimeLethalSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME +
-                    " (lethal)");
-                AddDiseaseName(SlimeCoughSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME +
-                    " (cough)");
-                AddDiseaseName(FoodPoisonVomiting.ID, DUPLICANTS.DISEASES.FOODSICKNESS.NAME +
-                    " (vomiting)");
+            AddDiseaseName(SlimeLethalSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME +
+                " (lethal)");
+            AddDiseaseName(SlimeCoughSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME +
+                " (cough)");
+            AddDiseaseName(FoodPoisonVomiting.ID, DUPLICANTS.DISEASES.FOODSICKNESS.NAME +
+                " (vomiting)");
                 
-                SkipNotifications.Skip(SlimeLethalSickness.ID);
-                SkipNotifications.Skip(SlimeCoughSickness.ID);
-                SkipNotifications.Skip(FoodPoisonVomiting.ID);
+            SkipNotifications.Skip(SlimeLethalSickness.ID);
+            SkipNotifications.Skip(SlimeCoughSickness.ID);
+            SkipNotifications.Skip(FoodPoisonVomiting.ID);
 
-                ImaginationLoader.Init(typeof(DiseasesPatch));
-                PUtil.RegisterPostload(CompatPatch.CompatPatches);
-				BuildingsPatch.uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi",
-                    BuildingsPatch.SemicircleLight);
-            }
-            
-            // Helper method to find a specific attribute modifier
-            public static AttributeModifier FindAttributeModifier(List<Sickness.SicknessComponent> components, string id)
-            {
-                var attr_mod = (AttributeModifierSickness)components.Find(comp => comp is AttributeModifierSickness);
-                return Array.Find(attr_mod.Modifers, mod => mod.AttributeId == id);
-            }
+            ImaginationLoader.Init(typeof(DiseasesPatch));
+            PUtil.RegisterPostload(CompatPatch.CompatPatches);
+			BuildingsPatch.uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi",
+                BuildingsPatch.SemicircleLight);
+        }
+
+        // Helper method to find a specific attribute modifier
+        public static AttributeModifier FindAttributeModifier(List<Sickness.SicknessComponent> components, string id)
+        {
+            var attr_mod = (AttributeModifierSickness)components.Find(comp => comp is AttributeModifierSickness);
+            return Array.Find(attr_mod.Modifers, mod => mod.AttributeId == id);
         }
 
         // Modifies the Curative Tablet's valid cures
@@ -121,15 +118,15 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(FoodSickness), MethodType.Constructor)]
         public static class FoodSickness_Constructor_Patch
         {
-            public static void Postfix(FoodSickness __instance, List<Sickness.SicknessComponent> ___components)
+            public static void Postfix(List<Sickness.SicknessComponent> ___components)
             {
                 // Remove the old attr mods and replace with our values. Easier than modifying the AttrModSickness
                 ___components.RemoveAll(comp => comp is AttributeModifierSickness);
                 
-                var trav = Traverse.Create(__instance);
-                trav.CallMethod("AddSicknessComponent",
-                    new AddSicknessComponent(FoodPoisonVomiting.ID, DUPLICANTS.DISEASES.FOODSICKNESS.NAME));
-                trav.CallMethod("AddSicknessComponent",
+                // "New Hope" prevents vomiting
+                ___components.Add(
+                    new AddSicknessComponent(FoodPoisonVomiting.ID, DUPLICANTS.DISEASES.FOODSICKNESS.NAME, "AnewHope"));
+                ___components.Add(
                     new AttributeModifierSickness(new[]
                     {
                         // 200% more bladder/cycle
@@ -148,21 +145,20 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(SlimeSickness), MethodType.Constructor)]
         public static class SlimeSickness_Constructor_Patch
         {
-            public static void Postfix(SlimeSickness __instance, ref List<Sickness.SicknessComponent> ___components, float ___sicknessDuration)
+            public static void Postfix(List<Sickness.SicknessComponent> ___components, ref float ___sicknessDuration)
             {
-                var sickness = Traverse.Create(__instance);
                 ___sicknessDuration = 3600f;
 
                 // Remove the vanilla SlimelungComponent
                 ___components.RemoveAll(comp => comp is SlimeSickness.SlimeLungComponent);
 
                 // Then replace it with our own
-                sickness.CallMethod("AddSicknessComponent",
-                    new AddSicknessComponent(SlimeCoughSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME));
-                sickness.CallMethod("AddSicknessComponent",
+                ___components.Add(
+                    new AddSicknessComponent(SlimeCoughSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME, "AnewHope"));
+                ___components.Add(
                     new AddSicknessComponent(SlimeLethalSickness.ID, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME));
                 // Also add some minor stress
-                sickness.CallMethod("AddSicknessComponent",
+                ___components.Add(
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
                         // 10% stress/cycle
@@ -175,10 +171,10 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(Sunburn), MethodType.Constructor)]
         public static class Sunburn_Constructor_Patch
         {
-            public static void Postfix(ref List<Sickness.SicknessComponent> ___components)
+            public static void Postfix(List<Sickness.SicknessComponent> ___components)
             {
-                var stressmod = Mod_OnLoad.FindAttributeModifier(___components, Db.Get().
-                    Amounts.Stress.deltaAttribute.Id);
+                var stressmod = FindAttributeModifier(___components, Db.Get().Amounts.Stress.
+                    deltaAttribute.Id);
                 Traverse.Create(stressmod).SetField("Value", .04166666666f); // 30% stress/cycle
             }
         }
@@ -186,11 +182,10 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(ZombieSickness), MethodType.Constructor)]
         public static class ZombieSickness_Constructor_Patch
         {
-            public static void Postfix(ZombieSickness __instance)
+            public static void Postfix(List<Sickness.SicknessComponent> ___components)
             {
                 // 20% stress/cycle
-                Traverse.Create(__instance)
-                        .CallMethod("AddSicknessComponent",
+                ___components.Add(
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
                         new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, DUPLICANTS.DISEASES.ZOMBIESICKNESS.NAME)
@@ -205,39 +200,34 @@ namespace DiseasesReimagined
         {
             public static void Postfix(SicknessInstance.States __instance)
             {
-                List<StateMachine.Action> old_enterActions = __instance.infected.enterActions;
-                List<StateMachine.Action> new_enterActions =
-                    __instance.infected.enterActions = new List<StateMachine.Action>();
-                if (old_enterActions == null) return;
-
-                for (var i = 0; i < old_enterActions.Count; i++)
-                {
-                    if (old_enterActions[i].name != "DoNotification()")
+                var old_enterActions = __instance.infected.enterActions;
+                var new_enterActions = (__instance.infected.enterActions =
+                    new List<StateMachine.Action>());
+                if (old_enterActions != null)
+                    for (var i = 0; i < old_enterActions.Count; i++)
                     {
-                        new_enterActions.Add(old_enterActions[i]);
+                        if (old_enterActions[i].name != "DoNotification()")
+                            new_enterActions.Add(old_enterActions[i]);
+                        else
+                            DoNotification(__instance);
                     }
-                    else
-                    {
-                        DoNotification(__instance);
-                    }
-                }
             }
 
             // DoNotification but with a custom version that checks the whitelist.
             public static void DoNotification(SicknessInstance.States __instance)
             {
-                var state_target = Traverse
-                                  .Create(__instance.infected)
-                                  .CallMethod<
-                                       GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance,
-                                           SicknessInstance, object>.TargetParameter>("GetStateTarget");
+                var state_target = Traverse.Create(__instance.infected).CallMethod<
+                    GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance,
+                    SicknessInstance, object>.TargetParameter>("GetStateTarget");
                 __instance.infected.Enter("DoNotification()", smi =>
                 {
                     // if it's not to be skipped, (reluctantly) do the notification.
-                    if (SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id)) return;
-
-                    var notification = Traverse.Create(smi.master).GetField<Notification>("notification");
-                    state_target.Get<Notifier>(smi).Add(notification, string.Empty);
+                    if (!SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id))
+                    {
+                        var notification = Traverse.Create(smi.master).
+                            GetField<Notification>("notification");
+                        state_target.Get<Notifier>(smi).Add(notification, string.Empty);
+                    }
                 });
             }
         }

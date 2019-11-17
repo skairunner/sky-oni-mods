@@ -20,7 +20,7 @@ namespace DiseasesReimagined
         internal const int FP_GERMS_VOMITED = 10000;
 
         // How many seconds between vomits when Food Poisoning is left untreated
-        internal const float FP_VOMIT_INTERVAL = 120.0f;
+        internal const float FP_VOMIT_INTERVAL = 200.0f;
 
         // The germ resistance debuff when Dead Tired.
         internal const float GERM_RESIST_TIRED = -1.0f;

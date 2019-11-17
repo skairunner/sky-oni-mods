@@ -37,7 +37,7 @@ namespace DiseasesReimagined
             }
         }
 
-        // Gets the average external pressure of the cells occupied by the creature
+        // Gets the minimum external pressure of the cells occupied by the creature
         public static float GetCurrentExternalPressure(ExternalTemperatureMonitor.Instance instance)
         {
             int cell = Grid.PosToCell(instance.gameObject);
@@ -46,17 +46,16 @@ namespace DiseasesReimagined
             if (area != null)
             {
                 float total = 0f;
-                int n = 0;
                 foreach (CellOffset offset in area.OccupiedCellsOffsets)
                 {
                     int newCell = Grid.OffsetCell(cell, offset);
                     if (Grid.IsValidCell(newCell))
                     {
-                        total += Grid.Pressure[newCell];
-                        n++;
+                        float newPressure = Grid.Pressure[newCell];
+                        if (newPressure < pressure)
+                            pressure = newPressure;
                     }
                 }
-                pressure = total / System.Math.Max(1.0f, n);
             }
             return pressure;
         }
@@ -96,7 +95,7 @@ namespace DiseasesReimagined
                 // a bit of a kludge, because for some reason Average External Temperature
                 // does not update for Frostbite even though it does for Scalding.
                 var exttemp = data.GetCurrentExternalTemperature;
-                return exttemp < GetFrostbiteThreshold(data) &&
+                return exttemp < GetFrostbiteThreshold(data) && exttemp > 0.01f &&
                     GetCurrentExternalPressure(data) >= GermExposureTuning.MIN_PRESSURE;
             }
 
