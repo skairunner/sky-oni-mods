@@ -22,7 +22,7 @@ namespace ExpandedLights
         {
             public static void Postfix(BuildingDef def, GameObject go)
             {
-                go.AddComponent<LightShapePreview>().shape = ExpandedLightsPatch.FixedSemi.GetKLightShape();
+                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.FixedSemi.GetKLightShape();
             }
         }
 
@@ -31,7 +31,7 @@ namespace ExpandedLights
         {
             public static void Postfix(GameObject go)
             {
-                go.AddComponent<Light2D>().shape = ExpandedLightsPatch.FixedSemi.GetKLightShape();
+                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.FixedSemi.GetKLightShape();
             }
         }
 
@@ -51,7 +51,7 @@ namespace ExpandedLights
         {
             public static void Postfix(BuildingDef def, GameObject go)
             {
-                go.AddComponent<LightShapePreview>().shape = ExpandedLightsPatch.SmoothCircle.GetKLightShape();
+                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.SmoothCircle.GetKLightShape();
             }
         }
 
@@ -60,7 +60,7 @@ namespace ExpandedLights
         {
             public static void Postfix(GameObject go)
             {
-                go.AddComponent<Light2D>().shape = ExpandedLightsPatch.SmoothCircle.GetKLightShape();
+                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.SmoothCircle.GetKLightShape();
             }
         }
     }
