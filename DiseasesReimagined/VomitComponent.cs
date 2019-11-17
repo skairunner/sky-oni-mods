@@ -10,11 +10,10 @@ namespace DiseasesReimagined
     public class FoodPoisonVomiting : Sickness
     {
         public const string ID = "FoodPoisonVomiting";
-        public const string RECOVERY_ID = null; // don't need an immunity effect for a symptom
         public static List<InfectionVector> vectors = new List<InfectionVector>(new[] {InfectionVector.Digestion});
 
         public FoodPoisonVomiting()
-            : base(ID, SicknessType.Ailment, Severity.Minor, 1f, vectors, 1020f)
+            : base(ID, SicknessType.Ailment, Severity.Minor, 1f, vectors, 1019f)
         {
             AddSicknessComponent(new VomitComponent());
             AddSicknessComponent(new ModifyParentTimeComponent(FoodSickness.ID, .8f));
@@ -36,15 +35,16 @@ namespace DiseasesReimagined
 
         public override void OnCure(GameObject go, object instance_data)
         {
-            ((StateMachine.Instance) instance_data).StopSM("Cured");
+            (instance_data as StateMachine.Instance)?.StopSM("Cured");
         }
 
         public override List<Descriptor> GetSymptoms()
         {
             return new List<Descriptor>
             {
-                new Descriptor("Vomiting", DUPLICANTS.DISEASES.FOODSICKNESS.
-                    VOMIT_SYMPTOM_TOOLTIP, Descriptor.DescriptorType.SymptomAidable)
+                new Descriptor(DUPLICANTS.DISEASES.FOODSICKNESS.VOMIT_SYMPTOM, DUPLICANTS.
+                    DISEASES.FOODSICKNESS.VOMIT_SYMPTOM_TOOLTIP, Descriptor.DescriptorType.
+                    SymptomAidable)
             };
         }
 
@@ -101,14 +101,14 @@ namespace DiseasesReimagined
                 Vomit.DefaultState(Vomit.normal);
                 Vomit.normal.Enter("SetVomitTime", smi =>
                 {
-                    if (smi.lastVomitTime >= Time.time)
+                    float time = Time.time;
+                    if (smi.lastVomitTime >= time)
                         return;
-                    smi.lastVomitTime = Time.time;
+                    smi.lastVomitTime = time;
                 }).Update("Vomit", (smi, dt) =>
                 {
-                    if (Time.time - smi.lastVomitTime <= GermExposureTuning.FP_VOMIT_INTERVAL)
-                        return;
-                    smi.GoTo(Vomit.vomit);
+                    if (Time.time - smi.lastVomitTime > GermExposureTuning.FP_VOMIT_INTERVAL)
+                        smi.GoTo(Vomit.vomit);
                 }, UpdateRate.SIM_4000ms);
                 Vomit.vomit.Enter("DoTheVomit", smi => { smi.Vomit(smi.GetMaster().gameObject); })
                      .OnSignal(vomitFinished, Vomit.normal);

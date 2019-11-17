@@ -12,7 +12,7 @@ namespace DiseasesReimagined
                 new List<InfectionVector>
                 {
                     InfectionVector.Inhalation
-                }, 3600f)
+                }, 3690f)
         {
             AddSicknessComponent(new SlimeSickness.SlimeLungComponent());
         }
