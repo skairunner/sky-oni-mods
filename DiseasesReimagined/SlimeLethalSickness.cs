@@ -14,7 +14,7 @@ namespace DiseasesReimagined
                     InfectionVector.Inhalation
                 }, 3700f)
         {
-            fatalityDuration = 3600f;
+            fatalityDuration = 3590f;
             AddSicknessComponent(new ModifyParentTimeComponent(SlimeSickness.ID, .5f));
         }
     }
