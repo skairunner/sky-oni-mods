@@ -52,7 +52,7 @@
             elapsedTime = 0.0f;
             pumpable = UpdateOperational();
             dispenser.GetConduitManager().AddConduitUpdater(OnConduitUpdate,
-                ConduitFlowPriority.Last);
+                ConduitFlowPriority.LastPostUpdate);
         }
 
         protected override void OnCleanUp()
