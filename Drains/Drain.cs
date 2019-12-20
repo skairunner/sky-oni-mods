@@ -9,14 +9,17 @@
         public static readonly Operational.Flag PumpableFlag =
             new Operational.Flag("vent", Operational.Flag.Type.Requirement);
 
+        #pragma warning disable CS0649
         [MyCmpGet] private ElementConsumer consumer;
         [MyCmpGet] private ConduitDispenser dispenser;
-        private float elapsedTime;
-
         [MyCmpReq] private Operational operational;
-        private bool pumpable;
         [MyCmpGet] private KSelectable selectable;
         [MyCmpGet] private Storage storage;
+        #pragma warning restore CS0649
+        
+        private float elapsedTime;
+
+        private bool pumpable;
 
         public ConduitType conduitType => dispenser.conduitType;
 
@@ -82,7 +85,16 @@
 
         private bool IsPumpable(Element.State expected_state, int radius)
         {
-            var cell = Grid.PosToCell(transform.GetPosition());
+            int cell;
+            
+            if (DrainOptions.Instance.UseSolidDrain)
+            {
+                cell = Grid.CellAbove(Grid.PosToCell(transform.GetPosition()));
+            }
+            else
+            {
+                cell = Grid.PosToCell(transform.GetPosition());
+            }
             for (var index1 = 0; index1 < (int) consumer.consumptionRadius; ++index1)
             for (var index2 = 0; index2 < (int) consumer.consumptionRadius; ++index2)
             {

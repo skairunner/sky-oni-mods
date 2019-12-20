@@ -4,5 +4,6 @@
     <TargetFramework>net35</TargetFramework>
     <AssemblyTitle>Drains</AssemblyTitle>
     <Version>2.1.0</Version>
+    <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>

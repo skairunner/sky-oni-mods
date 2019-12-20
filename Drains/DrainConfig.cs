@@ -17,7 +17,7 @@ namespace Drains
                 Id,
                 1,
                 1,
-                "drain_kanim",
+                DrainOptions.Instance.UseSolidDrain ? "solidDrain_kanim" : "drain_kanim",
                 BUILDINGS.HITPOINTS.TIER1,
                 30f,
                 MASS,
@@ -27,6 +27,7 @@ namespace Drains
                 BUILDINGS.DECOR.PENALTY.TIER0,
                 NOISE_POLLUTION.NONE
             );
+            BuildingTemplates.CreateFoundationTileDef(def);
             def.UseStructureTemperature = false;
             def.Floodable = false;
             def.AudioCategory = "Metal";
@@ -40,9 +41,13 @@ namespace Drains
             def.OutputConduitType = ConduitType.Liquid;
             def.ViewMode = OverlayModes.LiquidConduits.ID;
             def.PermittedRotations = PermittedRotations.Unrotatable;
+            def.ObjectLayer = ObjectLayer.Building;
             def.SceneLayer = Grid.SceneLayer.TileMain;
             def.AudioSize = "small";
-            BuildingTemplates.CreateFoundationTileDef(def);
+            if (DrainOptions.Instance.UseSolidDrain)
+            {
+                def.isSolidTile = true;
+            }
             return def;
         }
 
@@ -51,7 +56,9 @@ namespace Drains
             GeneratedBuildings.MakeBuildingAlwaysOperational(go);
             // varioius configs stolen from meshtile
             BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
-            go.AddOrGet<SimCellOccupier>().doReplaceElement = false;
+            var sco = go.AddOrGet<SimCellOccupier>();
+            sco.notifyOnMelt = true;
+            sco.doReplaceElement = DrainOptions.Instance.UseSolidDrain;
             go.AddOrGet<TileTemperature>();
             go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
             // where you add the state machine, i think
@@ -60,11 +67,13 @@ namespace Drains
 
         public override void DoPostConfigureComplete(GameObject go)
         {
+            BuildingTemplates.DoPostConfigure(go);
+            
             GeneratedBuildings.RemoveLoopingSounds(go);
             // MeshTile stuff
             go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
-            go.AddComponent<SimTemperatureTransfer>();
-            go.AddComponent<ZoneTile>();
+//            go.GetComponent<ZoneTile>();
+
             // Pump stuff
             go.AddOrGet<Storage>().capacityKg = 1f;
             var elementConsumer = go.AddOrGet<ElementConsumer>();
@@ -77,9 +86,14 @@ namespace Drains
             conduitDispenser.conduitType = ConduitType.Liquid;
             conduitDispenser.alwaysDispense = true;
             conduitDispenser.elementFilter = null;
-            BuildingTemplates.DoPostConfigure(go);
+
             // add anim
             go.GetComponent<KBatchedAnimController>().initialAnim = "built";
+            
+            if (DrainOptions.Instance.UseSolidDrain)
+            {
+                elementConsumer.sampleCellOffset = new Vector3(0, 1f);
+            }
         }
     }
 }

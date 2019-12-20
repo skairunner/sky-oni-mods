@@ -1,6 +1,8 @@
 ﻿using Harmony;
+using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
+using static PeterHan.PLib.PUtil;
 
 namespace Drains
 {
@@ -14,6 +16,8 @@ namespace Drains
             public static void OnLoad()
             {
                 StartLogging();
+                InitLibrary();
+                POptions.RegisterOptions(typeof(DrainOptions));
             }
         }
 
