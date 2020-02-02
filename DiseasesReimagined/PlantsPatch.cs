@@ -106,41 +106,30 @@ namespace DiseasesReimagined
         public static class Crop_SpawnFruit_Patch
         {
             // Transfers germs from crop to child (fruit)
-            internal static void AddGerms(Crop parent, GameObject child)
+            internal static void AddGerms(PrimaryElement element, float temperature, Crop crop)
             {
-                TransferByMassRatio(parent.gameObject, child);
+                if (element != null && crop != null)
+                {
+                    element.Temperature = temperature;
+                    TransferByMassRatio(crop?.gameObject, element.gameObject);
+                }
             }
 
             public static IEnumerable<CodeInstruction> Transpiler(
                 IEnumerable<CodeInstruction> method)
             {
-                MethodBase setTemp = null, germify = null;
                 // No easy way to get the game object without a replacement or transpiler
-                try
-                {
-                    var tempProp = typeof(PrimaryElement).GetProperty("Temperature",
-                        BindingFlags.Public | BindingFlags.Instance);
-                    // set_Temperature
-                    if (tempProp != null)
-                        setTemp = tempProp.GetSetMethod(true);
-                    germify = typeof(Crop_SpawnFruit_Patch).GetMethod(nameof(AddGerms),
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-                }
-                catch (AmbiguousMatchException e)
-                {
-                    // This is not good
-                    PUtil.LogException(e);
-                }
+                var setTemp = typeof(PrimaryElement).GetPropertySafe<float>(
+                    nameof(PrimaryElement.Temperature), false)?.GetSetMethod();
+                var germify = typeof(Crop_SpawnFruit_Patch).GetMethodSafe(nameof(AddGerms),
+                    true, PPatchTools.AnyArguments);
                 foreach (var instr in method)
-                    if (instr.opcode == OpCodes.Callvirt && instr.operand == setTemp &&
-                        germify != null)
+                    if (instr.opcode == OpCodes.Callvirt && (MethodBase)instr.operand ==
+                        setTemp && germify != null)
                     {
-                        yield return instr;
                         // ldarg.0 loads "this"
                         yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        // ldloc.1 loads the returned GameObject
-                        yield return new CodeInstruction(OpCodes.Ldloc_1);
-                        // Callvirt AddGerms
+                        // Call AddGerms
                         yield return new CodeInstruction(OpCodes.Call, germify);
                     }
                     else
