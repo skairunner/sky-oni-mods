@@ -102,7 +102,6 @@
                 if (Grid.Element[index3].IsState(expected_state))
                     return true;
             }
-
             return false;
         }
 

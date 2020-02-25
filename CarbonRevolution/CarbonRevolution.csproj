@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net35</TargetFramework>
+    <TargetFramework>net40</TargetFramework>
     <AssemblyTitle>Carbon Revolution</AssemblyTitle>
-    <Version>1.1.0</Version>
-    <FileVersion>1.3.3</FileVersion>
+    <Version>1.4.0</Version>
+    <FileVersion>1.4.0</FileVersion>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>

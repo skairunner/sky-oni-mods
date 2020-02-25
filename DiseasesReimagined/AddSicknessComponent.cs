@@ -19,7 +19,7 @@ namespace DiseasesReimagined
 
         public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
         {
-            if (go != null && diseaseInstance.GetPercentCured() < 0.01f)
+            if (go != null && diseaseInstance.GetPercentCured() < 0.001f)
                 GameScheduler.Instance.Schedule("InfectWith" + sickness_id, 0.5f, (_) =>
                 {
                     var effects = go.GetComponent<Effects>();
