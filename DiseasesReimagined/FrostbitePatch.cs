@@ -45,7 +45,6 @@ namespace DiseasesReimagined
             float pressure = Grid.Pressure[cell];
             if (area != null)
             {
-                float total = 0f;
                 foreach (CellOffset offset in area.OccupiedCellsOffsets)
                 {
                     int newCell = Grid.OffsetCell(cell, offset);
