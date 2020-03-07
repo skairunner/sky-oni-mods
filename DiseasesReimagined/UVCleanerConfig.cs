@@ -42,6 +42,8 @@ namespace DiseasesReimagined
             buildingDef.InputConduitType = ConduitType.Liquid;
             buildingDef.OutputConduitType = ConduitType.Liquid;
             buildingDef.Floodable = false;
+            buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(
+                new CellOffset(1, 1));
             buildingDef.PowerInputOffset = new CellOffset(1, 0);
             buildingDef.UtilityInputOffset = new CellOffset(0, 0);
             buildingDef.PermittedRotations = PermittedRotations.FlipH;
@@ -65,21 +67,14 @@ namespace DiseasesReimagined
 
         public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
         {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);       
             var lightShapePreview = go.AddComponent<LightShapePreview>();
             lightShapePreview.lux = LUX;
             lightShapePreview.radius = RADIUS;
             lightShapePreview.shape = LightShape.Circle;
         }
 
-        public override void DoPostConfigureUnderConstruction(GameObject go)
-        {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);
-        }
-
         public override void DoPostConfigureComplete(GameObject go)
         {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);
             go.AddOrGet<LogicOperationalController>();
             go.AddOrGetDef<PoweredActiveController.Def>();
             var light2D = go.AddOrGet<Light2D>();
