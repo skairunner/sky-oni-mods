@@ -39,6 +39,7 @@ namespace CarbonRevolution
             buildingDef.UtilityInputOffset = new CellOffset(0, 0);
             buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
             buildingDef.PermittedRotations = PermittedRotations.FlipH;
+            buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 0));
             return buildingDef;
         }
 
@@ -93,17 +94,10 @@ namespace CarbonRevolution
 
         public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
         {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_0);
-        }
-
-        public override void DoPostConfigureUnderConstruction(GameObject go)
-        {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_0);
         }
 
         public override void DoPostConfigureComplete(GameObject go)
         {
-            GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_0);
             go.AddOrGet<LogicOperationalController>();
             go.AddOrGetDef<PoweredActiveController.Def>();
         }
