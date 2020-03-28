@@ -93,7 +93,7 @@ namespace DiseasesReimagined
                     total += count;
                 else
                     total = count;
-#if false
+#if DEBUG
                 PUtil.LogDebug("{0} has {1:D} germs of {2} by {3} (threshold = {4:D})".F(
                     gameObject.name, count, germ, ge.Vector, threshold));
 #endif
@@ -115,7 +115,9 @@ namespace DiseasesReimagined
                         if (exposure.infect_immediately)
                         {
                             // The ultimate evil flag
+#if DEBUG
                             PUtil.LogDebug("Infecting {0} with {1}".F(gameObject.name, germ));
+#endif
                             monitor.InfectImmediately(exposure);
                         }
                         else
@@ -123,7 +125,7 @@ namespace DiseasesReimagined
                             // "Exposed to slimelung"
                             monitor.SetExposureState(germ, ExposureState.Exposed);
                             monitor.SetExposureTier(germ, tier);
-#if false
+#if DEBUG
                             PUtil.LogDebug("{0} exposed to {1} tier {2:F1}".F(gameObject.name,
                                 germ, tier));
 #endif
@@ -138,7 +140,7 @@ namespace DiseasesReimagined
                     if (total > threshold && tier > monitor.GetExposureTier(germ))
                     {
                         monitor.SetExposureTier(germ, tier);
-#if false
+#if DEBUG
                         PUtil.LogDebug("{0} exposure of {1} upgraded to {2:F1}".F(gameObject.
                             name, germ, tier));
 #endif
@@ -324,7 +326,9 @@ namespace DiseasesReimagined
                             GetInfectionChance(ge, total, GetResistance(exposure)))
                         {
                             // Gotcha!
+#if DEBUG
                             PUtil.LogDebug("Infecting {0} with {1}".F(gameObject.name, germ));
+#endif
                             monitor.SetExposureState(germ, ExposureState.Sick);
                             monitor.InfectImmediately(exposure);
                         }
