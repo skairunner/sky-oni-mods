@@ -41,17 +41,8 @@ namespace WaterproofTransformer
             SoundEventVolumeCache.instance.AddVolume("batterymed_kanim", "Battery_med_rattle",
                 NOISE_POLLUTION.NOISY.TIER2);
             buildingDef.Floodable = false;
+            buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
             return buildingDef;
-        }
-
-        public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
-        {
-            GeneratedBuildings.RegisterLogicPorts(go, null, OUTPUT_PORTS);
-        }
-
-        public override void DoPostConfigureUnderConstruction(GameObject go)
-        {
-            GeneratedBuildings.RegisterLogicPorts(go, null, OUTPUT_PORTS);
         }
 
         public override void DoPostConfigureComplete(GameObject go)
@@ -60,7 +51,6 @@ namespace WaterproofTransformer
             batterySmart.capacity = 20000f;
             batterySmart.joulesLostPerSecond = 0.6666667f;
             batterySmart.powerSortOrder = 1000;
-            GeneratedBuildings.RegisterLogicPorts(go, null, OUTPUT_PORTS);
             base.DoPostConfigureComplete(go);
         }
     }
