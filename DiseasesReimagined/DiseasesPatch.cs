@@ -7,7 +7,6 @@ using ReimaginationTeam.Reimagination;
 using STRINGS;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
@@ -87,14 +86,15 @@ namespace DiseasesReimagined
                 var docStation = Traverse.Create(__instance);
                 ___treatments_available.Clear();
 
-                foreach (var tag in ___storage.items.Where(go => go.HasTag(GameTags.MedicalSupplies))
-                                              .Select(go => go.PrefabID()))
-                {
-                    if (tag == "IntermediateCure")
-                        docStation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
-                    if (tag == "AdvancedCure")
-                        docStation.CallMethod("AddTreatment", ZombieSickness.ID, tag);
-                }
+                foreach (var go in ___storage.items)
+                    if (go.HasTag(GameTags.MedicalSupplies))
+                    {
+                        var tag = go.PrefabID();
+                        if (tag == "IntermediateCure")
+                            docStation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
+                        if (tag == "AdvancedCure")
+                            docStation.CallMethod("AddTreatment", ZombieSickness.ID, tag);
+                    }
 
                 ___smi.sm.hasSupplies.Set(___treatments_available.Count > 0, ___smi);
 
