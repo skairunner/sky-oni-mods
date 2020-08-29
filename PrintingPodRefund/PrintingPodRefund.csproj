@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net40</TargetFramework>
     <AssemblyTitle>Raincheck</AssemblyTitle>
-    <Version>2.1.1</Version>
+    <Version>2.2.1</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>

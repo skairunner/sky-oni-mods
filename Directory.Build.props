@@ -24,7 +24,7 @@
     <Reference Include="UnityEngine.CoreModule" />
   </ItemGroup>
   <ItemGroup Condition=" '$(UsesPLib)' == 'true' ">
-    <PackageReference Include="PLib" Version="2.24.0" />
+    <PackageReference Include="PLib" Version="3.9.0" />
     <Reference Include="Newtonsoft.Json" />
     <Reference Include="Unity.TextMeshPro" />
     <Reference Include="UnityEngine.TextRenderingModule" />

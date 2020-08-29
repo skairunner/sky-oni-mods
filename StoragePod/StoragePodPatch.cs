@@ -7,7 +7,8 @@ using static SkyLib.OniUtils;
 
 namespace StoragePod
 {
-    public class StoragePodOptions
+    [RestartRequired]
+    public class StoragePodOptions : POptions.SingletonOptions<StoragePodOptions>
     {
         public StoragePodOptions()
         {
@@ -29,14 +30,12 @@ namespace StoragePod
         public static bool didStartupBuilding;
         public static bool didStartupDb;
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-                PUtil.InitLibrary(false);
-                POptions.RegisterOptions(typeof(StoragePodOptions));
-            }
+            StartLogging();
+            PUtil.InitLibrary(false);
+            POptions.RegisterOptions(typeof(StoragePodOptions));
+            PUtil.RegisterPatchClass(typeof(StoragePodPatch));
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
@@ -54,17 +53,13 @@ namespace StoragePod
             }
         }
 
-        [HarmonyPatch(typeof(Db))]
-        [HarmonyPatch("Initialize")]
-        public static class Db_Initialize_Patch
+        [PLibMethod(RunAt.BeforeDbInit)]
+        internal static void DbInitPrefix()
         {
-            public static void Prefix()
+            if (!didStartupDb)
             {
-                if (!didStartupDb)
-                {
-                    AddBuildingToTech("RefinedObjects", StoragePodConfig.ID);
-                    didStartupDb = true;
-                }
+                AddBuildingToTech("RefinedObjects", StoragePodConfig.ID);
+                didStartupDb = true;
             }
         }
     }

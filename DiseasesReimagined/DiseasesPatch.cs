@@ -34,8 +34,9 @@ namespace DiseasesReimagined
             SkipNotifications.Skip(FoodPoisonVomiting.ID);
 
             ImaginationLoader.Init(typeof(DiseasesPatch));
-            PUtil.RegisterPostload(CompatPatch.CompatPatches);
-			BuildingsPatch.uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi",
+            PUtil.RegisterPatchClass(typeof(CompatPatch));
+            PUtil.RegisterPatchClass(typeof(DiseasesPatch));
+            BuildingsPatch.uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi",
                 BuildingsPatch.SemicircleLight);
         }
 
@@ -61,19 +62,14 @@ namespace DiseasesReimagined
         /// <summary>
         /// Applied to Db to add a germ resistance debuff to "Dead Tired".
         /// </summary>
-        [HarmonyPatch(typeof(Db), "Initialize")]
-        public static class Db_Initialize_Patch
+        [PLibMethod(RunAt.AfterDbInit)]
+        internal static void AfterDbInit()
         {
-            /// <summary>
-            /// Applied after Initialize runs.
-            /// </summary>
-            internal static void Postfix(Db __instance)
-            {
-                var effect = __instance.effects.Get("TerribleSleep");
-                if (effect != null)
-                    effect.Add(new AttributeModifier(__instance.Attributes.GermResistance.Id,
-                        GermExposureTuning.GERM_RESIST_TIRED, effect.Name));
-            }
+            var db = Db.Get();
+            var effect = db.effects.Get("TerribleSleep");
+            if (effect != null)
+                effect.Add(new AttributeModifier(db.Attributes.GermResistance.Id,
+                    GermExposureTuning.GERM_RESIST_TIRED, effect.Name));
         }
 
         // Adds custom disease cures to the doctor stations

@@ -1,5 +1,4 @@
-﻿using PeterHan.PLib.Options;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
 namespace StoragePod
@@ -50,14 +49,7 @@ namespace StoragePod
             storage.allowSublimation = false;
             go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.StorageLocker;
             go.AddOrGet<StorageLocker>();
-            var config = POptions.ReadSettings<StoragePodOptions>();
-            if (config == null)
-            {
-                POptions.WriteSettings(new StoragePodOptions());
-                config = new StoragePodOptions();
-            }
-
-            go.GetComponent<Storage>().capacityKg = config.podCapacity;
+            go.GetComponent<Storage>().capacityKg = StoragePodOptions.Instance.podCapacity;
         }
 
         public override void DoPostConfigureComplete(GameObject go)

@@ -9,12 +9,9 @@ namespace WaterproofTransformer
         public static bool didStartupBuilding;
         public static bool didStartupDb;
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-            }
+            StartLogging();
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]

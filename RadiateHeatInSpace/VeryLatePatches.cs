@@ -1,89 +1,39 @@
-﻿using System;
-using System.Reflection;
-using Harmony;
-using JetBrains.Annotations;
+﻿using Harmony;
+using PeterHan.PLib;
 using UnityEngine;
-using static SkyLib.Logger;
 
 namespace RadiateHeatInSpace
 {
-    public class Patch : Attribute
+    public static class VeryLatePatches
     {
-        public Patch(string confName)
-        {
-            ConfName = confName;
-        }
-
-        public string ConfName { get; set; }
-    }
-
-    public class VeryLatePatches
-    {
-        public static void DoVeryLatePatches(HarmonyInstance harmony)
-        {
-            LogLine("Starting very late patches.");
-            foreach (var methodInfo in typeof(VeryLatePatches).GetMethods())
-            {
-                object[] attrs = methodInfo.GetCustomAttributes(typeof(Patch), false);
-                if (attrs.Length > 0)
-                {
-                    var confName = ((Patch) attrs[0]).ConfName;
-                    PatchBuilding(harmony, confName, methodInfo);
-                }
-            }
-
-            LogLine("Finished very late patches.");
-        }
-
-        [CanBeNull]
-        public static Type MaybeGetBuilding(string conf_name)
-        {
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                var type = asm.GetType(conf_name);
-                if (type != null) return type;
-            }
-
-            return null;
-        }
-
-        public static void PatchBuilding(HarmonyInstance harmony, string conf_name, MethodInfo postfix)
-        {
-            var type = MaybeGetBuilding(conf_name);
-            if (type != null)
-                harmony.Patch(type.GetMethod("DoPostConfigureComplete"), postfix: new HarmonyMethod(postfix));
-            else
-                LogLine($"Couldn't find '{conf_name}' to patch, skipping.");
-        }
-
-        [Patch("ExpandedLights.FloodlightConfig")]
+        [PLibPatch(RunAt.AfterModsLoad, "DoPostConfigureComplete", IgnoreOnFail = true, PatchType = HarmonyPatchType.Postfix, RequireType = "ExpandedLights.FloodlightConfig")]
         public static void Patch_Floodlights(GameObject go)
         {
-            RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, 0.9f, 1f);
+            RadiatePatch.AttachHeatComponent(go, 0.9f, 1f);
         }
 
-        [Patch("ExpandedLights.TileLightConfig")]
+        [PLibPatch(RunAt.AfterModsLoad, "DoPostConfigureComplete", IgnoreOnFail = true, PatchType = HarmonyPatchType.Postfix, RequireType = "ExpandedLights.TileLightConfig")]
         public static void Patch_TileLight(GameObject go)
         {
-            RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, 0.9f, 0.2f);
+            RadiatePatch.AttachHeatComponent(go, 0.9f, 0.2f);
         }
 
-        [Patch("WaterproofTransformer.WaterproofTransformerConfig")]
+        [PLibPatch(RunAt.AfterModsLoad, "DoPostConfigureComplete", IgnoreOnFail = true, PatchType = HarmonyPatchType.Postfix, RequireType = "WaterproofTransformer.WaterproofTransformerConfig")]
         public static void Patch_WaterproofTransformer(GameObject go)
         {
-            RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, 0.6f, 0.4f);
+            RadiatePatch.AttachHeatComponent(go, 0.6f, 0.4f);
         }
 
-        [Patch("WaterproofTransformer.WaterproofBatteryConfig")]
+        [PLibPatch(RunAt.AfterModsLoad, "DoPostConfigureComplete", IgnoreOnFail = true, PatchType = HarmonyPatchType.Postfix, RequireType = "WaterproofTransformer.WaterproofBatteryConfig")]
         public static void Patch_WaterproofBattery(GameObject go)
         {
-            RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, 0.6f, 0.4f);
+            RadiatePatch.AttachHeatComponent(go, 0.6f, 0.4f);
         }
 
-        [Patch("rlane.MeteorDefenseLaserConfig ")]
+        [PLibPatch(RunAt.AfterModsLoad, "DoPostConfigureComplete", IgnoreOnFail = true, PatchType = HarmonyPatchType.Postfix, RequireType = "rlane.MeteorDefenseLaserConfig")]
         public static void Patch_MeteorDefenseLaser(GameObject go)
         {
-            RadiatePatch.Mod_OnLoad.AttachHeatComponent(go, .2f, 3f);
+            RadiatePatch.AttachHeatComponent(go, .2f, 3f);
         }
     }
 }
