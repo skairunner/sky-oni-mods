@@ -9,12 +9,9 @@ namespace BleachstoneRefinery
         public static bool didStartUp_Building;
         public static bool didStartUp_Db;
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-            }
+            StartLogging();
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]

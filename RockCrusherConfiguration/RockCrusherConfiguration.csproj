@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net40</TargetFramework>
     <AssemblyTitle>Fossil Lime Configuration</AssemblyTitle>
-    <Version>1.2.0</Version>
-    <FileVersion>1.2.0</FileVersion>
+    <Version>1.3.0</Version>
+    <FileVersion>1.3.0</FileVersion>
     <UsesPLib>true</UsesPLib>
     <RootNamespace>FossilLimeConfiguration</RootNamespace>
   </PropertyGroup>

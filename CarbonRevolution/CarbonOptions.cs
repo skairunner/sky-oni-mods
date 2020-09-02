@@ -1,14 +1,12 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using PeterHan.PLib;
 using PeterHan.PLib.Options;
-using SkyLib;
 
 namespace CarbonRevolution
 {
     [RestartRequired]
-    public class CarbonOption: SingletonOption<CarbonOption>
+    public class CarbonOption: POptions.SingletonOptions<CarbonOption>
     {
         [Option("Coal Gen CO2", "How much CO2 in kg/s the Coal Gen emits.")][JsonProperty]
         public float CO2_coalgen { get; set; } = .25f;

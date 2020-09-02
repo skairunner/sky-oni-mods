@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Harmony;
-using static SkyLib.Logger;
+﻿using Harmony;
 using PeterHan.PLib;
 using PeterHan.PLib.Options;
+using System;
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
+using static SkyLib.Logger;
 
 namespace AdvancedStart
 {
     public static class AdvancedStartPatch
     {
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-                PUtil.InitLibrary(false);
-                POptions.RegisterOptions(typeof(AdvancedStartOptions));
-            }
+            StartLogging();
+            PUtil.InitLibrary(false);
+            POptions.RegisterOptions(typeof(AdvancedStartOptions));
         }
 
         [HarmonyPatch(typeof(NewBaseScreen), "SpawnMinions")]
         public static class NewBaseScreen_SpawnMinions_Transpiler
         {
-            
             // reverse-engineered from MinionResume.CalculateTotalSkillPointsGained()
             public static float XPForSkillPoints(int skillPoints)
             {
@@ -46,7 +40,7 @@ namespace AdvancedStart
             {
                 return PPatchTools.ReplaceMethodCall(method,
                     typeof(MinionStartingStats).GetMethodSafe("Apply", false, typeof(GameObject)),
-                    typeof(NewBaseScreen_SpawnMinions_Transpiler).GetMethodSafe("DoXpGive", true,
+                    typeof(NewBaseScreen_SpawnMinions_Transpiler).GetMethodSafe(nameof(DoXpGive), true,
                         typeof(MinionStartingStats), typeof(GameObject))
                 );
             }

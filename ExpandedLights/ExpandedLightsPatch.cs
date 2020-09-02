@@ -22,21 +22,19 @@ namespace ExpandedLights
             Semicircle,
             OffsetSemi;
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                PUtil.InitLibrary(false);
-                StartLogging();
+            PUtil.InitLibrary(false);
+            PUtil.RegisterPatchClass(typeof(ExpandedLightsPatch));
+            StartLogging();
 
-                DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
-                Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
-                SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
-                OffsetCone = PLightShape.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
-                FixedSemi = PLightShape.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
-                Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
-                OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
-            }
+            DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
+            Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
+            SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
+            OffsetCone = PLightShape.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
+            FixedSemi = PLightShape.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
+            Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
+            OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings))]
@@ -62,19 +60,15 @@ namespace ExpandedLights
             }
         }
 
-        [HarmonyPatch(typeof(Db))]
-        [HarmonyPatch("Initialize")]
-        public static class Db_Initialize_Patch
+        [PLibMethod(RunAt.BeforeDbInit)]
+        internal static void DbInitPrefix()
         {
-            public static void Prefix()
+            if (!didStartUp_Db)
             {
-                if (!didStartUp_Db)
-                {
-                    AddBuildingToTech("PrettyGoodConductors", FloodlightConfig.Id);
-                    AddBuildingToTech("Artistry", TileLightConfig.Id);
-                    AddBuildingToTech("Catalytics", LEDLightConfig.Id);
-                    didStartUp_Db = true;
-                }
+                AddBuildingToTech("PrettyGoodConductors", FloodlightConfig.Id);
+                AddBuildingToTech("Artistry", TileLightConfig.Id);
+                AddBuildingToTech("Catalytics", LEDLightConfig.Id);
+                didStartUp_Db = true;
             }
         }
     }

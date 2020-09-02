@@ -14,27 +14,25 @@ namespace CarbonRevolution
         public static bool didStartUp_Building;
         public static bool didStartUp_Db;
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-                PUtil.InitLibrary(false);
-                PUtil.RegisterPostload(CompatabilityPatches.DoPatches);
-                POptions.RegisterOptions(typeof(CarbonOption));
+            StartLogging();
+            PUtil.InitLibrary(false);
+            PUtil.RegisterPatchClass(typeof(CompatabilityPatches));
+            PUtil.RegisterPatchClass(typeof(CarbonRevolutionPatch));
+            POptions.RegisterOptions(typeof(CarbonOption));
 
-                Traverse.Create<OilFloaterConfig>().Field<float>("KG_ORE_EATEN_PER_CYCLE").Value = 40f;
-                Traverse.Create<OilFloaterConfig>().Field<float>("CALORIES_PER_KG_OF_ORE").Value = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / 40f;
-                Traverse.Create<OilFloaterHighTempConfig>().Field<float>("KG_ORE_EATEN_PER_CYCLE").Value = 40f;
-                Traverse.Create<OilFloaterHighTempConfig>().Field<float>("CALORIES_PER_KG_OF_ORE").Value = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / 40f;
+            Traverse.Create<OilFloaterConfig>().Field<float>("KG_ORE_EATEN_PER_CYCLE").Value = 40f;
+            Traverse.Create<OilFloaterConfig>().Field<float>("CALORIES_PER_KG_OF_ORE").Value = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / 40f;
+            Traverse.Create<OilFloaterHighTempConfig>().Field<float>("KG_ORE_EATEN_PER_CYCLE").Value = 40f;
+            Traverse.Create<OilFloaterHighTempConfig>().Field<float>("CALORIES_PER_KG_OF_ORE").Value = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / 40f;
                 
-                // Add Coalplant crop type
-                TUNING.CROPS.CROP_TYPES.Add(
-                    new Crop.CropVal("Carbon", CoalPlantConfig.LIFECYCLE, (int)CoalPlantConfig.COAL_PRODUCED));
-                var RESONANT_NUM_SEEDS = ResonantPlantConfig.COAL_PRODUCED_TOTAL / ResonantPlantConfig.COAL_PER_SEED;
-                TUNING.CROPS.CROP_TYPES.Add(
-                    new Crop.CropVal(ResonantPlantConfig.SEED_ID, ResonantPlantConfig.LIFECYCLE, (int)RESONANT_NUM_SEEDS));
-            }
+            // Add Coalplant crop type
+            TUNING.CROPS.CROP_TYPES.Add(
+                new Crop.CropVal("Carbon", CoalPlantConfig.LIFECYCLE, (int)CoalPlantConfig.COAL_PRODUCED));
+            var RESONANT_NUM_SEEDS = ResonantPlantConfig.COAL_PRODUCED_TOTAL / ResonantPlantConfig.COAL_PER_SEED;
+            TUNING.CROPS.CROP_TYPES.Add(
+                new Crop.CropVal(ResonantPlantConfig.SEED_ID, ResonantPlantConfig.LIFECYCLE, (int)RESONANT_NUM_SEEDS));
         }
         
         // Makes coal generators output more co2
@@ -300,17 +298,14 @@ namespace CarbonRevolution
             }
         }
 
-        [HarmonyPatch(typeof(Db), "Initialize")]
-        public static class Db_Initialize_Patch
+        [PLibMethod(RunAt.BeforeDbInit)]
+        internal static void DbInitPrefix()
         {
-            public static void Prefix()
+            if (!didStartUp_Db)
             {
-                if (!didStartUp_Db)
-                {
-                    AddBuildingToTech("Catalytics", BigCO2ScrubberConfig.ID);
-                    AddBuildingToTech("HighTempForging", RefinedCoalGeneratorConfig.ID);
-                    didStartUp_Db = true;
-                }
+                AddBuildingToTech("Catalytics", BigCO2ScrubberConfig.ID);
+                AddBuildingToTech("HighTempForging", RefinedCoalGeneratorConfig.ID);
+                didStartUp_Db = true;
             }
         }
     }

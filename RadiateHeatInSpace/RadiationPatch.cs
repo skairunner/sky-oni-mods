@@ -27,22 +27,20 @@ namespace RadiateHeatInSpace
             }
         }
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
+            StartLogging();
 
-                PUtil.InitLibrary(false);
-                PUtil.RegisterPostload(VeryLatePatches.DoVeryLatePatches);
-            }
+            PUtil.InitLibrary(false);
+            PUtil.RegisterPatchClass(typeof(VeryLatePatches));
+            PUtil.RegisterPatchClass(typeof(RadiatePatch));
+        }
 
-            public static void AttachHeatComponent(GameObject go, float emissivity, float surface_area)
-            {
-                var heat = go.AddOrGet<RadiatesHeat>();
-                heat.emissivity = emissivity;
-                heat.surface_area = surface_area;
-            }
+        public static void AttachHeatComponent(GameObject go, float emissivity, float surface_area)
+        {
+            var heat = go.AddOrGet<RadiatesHeat>();
+            heat.emissivity = emissivity;
+            heat.surface_area = surface_area;
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings))]
@@ -67,17 +65,13 @@ namespace RadiateHeatInSpace
             }
         }
 
-        [HarmonyPatch(typeof(Db))]
-        [HarmonyPatch("Initialize")]
-        public static class Db_Initialize_Patch
+        [PLibMethod(RunAt.BeforeDbInit)]
+        internal static void DbInitPrefix()
         {
-            public static void Prefix()
+            if (!didStartUp_Db)
             {
-                if (!didStartUp_Db)
-                {
-                    AddBuildingToTech("Smelting", RadiatorTileConfig.Id);
-                    didStartUp_Db = true;
-                }
+                AddBuildingToTech("Smelting", RadiatorTileConfig.Id);
+                didStartUp_Db = true;
             }
         }
 
@@ -86,7 +80,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .2f, 3f);
+                AttachHeatComponent(go, .2f, 3f);
             }
         }
 
@@ -95,7 +89,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .8f, 2f);
+                AttachHeatComponent(go, .8f, 2f);
             }
         }
 
@@ -104,7 +98,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .8f, 4f);
+                AttachHeatComponent(go, .8f, 4f);
             }
         }
 
@@ -113,7 +107,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .7f, 4f);
+                AttachHeatComponent(go, .7f, 4f);
             }
         }
 
@@ -122,7 +116,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .3f, 4f);
+                AttachHeatComponent(go, .3f, 4f);
             }
         }
 
@@ -131,7 +125,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .2f, 6f);
+                AttachHeatComponent(go, .2f, 6f);
             }
         }
 
@@ -140,7 +134,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .6f, 3f);
+                AttachHeatComponent(go, .6f, 3f);
             }
         }
 
@@ -149,7 +143,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .2f, 2f);
+                AttachHeatComponent(go, .2f, 2f);
             }
         }
 
@@ -158,7 +152,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .3f, 2f);
+                AttachHeatComponent(go, .3f, 2f);
             }
         }
 
@@ -167,7 +161,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .4f, 2f);
+                AttachHeatComponent(go, .4f, 2f);
             }
         }
 
@@ -176,7 +170,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .1f, 1f);
+                AttachHeatComponent(go, .1f, 1f);
             }
         }
 
@@ -185,7 +179,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .1f, 12f);
+                AttachHeatComponent(go, .1f, 12f);
             }
         }
 
@@ -194,7 +188,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .5f, .5f);
+                AttachHeatComponent(go, .5f, .5f);
             }
         }
 
@@ -203,7 +197,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .3f, 1.5f);
+                AttachHeatComponent(go, .3f, 1.5f);
             }
         }
 
@@ -212,7 +206,7 @@ namespace RadiateHeatInSpace
         {
             public static void Prefix(GameObject go)
             {
-                Mod_OnLoad.AttachHeatComponent(go, .1f, 21f);
+                AttachHeatComponent(go, .1f, 21f);
             }
         }
     }

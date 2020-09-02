@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net40</TargetFramework>
     <AssemblyTitle>Diseases Reimagined</AssemblyTitle>
-    <Version>1.4.0</Version>
+    <Version>1.5.0</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>

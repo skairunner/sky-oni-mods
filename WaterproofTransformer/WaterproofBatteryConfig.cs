@@ -1,6 +1,6 @@
-﻿using TUNING;
+﻿using System.Collections.Generic;
+using TUNING;
 using UnityEngine;
-using BUILDINGS = STRINGS.BUILDINGS;
 
 namespace WaterproofTransformer
 {
@@ -13,14 +13,6 @@ namespace WaterproofTransformer
             "This battery has been to the Marinara Trench. It was full of tomato-based sauce.";
 
         public static string Effect = "It's a smart battery - but waterproof.";
-
-        private static readonly LogicPorts.Port[] OUTPUT_PORTS = new LogicPorts.Port[1]
-        {
-            LogicPorts.Port.OutputPort(BatterySmart.PORT_ID, new CellOffset(0, 0),
-                BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT,
-                BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_ACTIVE,
-                BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_INACTIVE, true)
-        };
 
         public override BuildingDef CreateBuildingDef()
         {
@@ -37,11 +29,17 @@ namespace WaterproofTransformer
             var tieR1 = NOISE_POLLUTION.NOISY.TIER1;
             var buildingDef = CreateBuildingDef(ID, width, height, hitpoints, anim, construction_time,
                 construction_mass, construction_mats, melting_point, exhaust_temperature_active,
-                self_heat_kilowatts_active, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, tieR1);
+                self_heat_kilowatts_active, BUILDINGS.DECOR.PENALTY.TIER2, tieR1);
             SoundEventVolumeCache.instance.AddVolume("batterymed_kanim", "Battery_med_rattle",
                 NOISE_POLLUTION.NOISY.TIER2);
             buildingDef.Floodable = false;
-            buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
+            buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
+            {
+                LogicPorts.Port.OutputPort(BatterySmart.PORT_ID, new CellOffset(0, 0),
+                    STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT,
+                    STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_ACTIVE,
+                    STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_INACTIVE, true, false)
+            };
             return buildingDef;
         }
 

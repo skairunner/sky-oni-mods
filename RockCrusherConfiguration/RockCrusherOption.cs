@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 using PeterHan.PLib;
 using PeterHan.PLib.Options;
-using SkyLib;
 
 namespace RockCrusherConfiguration
 {        
     [RestartRequired]
-    public class RockCrusherOption: SingletonOption<RockCrusherOption>
+    public class RockCrusherOption : POptions.SingletonOptions<RockCrusherOption>
     {
         [Option("Lime fraction", "The % of fossil that is converted to Lime at a Rock Crusher.")]
         [Limit(0, 100)]

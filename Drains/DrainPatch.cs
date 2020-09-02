@@ -2,7 +2,7 @@
 using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
-using static PeterHan.PLib.PUtil;
+using PeterHan.PLib;
 
 namespace Drains
 {
@@ -11,14 +11,12 @@ namespace Drains
         public static bool didStartUp_Building;
         public static bool didStartUp_Db;
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-                InitLibrary();
-                POptions.RegisterOptions(typeof(DrainOptions));
-            }
+            StartLogging();
+            PUtil.InitLibrary(false);
+            POptions.RegisterOptions(typeof(DrainOptions));
+            PUtil.RegisterPatchClass(typeof(DrainPatch));
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings))]
@@ -37,17 +35,13 @@ namespace Drains
             }
         }
 
-        [HarmonyPatch(typeof(Db))]
-        [HarmonyPatch("Initialize")]
-        public static class Db_Initialize_Patch
+        [PLibMethod(RunAt.BeforeDbInit)]
+        internal static void DbInitPrefix()
         {
-            public static void Prefix()
+            if (!didStartUp_Db)
             {
-                if (!didStartUp_Db)
-                {
-                    AddBuildingToTech("SanitationSciences", DrainConfig.Id);
-                    didStartUp_Db = true;
-                }
+                AddBuildingToTech("SanitationSciences", DrainConfig.Id);
+                didStartUp_Db = true;
             }
         }
     }

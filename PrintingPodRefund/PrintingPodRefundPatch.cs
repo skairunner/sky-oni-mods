@@ -39,14 +39,11 @@ namespace PrintingPodRefund
             return imm.spawnInterval[index];
         }
 
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-                PUtil.InitLibrary(false);
-                POptions.RegisterOptions(typeof(PrintingPodRefundSettings));
-            }
+            StartLogging();
+            PUtil.InitLibrary(false);
+            POptions.RegisterOptions(typeof(PrintingPodRefundSettings));
         }
 
         [HarmonyPatch(typeof(Telepad), "RejectAll")]

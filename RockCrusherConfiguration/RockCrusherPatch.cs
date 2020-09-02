@@ -11,14 +11,11 @@ namespace RockCrusherConfiguration
 {
     public static class FossilLimePatch
     {
-        public static class Mod_OnLoad
+        public static void OnLoad()
         {
-            public static void OnLoad()
-            {
-                StartLogging();
-                PUtil.InitLibrary(false);
-                POptions.RegisterOptions(typeof(RockCrusherOption));
-            }
+            StartLogging();
+            PUtil.InitLibrary(false);
+            POptions.RegisterOptions(typeof(RockCrusherOption));
         }
 
         [HarmonyPatch(typeof(RockCrusherConfig), "ConfigureBuildingTemplate")]
