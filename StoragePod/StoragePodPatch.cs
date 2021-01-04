@@ -14,6 +14,7 @@ namespace StoragePod
         {
             podCapacity = 5000f;
             coolPodCapacity = 50f;
+            podStoresFood = false;
         }
 
         [Option("Pod Capacity", "How many kg of Solids a Storage Pod can store.")]
@@ -23,6 +24,10 @@ namespace StoragePod
         [Option("Cool Pod Capacity", "How many kg of Solids a Cool Pod can store.")]
         [JsonProperty]
         public float coolPodCapacity { get; set; }
+
+        [Option("Pod Stores Food", "Can you store food in a Storage Pod?")]
+        [JsonProperty]
+        public bool podStoresFood { get; set; }
     }
 
     public class StoragePodPatch

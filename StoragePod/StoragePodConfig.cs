@@ -43,7 +43,13 @@ namespace StoragePod
             storage.showInUI = true;
             storage.allowItemRemoval = true;
             storage.showDescriptor = true;
-            storage.storageFilters = STORAGEFILTERS.NOT_EDIBLE_SOLIDS;
+            System.Collections.Generic.List<Tag> storedItems = new System.Collections.Generic.List<Tag>();
+            storedItems.AddRange(STORAGEFILTERS.NOT_EDIBLE_SOLIDS);
+            if (StoragePodOptions.Instance.podStoresFood)
+            {
+                storedItems.AddRange(STORAGEFILTERS.FOOD);
+            }
+            storage.storageFilters = storedItems;
             storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
             storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
             storage.allowSublimation = false;
