@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;

@@ -1,4 +1,4 @@
-﻿namespace Drains
+namespace Drains
 {
     // Essentially Pump but with a couple tiny tweaks. Had to do this because C# doesn't support monkey patches or flexible subclassing.
 
