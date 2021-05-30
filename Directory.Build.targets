@@ -40,7 +40,7 @@
 
   <Target Name="CopyArtifactsToInstallFolder" Condition=" '$(AssemblyName)' != 'SkyLib' ">
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-      <InstallFolder>..\Release\$(ProjectName)</InstallFolder>
+      <InstallFolder>$(ModFolder)\$(ProjectName)</InstallFolder>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
       <InstallFolder>$(ModFolder)\$(ProjectName)</InstallFolder>
@@ -58,6 +58,8 @@
         DestinationFiles="@(WorldgenFiles->'$(InstallFolder)\worldgen\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(ConfigFiles)"
         DestinationFiles="@(ConfigFiles->'$(InstallFolder)\config\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(ProjectDir)\mod_info.yaml"
+          DestinationFiles="$(InstallFolder)\mod_info.yaml" />
     <Copy SourceFiles="$(TargetPath)" 
           DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Harmony;
 using Newtonsoft.Json;
 using PeterHan.PLib;
