@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net40</TargetFramework>
     <AssemblyTitle>Storage Pod</AssemblyTitle>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
   <ItemGroup>
