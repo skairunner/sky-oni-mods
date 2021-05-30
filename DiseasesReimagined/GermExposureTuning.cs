@@ -1,4 +1,4 @@
-﻿using Klei.AI;
+using Klei.AI;
 using PeterHan.PLib;
 using System.Collections.Generic;
 

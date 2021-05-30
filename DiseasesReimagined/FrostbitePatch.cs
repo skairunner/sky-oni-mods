@@ -1,4 +1,4 @@
-﻿using STRINGS;
+using STRINGS;
 using static SkyLib.OniUtils;
 using Harmony;
 using Klei.AI;

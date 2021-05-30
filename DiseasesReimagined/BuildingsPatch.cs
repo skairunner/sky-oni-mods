@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using PeterHan.PLib;
 using PeterHan.PLib.Lighting;
 using System;

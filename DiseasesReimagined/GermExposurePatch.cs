@@ -1,4 +1,4 @@
-﻿using Database;
+using Database;
 using Harmony;
 using Klei.AI;
 using System;

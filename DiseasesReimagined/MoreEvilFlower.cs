@@ -1,4 +1,4 @@
-﻿using Klei;
+using Klei;
 using UnityEngine;
 
 namespace DiseasesReimagined
