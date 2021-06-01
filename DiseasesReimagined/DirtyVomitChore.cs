@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Klei;
 using Klei.AI;
 using TUNING;

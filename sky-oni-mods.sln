@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29123.88
@@ -45,8 +45,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSBuild", "MSBuild", "{9CF1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonRevolution", "CarbonRevolution\CarbonRevolution.csproj", "{CAA9683A-35E9-4836-88D2-AACA2BCD0117}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moon", "Moon\Moon.csproj", "{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RockCrusherConfiguration", "RockCrusherConfiguration\RockCrusherConfiguration.csproj", "{B82A95A0-E97F-4B6C-B254-A33BF63163F6}"
 EndProject
@@ -114,10 +112,6 @@ Global
 		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAA9683A-35E9-4836-88D2-AACA2BCD0117}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5141D57-88BB-4DEA-B324-297A5CC1FFA5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B82A95A0-E97F-4B6C-B254-A33BF63163F6}.Release|Any CPU.ActiveCfg = Release|Any CPU

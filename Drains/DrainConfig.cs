@@ -1,4 +1,4 @@
-﻿using TUNING;
+using TUNING;
 using UnityEngine;
 
 namespace Drains
@@ -7,7 +7,7 @@ namespace Drains
     {
         public const string Id = "Drain";
         public const string DisplayName = "Drain";
-        public const string Description = "9 out of 10 plumbers recommend Drain® for its uncloggability. Our new Drain® companion product, Clog-Be-Gone™, will hit shelves soon.";
+        public const string Description = "9 out of 10 plumbers recommend Drain® for its uncloggability. Our new Drain® companion product, Clog-Be-Gone™, will hit shelves soon. Now less likely to vaporize unexpectedly during normal operation!";
         public static string Effect = "Slowly drains liquids into a pipe.";
         public static float[] MASS = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
 
@@ -18,7 +18,7 @@ namespace Drains
                 1,
                 1,
                 DrainOptions.Instance.UseSolidDrain ? "solidDrain_kanim" : "drain_kanim",
-                BUILDINGS.HITPOINTS.TIER1,
+                BUILDINGS.HITPOINTS.TIER2,
                 30f,
                 MASS,
                 MATERIALS.ALL_METALS,
@@ -30,9 +30,12 @@ namespace Drains
             BuildingTemplates.CreateFoundationTileDef(def);
             def.UseStructureTemperature = false;
             def.Floodable = false;
-            def.AudioCategory = "Metal";
-            def.Overheatable = false;
             def.Entombable = false;
+            def.Overheatable = false;
+            def.UseStructureTemperature = false;
+            def.AudioCategory = "Metal";
+            def.AudioSize = "small";
+            def.SceneLayer = Grid.SceneLayer.TileMain;
             def.IsFoundation = true;
             def.EnergyConsumptionWhenActive = 0f;
             def.ExhaustKilowattsWhenActive = 0f;
@@ -42,7 +45,6 @@ namespace Drains
             def.ViewMode = OverlayModes.LiquidConduits.ID;
             def.PermittedRotations = PermittedRotations.Unrotatable;
             def.ObjectLayer = ObjectLayer.Building;
-            def.SceneLayer = Grid.SceneLayer.TileMain;
             def.AudioSize = "small";
             if (DrainOptions.Instance.UseSolidDrain)
             {
@@ -57,8 +59,15 @@ namespace Drains
             // varioius configs stolen from meshtile
             BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
             var sco = go.AddOrGet<SimCellOccupier>();
-            sco.notifyOnMelt = true;
-            sco.doReplaceElement = DrainOptions.Instance.UseSolidDrain;
+            if (DrainOptions.Instance.UseSolidDrain)
+            {
+                sco.notifyOnMelt = true;
+                sco.doReplaceElement = true;
+            }
+            else
+            {
+                sco.doReplaceElement = false;
+            }
             go.AddOrGet<TileTemperature>();
             go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
             // where you add the state machine, i think

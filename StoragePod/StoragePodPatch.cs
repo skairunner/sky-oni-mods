@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using Newtonsoft.Json;
 using PeterHan.PLib;
 using PeterHan.PLib.Options;
@@ -17,11 +17,11 @@ namespace StoragePod
             podStoresFood = false;
         }
 
-        [Option("Pod Capacity", "How many kg of Solids a Storage Pod can store.")]
+        [Option("Pod Capacity", "How many kg of Solids a Storage Pod can store.", Format = "F0")]
         [JsonProperty]
         public float podCapacity { get; set; }
 
-        [Option("Cool Pod Capacity", "How many kg of Solids a Cool Pod can store.")]
+        [Option("Cool Pod Capacity", "How many kg of Solids a Cool Pod can store.", Format = "F0")]
         [JsonProperty]
         public float coolPodCapacity { get; set; }
 

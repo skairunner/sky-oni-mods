@@ -1,4 +1,4 @@
-﻿using TUNING;
+using TUNING;
 using UnityEngine;
 
 namespace ExpandedLights
@@ -34,7 +34,7 @@ namespace ExpandedLights
             buildingDef.RequiresPowerInput = true;
             buildingDef.PermittedRotations = PermittedRotations.R360;
             buildingDef.EnergyConsumptionWhenActive = 5f;
-            buildingDef.SelfHeatKilowattsWhenActive = 0.1f;
+            buildingDef.SelfHeatKilowattsWhenActive = 0f;
             buildingDef.ViewMode = OverlayModes.Light.ID;
             buildingDef.ObjectLayer = ObjectLayer.Backwall;
             buildingDef.SceneLayer = Grid.SceneLayer.TileMain;

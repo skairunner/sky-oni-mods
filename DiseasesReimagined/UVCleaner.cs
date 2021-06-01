@@ -1,4 +1,4 @@
-﻿using KSerialization;
+using KSerialization;
 using System;
 using System.Collections.Generic;
 using Klei;
@@ -8,7 +8,7 @@ using UnityEngine;
 namespace DiseasesReimagined
 {
     [SerializationConfig(MemberSerialization.OptIn)]
-    public class UVCleaner : KMonoBehaviour, IEffectDescriptor, ISim200ms
+    public class UVCleaner : KMonoBehaviour, IGameObjectEffectDescriptor, ISim200ms
     {
         // The germ fraction to remove.
         public const float GERM_REMOVAL = 0.95f;
@@ -137,7 +137,7 @@ namespace DiseasesReimagined
             }
         }
 
-        public List<Descriptor> GetDescriptors(BuildingDef def)
+        public List<Descriptor> GetDescriptors(GameObject go)
         {
             return new List<Descriptor>();
         }

@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
