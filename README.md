@@ -122,3 +122,8 @@ The configuration can be found in the Mod Menu after you enable the mod. You mus
 ### Storage Pod
 
 Adds a new storage building, the Storage Pod. Costs 100 kg of Refined Metal and can be built anywhere. Stores 5t, and is unlocked with Refined Renovations.
+
+
+# LICENSE
+
+All mods are licensed under MIT, *******EXCEPT** Piped Output, which is licensed under GPL 3.0 instead. 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net40</TargetFramework>
+        <AssemblyTitle>Piped Output</AssemblyTitle>
+        <Version>1.5.0</Version>
+        <UsesPLib>false</UsesPLib>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="UnityEngine">
+            <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+</Project>

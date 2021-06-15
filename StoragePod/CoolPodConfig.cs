@@ -1,23 +1,24 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
 namespace IceMakerPlus
 {
-    internal class StoragePodConfig : IBuildingConfig
+    internal class CoolPodConfig : IBuildingConfig
     {
-        public const string ID = "StoragePodConfig";
-        public const string DisplayName = "Storage Pod";
-        public const string Description = "Now you, too, can store things in pods.";
+        public const string ID = "CoolPodConfig";
+        public const string DisplayName = "Cool Pod";
+        public const string Description = "Snack pod snack pod snack pod!";
 
         public static string Effect =
-            "Stores the Solid resources of your choosing. Compact and can be built anywhere.";
+            "Stores the food of your choosing. Compact and can be built anywhere.";
 
         public override BuildingDef CreateBuildingDef()
         {
             var id = ID;
             var width = 1;
             var height = 1;
-            var anim = "storagePod_kanim";
+            var anim = "coolPod_kanim";
             var hitpoints = 30;
             var construction_time = 10f;
             float[] tieR4 = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
@@ -28,6 +29,13 @@ namespace IceMakerPlus
             var buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints,
                 construction_time, tieR4, construction_mats, melting_point, build_location_rule,
                 BUILDINGS.DECOR.PENALTY.TIER1, none);
+            buildingDef.RequiresPowerInput = true;
+            buildingDef.EnergyConsumptionWhenActive = 60f;
+            buildingDef.ExhaustKilowattsWhenActive = 0.25f;
+            buildingDef.LogicOutputPorts = new List<LogicPorts.Port>()
+            {
+                LogicPorts.Port.OutputPort(FilteredStorage.FULL_PORT_ID, new CellOffset(0, 0), (string) STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT, (string) STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT_ACTIVE, (string) STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT_INACTIVE, false, false)
+            };
             buildingDef.Floodable = false;
             buildingDef.AudioCategory = "Metal";
             buildingDef.Overheatable = false;
@@ -43,19 +51,18 @@ namespace IceMakerPlus
             storage.showInUI = true;
             storage.allowItemRemoval = true;
             storage.showDescriptor = true;
-            System.Collections.Generic.List<Tag> storedItems = new System.Collections.Generic.List<Tag>();
-            storedItems.AddRange(STORAGEFILTERS.NOT_EDIBLE_SOLIDS);
-            if (StoragePodOptions.Instance.podStoresFood)
-            {
-                storedItems.AddRange(STORAGEFILTERS.FOOD);
-            }
+            List<Tag> storedItems = new List<Tag>();
+            storedItems.AddRange(STORAGEFILTERS.FOOD);
             storage.storageFilters = storedItems;
             storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
             storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
             storage.allowSublimation = false;
             go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.StorageLocker;
-            go.AddOrGet<StorageLocker>();
-            go.GetComponent<Storage>().capacityKg = StoragePodOptions.Instance.podCapacity;
+            go.AddOrGet<Refrigerator>();
+            go.GetComponent<Storage>().capacityKg = StoragePodOptions.Instance.coolPodCapacity;
+            Prioritizable.AddRef(go);
+            go.AddOrGet<UserNameable>();
+            go.AddOrGet<DropAllWorkable>();
         }
 
         public override void DoPostConfigureComplete(GameObject go)

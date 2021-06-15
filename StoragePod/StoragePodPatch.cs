@@ -5,7 +5,7 @@ using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
-namespace StoragePod
+namespace IceMakerPlus
 {
     [RestartRequired]
     public class StoragePodOptions : POptions.SingletonOptions<StoragePodOptions>
@@ -52,7 +52,10 @@ namespace StoragePod
                 {
                     AddBuildingStrings(StoragePodConfig.ID, StoragePodConfig.DisplayName, StoragePodConfig.Description,
                         StoragePodConfig.Effect);
+                    AddBuildingStrings(CoolPodConfig.ID, CoolPodConfig.DisplayName, CoolPodConfig.Description,
+                        CoolPodConfig.Effect);
                     AddBuildingToBuildMenu("Base", StoragePodConfig.ID);
+                    AddBuildingToBuildMenu("Food", CoolPodConfig.ID);
                     didStartupBuilding = true;
                 }
             }
@@ -64,6 +67,7 @@ namespace StoragePod
             if (!didStartupDb)
             {
                 AddBuildingToTech("RefinedObjects", StoragePodConfig.ID);
+                AddBuildingToTech("Agriculture", CoolPodConfig.ID);
                 didStartupDb = true;
             }
         }
