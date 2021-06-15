@@ -1,3 +1,4 @@
+using System;
 using Harmony;
 using UnityEngine;
 using NightLib;
@@ -33,126 +34,49 @@ namespace Nightinggale.PipedOutput
             return outputPort;
         }
 
+        private static void PrintPorts(GameObject go)
+        {
+            var controller = go.GetComponent<PortDisplayController>();
+            if (controller != null)
+            {
+                var ports = controller.GetAllPorts();
+                foreach (var port in ports)
+                {
+                    Console.Write($"{port.color}{port.offset}");
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        public static void ConfigureAlgaeHabitat(BuildingDef def)
+        {
+            AddAlgaeHabitat(def.BuildingPreview);
+            AddAlgaeHabitat(def.BuildingUnderConstruction);
+
+            var go = def.BuildingComplete;
+            PortDisplayOutput outputPort = AddAlgaeHabitat(go);
+
+            PipedDispenser dispenser = go.AddComponent<PipedDispenser>();
+            dispenser.AssignPort(outputPort);
+            dispenser.SkipSetOperational = true;
+            dispenser.alwaysDispense = true;
+
+            Storage[] storageComponents = go.GetComponents<Storage>();
+
+            foreach (Storage storage in storageComponents)
+            {
+                if (storage.storageFilters != null && storage.storageFilters.Contains(SimHashes.DirtyWater.CreateTag()))
+                {
+                    dispenser.storage = storage;
+                    break;
+                }
+            }
+        }
+
         public static void AddMineralDeoxidizer(GameObject go)
         {
             ApplyExhaust.AddOutput(go, new CellOffset(0, 1), SimHashes.Oxygen);
-        }
-
-        [HarmonyPatch(typeof(AlgaeHabitatConfig))]
-        [HarmonyPatch("DoPostConfigureComplete")]
-        public static class AlgaeHabitatPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                PortDisplayOutput outputPort = AddAlgaeHabitat(go);
-                BuildingDef def = go.GetComponent<BuildingComplete>().Def;
-                if (def != null)
-                {
-                    AddAlgaeHabitat(def.BuildingPreview);
-                    AddAlgaeHabitat(def.BuildingUnderConstruction);
-                }
-
-                PipedDispenser dispenser = go.AddComponent<PipedDispenser>();
-                dispenser.AssignPort(outputPort);
-                dispenser.SkipSetOperational = true;
-                dispenser.alwaysDispense = true;
-                
-                Storage[] storageComponents = go.GetComponents<Storage>();
-
-                foreach (Storage storage in storageComponents)
-                {
-                    if (storage.storageFilters != null && storage.storageFilters.Contains(SimHashes.DirtyWater.CreateTag()))
-                    {
-                        dispenser.storage = storage;
-                        break;
-                    }
-                }
-            }
-        }
-
-
-        [HarmonyPatch(typeof(ElectrolyzerConfig))]
-        [HarmonyPatch("DoPostConfigurePreview")]
-        public static class ElectrolyzerPreviewPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddElectrolyzer(go);
-            }
-        }
-        [HarmonyPatch(typeof(ElectrolyzerConfig))]
-        [HarmonyPatch("DoPostConfigureUnderConstruction")]
-        public static class ElectrolyzerUnderConstructionPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddElectrolyzer(go);
-            }
-        }
-        [HarmonyPatch(typeof(ElectrolyzerConfig))]
-        [HarmonyPatch("ConfigureBuildingTemplate")]
-        public static class ElectrolyzerCompletePatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddElectrolyzer(go);
-            }
-        }
-
-        [HarmonyPatch(typeof(MineralDeoxidizerConfig))]
-        [HarmonyPatch("DoPostConfigurePreview")]
-        public static class MineralDeoxidizerPreviewPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddMineralDeoxidizer(go);
-            }
-        }
-        [HarmonyPatch(typeof(MineralDeoxidizerConfig))]
-        [HarmonyPatch("DoPostConfigureUnderConstruction")]
-        public static class MineralDeoxidizerUnderConstructionPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddMineralDeoxidizer(go);
-            }
-        }
-        [HarmonyPatch(typeof(MineralDeoxidizerConfig))]
-        [HarmonyPatch("ConfigureBuildingTemplate")]
-        public static class MineralDeoxidizerCompletePatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddMineralDeoxidizer(go);
-            }
-        }
-
-        [HarmonyPatch(typeof(RustDeoxidizerConfig))]
-        [HarmonyPatch("DoPostConfigurePreview")]
-        public static class RustPreviewPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddRust(go);
-            }
-        }
-        [HarmonyPatch(typeof(RustDeoxidizerConfig))]
-        [HarmonyPatch("DoPostConfigureUnderConstruction")]
-        public static class RustUnderConstructionPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddRust(go);
-            }
-        }
-        [HarmonyPatch(typeof(RustDeoxidizerConfig))]
-        [HarmonyPatch("ConfigureBuildingTemplate")]
-        public static class RustCompletePatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddRust(go);
-            }
         }
     }
 }

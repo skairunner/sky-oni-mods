@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NightLib
 {
@@ -82,6 +84,11 @@ namespace NightLib
             if (mode == OverlayModes.SolidConveyor .ID) return this.solidOverlay;
 
             return new List<PortDisplay2>();
+        }
+
+        public List<PortDisplay2> GetAllPorts()
+        {
+            return Enumerable.Concat(Enumerable.Concat(gasOverlay, liquidOverlay), solidOverlay).ToList();
         }
     }
 }

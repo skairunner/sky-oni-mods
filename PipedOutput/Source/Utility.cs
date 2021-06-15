@@ -6,6 +6,20 @@ namespace Nightinggale.PipedOutput
 {
     public static class UtilityBuildingGenerationPatches
     {
+        public static void AddOilWell(BuildingDef def)
+        {
+            AddOilWell(def.BuildingPreview);
+            AddOilWell(def.BuildingUnderConstruction);
+
+            var go = def.BuildingComplete;
+            PortDisplayOutput outputPort = AddOilWell(go);
+            PipedDispenser dispenser = go.AddComponent<PipedDispenser>();
+            dispenser.elementFilter = new SimHashes[] { SimHashes.Methane };
+            dispenser.AssignPort(outputPort);
+            dispenser.alwaysDispense = true;
+            dispenser.SkipSetOperational = true;
+        }
+        
         internal static PortDisplayOutput AddOilWell(GameObject go)
         {
             ApplyExhaust.AddOutput(go, new CellOffset(2, 1), SimHashes.CrudeOil);
@@ -18,39 +32,6 @@ namespace Nightinggale.PipedOutput
             controller.AssignPort(go, outputPort);
 
             return outputPort;
-        }
-
-        [HarmonyPatch(typeof(OilWellCapConfig))]
-        [HarmonyPatch("DoPostConfigurePreview")]
-        public static class OilWellPreviewPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddOilWell(go);
-            }
-        }
-        [HarmonyPatch(typeof(OilWellCapConfig))]
-        [HarmonyPatch("DoPostConfigureUnderConstruction")]
-        public static class OilWellUnderConstructionPatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                AddOilWell(go);
-            }
-        }
-        [HarmonyPatch(typeof(OilWellCapConfig))]
-        [HarmonyPatch("ConfigureBuildingTemplate")]
-        public static class OilWellCompletePatch
-        {
-            public static void Postfix(GameObject go)
-            {
-                PortDisplayOutput outputPort = AddOilWell(go);
-                PipedDispenser dispenser = go.AddComponent<PipedDispenser>();
-                dispenser.elementFilter = new SimHashes[] { SimHashes.Methane };
-                dispenser.AssignPort(outputPort);
-                dispenser.alwaysDispense = true;
-                dispenser.SkipSetOperational = true;
-            }
         }
     }
 }
