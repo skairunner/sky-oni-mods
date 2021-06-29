@@ -7,7 +7,6 @@ namespace Radiator
     public class RadiatorPatch
     {
         public static bool didStartUp_Building;
-        public static bool didStartUp_Db;
 
         public static void OnLoad()
         {
@@ -36,17 +35,13 @@ namespace Radiator
             }
         }
 
-        [HarmonyPatch(typeof(Db))]
-        [HarmonyPatch("Initialize")]
-        public static class Db_Initialize_Patch
+        [HarmonyPatch(typeof(Database.Techs))]
+        [HarmonyPatch("Init")]
+        public static class Techs_Init_Patch
         {
-            public static void Prefix()
+            public static void Postfix(Database.Techs __instance)
             {
-                if (!didStartUp_Db)
-                {
-                    AddBuildingToTech("TemperatureModulation", RadiatorConfig.Id);
-                    didStartUp_Db = true;
-                }
+                AddBuildingToTech(ref __instance, "TemperatureModulation",RadiatorConfig.Id);
             }
         }
     }

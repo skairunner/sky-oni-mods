@@ -9,7 +9,6 @@ namespace Drains
     public class DrainPatch
     {
         public static bool didStartUp_Building;
-        public static bool didStartUp_Db;
 
         public static void OnLoad()
         {
@@ -35,14 +34,17 @@ namespace Drains
             }
         }
 
-        [PLibMethod(RunAt.BeforeDbInit)]
-        internal static void DbInitPrefix()
+
+        [HarmonyPatch(typeof(Database.Techs))]
+        [HarmonyPatch("Init")]
+        public static class Techs_Init_Patch
         {
-            if (!didStartUp_Db)
+            public static void Postfix(Database.Techs __instance)
             {
-                AddBuildingToTech("SanitationSciences", DrainConfig.Id);
-                didStartUp_Db = true;
+                AddBuildingToTech(ref __instance, "SanitationSciences", DrainConfig.Id);
             }
         }
+
+     
     }
 }

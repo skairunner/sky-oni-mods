@@ -8,13 +8,31 @@ using BUILDINGS = TUNING.BUILDINGS;
 
 namespace SkyLib
 {
+    using System;
+
     public static class OniUtils
     {
+
+        // DLC Way using Reference from Harmony
+        public static void AddBuildingToTech(ref Techs techs, string tech, string buildingID)
+        {
+            techs.TryGet(tech).unlockedItemIDs.Add(buildingID);
+        }
+
+        [Obsolete]
         public static void AddBuildingToTech(string tech, string buildingid)
         {
-            var techlist = new List<string>(Techs.TECH_GROUPING[tech]);
-            techlist.Add(buildingid);
-            Techs.TECH_GROUPING[tech] = techlist.ToArray();
+            // New DLC Way
+            var techGroup = Db.Get().Techs.TryGet(tech);
+            if (techGroup != null)
+            {
+                techGroup.unlockedItemIDs.Add(buildingid);
+            }
+
+            // Old Vanilla Way
+            // var techlist = new List<string>(Techs.TECH_GROUPING[tech]);
+            // techlist.Add(buildingid);
+            // Techs.TECH_GROUPING[tech] = techlist.ToArray();
         }
 
         public static void AddBuildingToBuildMenu(HashedString category, string buildingid, string addAfterId = null)

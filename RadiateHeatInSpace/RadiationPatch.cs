@@ -10,7 +10,6 @@ namespace RadiateHeatInSpace
     public class RadiatePatch
     {
         public static bool didStartUp_Building;
-        public static bool didStartUp_Db;
 
         public class PatchedBuilding
         {
@@ -65,13 +64,13 @@ namespace RadiateHeatInSpace
             }
         }
 
-        [PLibMethod(RunAt.BeforeDbInit)]
-        internal static void DbInitPrefix()
+        [HarmonyPatch(typeof(Database.Techs))]
+        [HarmonyPatch("Init")]
+        public static class Techs_Init_Patch
         {
-            if (!didStartUp_Db)
+            public static void Postfix(Database.Techs __instance)
             {
-                AddBuildingToTech("Smelting", RadiatorTileConfig.Id);
-                didStartUp_Db = true;
+                AddBuildingToTech(ref __instance,"Smelting",RadiatorTileConfig.Id);
             }
         }
 
@@ -207,6 +206,24 @@ namespace RadiateHeatInSpace
             public static void Prefix(GameObject go)
             {
                 AttachHeatComponent(go, .1f, 21f);
+            }
+        }
+
+        [HarmonyPatch(typeof(LiquidConduitRadiantConfig), "DoPostConfigureComplete")]
+        public static class LiquidConduitRadiantConfig_Patch
+        {
+            public static void Prefix(GameObject go)
+            {
+                AttachHeatComponent(go, .8f, .2f);
+            }
+        }
+
+        [HarmonyPatch(typeof(GasConduitRadiantConfig), "DoPostConfigureComplete")]
+        public static class GasConduitRadiantConfig_Patch
+        {
+            public static void Prefix(GameObject go)
+            {
+                AttachHeatComponent(go, .8f, .25f);
             }
         }
     }
