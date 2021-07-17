@@ -1,9 +1,10 @@
 using STRINGS;
 using static SkyLib.OniUtils;
-using Harmony;
+using HarmonyLib;
 using Klei.AI;
 using PeterHan.PLib;
 using UnityEngine;
+using PeterHan.PLib.Core;
 
 namespace DiseasesReimagined
 {
@@ -101,8 +102,8 @@ namespace DiseasesReimagined
             public static void Postfix(ExternalTemperatureMonitor __instance)
             {
                 Frostbitten.AddNotification();
-                frostbite = __instance.CreateState(nameof(frostbite));
-                transitionToFrostbite = __instance.CreateState(nameof(transitionToFrostbite));
+                frostbite = PStateMachines.CreateState(__instance, nameof(frostbite));
+                transitionToFrostbite = PStateMachines.CreateState(__instance, nameof(transitionToFrostbite));
                 __instance.tooCool.Transition(transitionToFrostbite, smi => isFrostbite(smi) && smi.timeinstate > 3.0f);
                 transitionToFrostbite
                     .Transition(__instance.tooCool, smi => !isFrostbite(smi))

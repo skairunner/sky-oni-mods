@@ -1,12 +1,15 @@
-using Harmony;
+using HarmonyLib;
+using KMod;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using PeterHan.PLib.Lighting;
+using PeterHan.PLib.PatchManager;
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
 namespace ExpandedLights
 {
-    public class ExpandedLightsPatch
+    public class ExpandedLightsPatch : UserMod2
     {
         public static bool didStartUp_Building;
         public static bool didStartUp_Db;
@@ -14,7 +17,7 @@ namespace ExpandedLights
         /// <summary>
         ///     Light shape: Directed cone according to component rotation
         /// </summary>
-        public static PLightShape DirectedCone,
+        public static ILightShape DirectedCone,
             Beam5,
             SmoothCircle,
             OffsetCone,
@@ -22,19 +25,22 @@ namespace ExpandedLights
             Semicircle,
             OffsetSemi;
 
-        public static void OnLoad()
+        public override void OnLoad(Harmony harmony)
         {
+            base.OnLoad(harmony);
             PUtil.InitLibrary(false);
-            PUtil.RegisterPatchClass(typeof(ExpandedLightsPatch));
+            var patchManager = new PPatchManager(harmony);
+            patchManager.RegisterPatchClass(typeof(ExpandedLightsPatch));
             StartLogging();
 
-            DirectedCone = PLightShape.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
-            Beam5 = PLightShape.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
-            SmoothCircle = PLightShape.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
-            OffsetCone = PLightShape.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
-            FixedSemi = PLightShape.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
-            Semicircle = PLightShape.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
-            OffsetSemi = PLightShape.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
+            var lightManager = new PLightManager();
+            DirectedCone = lightManager.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
+            Beam5 = lightManager.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
+            SmoothCircle = lightManager.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
+            OffsetCone = lightManager.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
+            FixedSemi = lightManager.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
+            Semicircle = lightManager.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
+            OffsetSemi = lightManager.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings))]
@@ -60,8 +66,8 @@ namespace ExpandedLights
             }
         }
 
-        [PLibMethod(RunAt.BeforeDbInit)]
-        internal static void DbInitPrefix()
+        [PLibMethod(RunAt.AfterDbInit)]
+        internal static void DbInitPostfix()
         {
             if (!didStartUp_Db)
             {

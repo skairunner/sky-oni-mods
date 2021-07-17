@@ -45,7 +45,7 @@ namespace ExpandedLights
             var lightShapePreview = go.AddComponent<LightShapePreview>();
             lightShapePreview.lux = lux;
             lightShapePreview.radius = range;
-            lightShapePreview.shape = ExpandedLightsPatch.Beam5.GetKLightShape();
+            lightShapePreview.shape = ExpandedLightsPatch.Beam5.KleiLightShape;
         }
 
         public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
@@ -64,7 +64,7 @@ namespace ExpandedLights
             light2D.Angle = 2.6f;
             light2D.Direction = LIGHT2D.CEILINGLIGHT_DIRECTION;
             light2D.Offset = LIGHT2D.CEILINGLIGHT_OFFSET;
-            light2D.shape = ExpandedLightsPatch.Beam5.GetKLightShape();
+            light2D.shape = ExpandedLightsPatch.Beam5.KleiLightShape;
             light2D.drawOverlay = true;
             light2D.Lux = lux;
             go.AddOrGetDef<LightController.Def>();

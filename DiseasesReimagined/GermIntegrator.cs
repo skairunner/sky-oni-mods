@@ -1,7 +1,8 @@
-using Harmony;
+using HarmonyLib;
 using Klei.AI;
 using KSerialization;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -304,7 +305,7 @@ namespace DiseasesReimagined
             if (inst == null)
                 random = new SeededRandom(GameClock.Instance.GetCycle());
             else
-                random = Traverse.Create(inst).GetField<SeededRandom>("rng");
+                random = Traverse.Create(inst).Field("rng").GetValue<SeededRandom>();
             foreach (var pair in integratedExposure)
             {
                 var ge = pair.Key;

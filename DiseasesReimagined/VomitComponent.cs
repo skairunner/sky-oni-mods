@@ -65,7 +65,7 @@ namespace DiseasesReimagined
                 if (chore_provider != null)
                 {
                     var notification = new Notification("Vomiting",
-                        NotificationType.Bad, HashedString.Invalid,
+                        NotificationType.Bad,
                         (notificationList, data) => "These Duplicants are vomiting from " +
                         sickness.Name + ":" + notificationList.ReduceMessages(false));
                     var diseaseInfo = new SimUtil.DiseaseInfo

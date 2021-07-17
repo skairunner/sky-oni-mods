@@ -17,6 +17,7 @@
  */
 
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -49,9 +50,9 @@ namespace ReimaginationTeam.Reimagination {
             var asm = Assembly.GetExecutingAssembly();
             PUtil.InitLibrary();
             // Create imagination mod table
-            var imag = PSharedData.GetData<IDictionary<string, Assembly>>(IMAGINATION_TABLE);
+            var imag = PRegistry.GetData<IDictionary<string, Assembly>>(IMAGINATION_TABLE);
             if (imag == null)
-                PSharedData.PutData(IMAGINATION_TABLE, imag = new Dictionary<string,
+                PRegistry.PutData(IMAGINATION_TABLE, imag = new Dictionary<string,
                     Assembly>(8));
             var rootNS = rootType.Namespace;
             if (imag.ContainsKey(rootNS))
@@ -73,8 +74,10 @@ namespace ReimaginationTeam.Reimagination {
 #if DEBUG
             if (loader == null)
                 PUtil.LogWarning("IsFinalDestination() called before save loaded!");
-#endif
-            return loader?.worldGen?.Settings?.world?.name == FINALDEST_KEY;
+#endif 
+            // Not sure what the new API is for this.
+            // return loader?.worldGen?.Settings?.world?.name == FINALDEST_KEY;
+            return false;
         }
 
         /// <summary>
@@ -85,7 +88,7 @@ namespace ReimaginationTeam.Reimagination {
         /// type.</param>
         /// <returns>true if that mod has been loaded and called Init(), or false otherwise.</returns>
         public static bool IsModLoaded(string modID) {
-            var imag = PSharedData.GetData<IDictionary<string, Assembly>>(IMAGINATION_TABLE);
+            var imag = PRegistry.GetData<IDictionary<string, Assembly>>(IMAGINATION_TABLE);
             return imag != null && imag.ContainsKey(modID);
         }
     }

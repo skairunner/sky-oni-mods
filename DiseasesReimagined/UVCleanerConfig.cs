@@ -84,7 +84,7 @@ namespace DiseasesReimagined
             light2D.Angle = 2.6f;
             light2D.Direction = LIGHT2D.FLOORLAMP_DIRECTION;
             light2D.Offset = new Vector2(0.05f, 2.5f);
-            light2D.shape = BuildingsPatch.uvlight.GetKLightShape();
+            light2D.shape = BuildingsPatch.uvlight.KleiLightShape;
             light2D.drawOverlay = false;
             light2D.Lux = LUX;
             go.AddOrGetDef<LightController.Def>();

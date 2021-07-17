@@ -43,16 +43,16 @@ namespace ExpandedLights
         }
 
         // Generate light in cone pattern according to the source's direction
-        public static void LightCone(GameObject source, LightingArgs arg)
+        public static void LightCone(LightingArgs arg)
         {
-            _LightConeHelper(source, arg.SourceCell, arg.Range, arg.Brightness);
+            _LightConeHelper(arg.Source, arg.SourceCell, arg.Range, arg.Brightness);
         }
 
         // A cone that starts light one tile offset from the source.
-        public static void OffsetCone(GameObject source, LightingArgs arg)
+        public static void OffsetCone(LightingArgs arg)
         {
             var sourceCell = arg.SourceCell;
-            var rotation = source.GetComponent<Rotatable>();
+            var rotation = arg.Source.GetComponent<Rotatable>();
             var offset_dir = new Vector2I(0, 0);
             switch (rotation?.GetOrientation())
             {
@@ -76,10 +76,10 @@ namespace ExpandedLights
             }
 
             var new_sourceCell = Grid.OffsetCell(sourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
-            _LightConeHelper(source, new_sourceCell, arg.Range, arg.Brightness);
+            _LightConeHelper(arg.Source, new_sourceCell, arg.Range, arg.Brightness);
         }
 
-        public static void LightCircle(GameObject source, LightingArgs arg)
+        public static void LightCircle(LightingArgs arg)
         {
             var sourceCell = arg.SourceCell;
             var range = arg.Range;
@@ -99,9 +99,9 @@ namespace ExpandedLights
             octants.AddOctant(range, DiscreteShadowCaster.Octant.W_SW);
         }
 
-        public static void OffsetSemicircle(GameObject source, LightingArgs arg)
+        public static void OffsetSemicircle(LightingArgs arg)
         {
-            var rotatable = source.GetComponent<Rotatable>();
+            var rotatable = arg.Source.GetComponent<Rotatable>();
             var orient = rotatable == null ? Orientation.Neutral : rotatable.GetOrientation();
             var offset_dir = new Vector2I(0, 0);
             switch (orient)
@@ -127,14 +127,14 @@ namespace ExpandedLights
 
             var new_sourceCell = Grid.OffsetCell(arg.SourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
 
-            _LightSemicircleHelper(source, new_sourceCell, arg.Range, orient, arg.Brightness);
+            _LightSemicircleHelper(arg.Source, new_sourceCell, arg.Range, orient, arg.Brightness);
         }
 
         // a LightSemicircle that always points down
-        public static void FixedLightSemicircle(GameObject source, LightingArgs arg)
+        public static void FixedLightSemicircle(LightingArgs arg)
         {
             _LightSemicircleHelper(
-                source,
+                arg.Source,
                 arg.SourceCell,
                 arg.Range,
                 Orientation.R180,
@@ -142,11 +142,11 @@ namespace ExpandedLights
             );
         }
 
-        public static void LightSemicircle(GameObject source, LightingArgs arg)
+        public static void LightSemicircle(LightingArgs arg)
         {
-            var thing = source.GetComponent<Rotatable>();
+            var thing = arg.Source.GetComponent<Rotatable>();
             _LightSemicircleHelper(
-                source,
+                arg.Source,
                 arg.SourceCell,
                 arg.Range,
                 thing != null ? thing.GetOrientation() : Orientation.Neutral,
@@ -196,9 +196,9 @@ namespace ExpandedLights
             }
         }
 
-        public static void LinearLight5(GameObject source, LightingArgs arg)
+        public static void LinearLight5(LightingArgs arg)
         {
-            _LinearLightHelper(source, arg.SourceCell, arg.Range, arg.Brightness, 0f, 5);
+            _LinearLightHelper(arg.Source, arg.SourceCell, arg.Range, arg.Brightness, 0f, 5);
         }
 
         public static float AdjustLightByTile(int cell, float brightness)

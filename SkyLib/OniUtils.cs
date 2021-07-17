@@ -12,9 +12,7 @@ namespace SkyLib
     {
         public static void AddBuildingToTech(string tech, string buildingid)
         {
-            var techlist = new List<string>(Techs.TECH_GROUPING[tech]);
-            techlist.Add(buildingid);
-            Techs.TECH_GROUPING[tech] = techlist.ToArray();
+            Db.Get().Techs.Get(tech).unlockedItemIDs.Add(buildingid);
         }
 
         public static void AddBuildingToBuildMenu(HashedString category, string buildingid, string addAfterId = null)

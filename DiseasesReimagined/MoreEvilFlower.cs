@@ -35,11 +35,14 @@ namespace DiseasesReimagined
                 IsWilting() == false && disease != SimUtil.DiseaseInfo.Invalid.idx &&
                 uprooted != null)
             {
-                cell = Grid.OffsetCell(cell, uprooted.monitorCell);
-                if (Grid.IsValidCell(cell) && Grid.Solid[cell])
-                    // Flower is growing and on a solid cell, infect it!
-                    SimMessages.ModifyDiseaseOnCell(cell, disease, Mathf.RoundToInt(
-                        GermExposureTuning.SPORECHID_GERMS_PER_S * dt));
+                foreach (var monitoredCell in uprooted.monitorCells)
+                {
+                    cell = Grid.OffsetCell(cell, monitoredCell);
+                    if (Grid.IsValidCell(cell) && Grid.Solid[cell])
+                        // Flower is growing and on a solid cell, infect it!
+                        SimMessages.ModifyDiseaseOnCell(cell, disease, Mathf.RoundToInt(
+                            GermExposureTuning.SPORECHID_GERMS_PER_S * dt));
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Harmony;
+﻿using HarmonyLib;
+using KMod;
 using static SkyLib.Logger;
 
 namespace DrywallHidesPipes
@@ -7,10 +8,11 @@ namespace DrywallHidesPipes
     {
         public static bool didStartUp_Building = false;
 
-        public static class Mod_OnLoad
+        public class Mod_OnLoad : UserMod2
         {
-            public static void OnLoad()
+            public override void OnLoad(Harmony harmony)
             {
+                base.OnLoad(harmony);
                 StartLogging();
             }
         }

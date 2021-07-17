@@ -1,5 +1,6 @@
 using Klei.AI;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using System.Collections.Generic;
 
 namespace DiseasesReimagined
