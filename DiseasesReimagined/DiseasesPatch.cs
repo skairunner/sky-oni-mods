@@ -37,7 +37,7 @@ namespace DiseasesReimagined
 
             base.OnLoad(harmony);
 
-            ImaginationLoader.Init(typeof(DiseasesPatch));
+            ImaginationLoader.Instance.Register(typeof(DiseasesPatch));
             var patchManager = new PPatchManager(harmony);
             patchManager.RegisterPatchClass(typeof(CompatPatch));
             patchManager.RegisterPatchClass(typeof(DiseasesPatch));
