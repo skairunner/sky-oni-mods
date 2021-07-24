@@ -84,8 +84,9 @@ namespace DiseasesReimagined
                     if (disease > 0 && (plant = farmTile.GetComponent<PlantablePlot>()?.
                         Occupant) != null)
                     {
-                        plant.GetComponent<PrimaryElement>()?.AddDisease(irrigant.DiseaseIdx,
-                            Mathf.RoundToInt(required * disease / mass), "Irrigation");
+                        var diseaseCount = Mathf.RoundToInt(required * disease / mass);
+                        plant.GetComponent<PrimaryElement>()?.AddDisease(irrigant.DiseaseIdx, diseaseCount, "Irrigation");
+                        irrigant.ModifyDiseaseCount(-diseaseCount, "Irrigation");
                     }
                     required -= consumed;
                 }
