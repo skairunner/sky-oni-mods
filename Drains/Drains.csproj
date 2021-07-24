@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net40</TargetFramework>
-    <AssemblyTitle>Drains</AssemblyTitle>
-    <Version>3.2.0</Version>
-    <UsesPLib>true</UsesPLib>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net471</TargetFramework>
+        <AssemblyName>Drains</AssemblyName>
+        <Version>3.3.0</Version>
+        <UsesPLib>true</UsesPLib>
+    </PropertyGroup>
+    <PropertyGroup>
+        <GenerateYAML>true</GenerateYAML>
+        <ModName>Drains</ModName>
+        <ModDescription></ModDescription>
+        <SupportedContent>ALL</SupportedContent>
+        <APIVersion>2</APIVersion>
+        <MinimumSupportedBuild>471618</MinimumSupportedBuild>
+    </PropertyGroup>
 </Project>

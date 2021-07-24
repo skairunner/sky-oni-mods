@@ -16,20 +16,36 @@
     </ItemGroup>
   </Target>
 
+    <Target Name="GenerateYAML" BeforeTargets="Build" Condition="'$(GenerateYAML)' == 'true'">
+        <GenerateMetadataFiles
+            OutputPath="$(TargetDir)"
+
+            Title="$(ModName)"
+            Description="$(ModDescription)"
+            StaticID="$(AssemblyName)"
+      
+            SupportedContent="$(SupportedContent)"
+            MinimumSupportedBuild="$(MinimumSupportedBuild)"
+            Version="$(FileVersion)"
+            APIVersion="$(APIVersion)"
+        />
+    </Target>
+
   <Target Name="ILRepack" AfterTargets="CopyFilesToOutputDirectory">
     <ItemGroup>
       <InputAssemblies
         Include="$(TargetDir)\*.dll"
-        Exclude="$(TargetPath);$(TargetDir)\Microsoft.*.dll;$(TargetDir)\System.*.dll;" />
+        Exclude="**/0Harmony.dll; **/System.*; **/Microsoft.*" />
     </ItemGroup>
 
     <ILRepack
       TargetPlatformVersion="v4"
-      OutputType="SameAsPrimaryAssembly"
-      MainAssembly="$(TargetPath)"
-      OutputAssembly="$(TargetPath)"
+      TargetKind="SameAsPrimaryAssembly"
       InputAssemblies="@(InputAssemblies)"
-      WorkingDirectory="$(GameFolder)" />
+      Wildcards="true"
+      LibraryPath="$(GameFolder)"
+      Parallel="true"
+      OutputFile="$(TargetPath)"/>
   </Target>
 
   <Target Name="Pdb2Mdb" AfterTargets="ILRepack">
@@ -50,6 +66,7 @@
       <AnimFiles Include="$(ProjectDir)\anim\**\*.*" />
       <WorldgenFiles Include="$(ProjectDir)\worldgen\**\*.*" />
       <ConfigFiles Include="$(ProjectDir)\config\*.*"/>
+      <YamlFiles Include="$(TargetDir)\*.yaml"/>
     </ItemGroup>
 
     <Copy SourceFiles="@(AnimFiles)"
@@ -58,11 +75,10 @@
         DestinationFiles="@(WorldgenFiles->'$(InstallFolder)\worldgen\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(ConfigFiles)"
         DestinationFiles="@(ConfigFiles->'$(InstallFolder)\config\%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(ProjectDir)\mod_info.yaml"
-          DestinationFiles="$(InstallFolder)\mod_info.yaml" />
     <Copy SourceFiles="$(TargetPath)" 
           DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
-
+    <Copy SourceFiles="@(YamlFiles)"
+        DestinationFiles="@(YamlFiles->'$(InstallFolder)\%(Filename)%(Extension)')"/>
     <Copy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " 
           SourceFiles="$(TargetDir)\$(TargetName).pdb;$(TargetDir)\$(TargetFileName).mdb" 
           DestinationFiles="$(InstallFolder)\$(TargetName).pdb;$(InstallFolder)\$(TargetFileName).mdb" />
