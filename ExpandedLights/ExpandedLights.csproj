@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
     <AssemblyTitle>Expanded Lights</AssemblyTitle>
-    <Version>1.6.2</Version>
+    <Version>1.7.0</Version>
     <UsesPLib>true</UsesPLib>
   </PropertyGroup>
 </Project>
