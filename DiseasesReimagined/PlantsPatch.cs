@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using UnityEngine;
 
 namespace DiseasesReimagined
@@ -102,7 +103,7 @@ namespace DiseasesReimagined
         }
         
         // Transfer germs from plant to fruit
-        [HarmonyPatch(typeof(Crop), "SpawnFruit")]
+        [HarmonyPatch(typeof(Crop), "SpawnSomeFruit")]
         public static class Crop_SpawnFruit_Patch
         {
             // Transfers germs from crop to child (fruit)

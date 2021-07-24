@@ -1,5 +1,6 @@
-using Harmony;
+using HarmonyLib;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using PeterHan.PLib.Lighting;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,12 @@ namespace DiseasesReimagined
 {
     public static class BuildingsPatch
     {
-        public static PLightShape uvlight; 
+        public static ILightShape uvlight; 
 
-        public static void SemicircleLight(GameObject source, LightingArgs arg)
+        public static void SemicircleLight(LightingArgs arg)
         {
             SemicircleDownHelper(
-                source,
+                arg.Source,
                 arg.SourceCell,
                 arg.Range,
                 arg.Brightness
@@ -51,7 +52,7 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(Db),"Initialize")]
         public static class Db_Initialize_Patch
         {
-            public static void Prefix()
+            public static void Postfix()
             {
                 AddBuildingToTech("MedicineIII", UVCleanerConfig.ID);
             }

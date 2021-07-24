@@ -1,8 +1,10 @@
-using Harmony;
+using HarmonyLib;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using PeterHan.PLib.Lighting;
+using PeterHan.PLib.PatchManager;
 using ReimaginationTeam.Reimagination;
 using STRINGS;
 using System;
@@ -15,10 +17,10 @@ using Sicknesses = Database.Sicknesses;
 namespace DiseasesReimagined
 {
     // Patches for disease changes
-    public static class DiseasesPatch
+    public class DiseasesPatch : KMod.UserMod2
     {
         // misc bookkeeping
-        public static void OnLoad()
+        public override void OnLoad(Harmony harmony)
         {
             StartLogging();
 
@@ -33,11 +35,15 @@ namespace DiseasesReimagined
             SkipNotifications.Skip(SlimeCoughSickness.ID);
             SkipNotifications.Skip(FoodPoisonVomiting.ID);
 
-            ImaginationLoader.Init(typeof(DiseasesPatch));
-            PUtil.RegisterPatchClass(typeof(CompatPatch));
-            PUtil.RegisterPatchClass(typeof(DiseasesPatch));
-            BuildingsPatch.uvlight = PLightShape.Register("SkyLib.LightShape.FixedSemi",
+            base.OnLoad(harmony);
+
+            ImaginationLoader.Instance.Register(typeof(DiseasesPatch));
+            var patchManager = new PPatchManager(harmony);
+            patchManager.RegisterPatchClass(typeof(CompatPatch));
+            patchManager.RegisterPatchClass(typeof(DiseasesPatch));
+            BuildingsPatch.uvlight = new PLightManager().Register("SkyLib.LightShape.FixedSemi",
                 BuildingsPatch.SemicircleLight);
+            FrostbitePatch.Mod_OnLoad.OnLoad();
         }
 
         // Helper method to find a specific attribute modifier
@@ -87,9 +93,9 @@ namespace DiseasesReimagined
                     {
                         var tag = go.PrefabID();
                         if (tag == "IntermediateCure")
-                            docStation.CallMethod("AddTreatment", SlimeLethalSickness.ID, tag);
+                            docStation.Method("AddTreatment", SlimeLethalSickness.ID, tag).GetValue(SlimeLethalSickness.ID, tag);
                         if (tag == "AdvancedCure")
-                            docStation.CallMethod("AddTreatment", ZombieSickness.ID, tag);
+                            docStation.Method("AddTreatment", ZombieSickness.ID, tag).GetValue(ZombieSickness.ID, tag);
                     }
 
                 ___smi.sm.hasSupplies.Set(___treatments_available.Count > 0, ___smi);
@@ -171,7 +177,7 @@ namespace DiseasesReimagined
             {
                 var stressmod = FindAttributeModifier(___components, Db.Get().Amounts.Stress.
                     deltaAttribute.Id);
-                Traverse.Create(stressmod).SetField("Value", .04166666666f); // 30% stress/cycle
+                Traverse.Create(stressmod).Field("Value").SetValue(.04166666666f); // 30% stress/cycle
             }
         }
 
@@ -212,16 +218,18 @@ namespace DiseasesReimagined
             // DoNotification but with a custom version that checks the whitelist.
             public static void DoNotification(SicknessInstance.States __instance)
             {
-                var state_target = Traverse.Create(__instance.infected).CallMethod<
-                    GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance,
-                    SicknessInstance, object>.TargetParameter>("GetStateTarget");
+                var state_target = Traverse.Create(__instance.infected)
+                    .Method("GetStateTarget")
+                    .GetValue<GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.TargetParameter>();
+
                 __instance.infected.Enter("DoNotification()", smi =>
                 {
                     // if it's not to be skipped, (reluctantly) do the notification.
                     if (!SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id))
                     {
-                        var notification = Traverse.Create(smi.master).
-                            GetField<Notification>("notification");
+                        var notification = Traverse.Create(smi.master)
+                            .Field<Notification>("notification").Value;
+
                         state_target.Get<Notifier>(smi).Add(notification, string.Empty);
                     }
                 });

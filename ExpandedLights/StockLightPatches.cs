@@ -1,4 +1,4 @@
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
 namespace ExpandedLights
@@ -22,7 +22,7 @@ namespace ExpandedLights
         {
             public static void Postfix(BuildingDef def, GameObject go)
             {
-                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.FixedSemi.GetKLightShape();
+                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.FixedSemi.KleiLightShape;
             }
         }
 
@@ -31,7 +31,7 @@ namespace ExpandedLights
         {
             public static void Postfix(GameObject go)
             {
-                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.FixedSemi.GetKLightShape();
+                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.FixedSemi.KleiLightShape;
             }
         }
 
@@ -51,7 +51,7 @@ namespace ExpandedLights
         {
             public static void Postfix(BuildingDef def, GameObject go)
             {
-                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.SmoothCircle.GetKLightShape();
+                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
             }
         }
 
@@ -60,7 +60,7 @@ namespace ExpandedLights
         {
             public static void Postfix(GameObject go)
             {
-                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.SmoothCircle.GetKLightShape();
+                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
             }
         }
     }

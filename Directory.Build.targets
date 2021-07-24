@@ -20,11 +20,11 @@
     <ItemGroup>
       <InputAssemblies
         Include="$(TargetDir)\*.dll"
-        Exclude="$(TargetPath)" />
+        Exclude="$(TargetPath);$(TargetDir)\Microsoft.*.dll;$(TargetDir)\System.*.dll;" />
     </ItemGroup>
 
     <ILRepack
-      TargetPlatformVersion="v2"
+      TargetPlatformVersion="v4"
       OutputType="SameAsPrimaryAssembly"
       MainAssembly="$(TargetPath)"
       OutputAssembly="$(TargetPath)"

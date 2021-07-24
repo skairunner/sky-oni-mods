@@ -1,5 +1,6 @@
-using Harmony;
+using HarmonyLib;
 using PeterHan.PLib;
+using PeterHan.PLib.PatchManager;
 using UnityEngine;
 
 namespace DiseasesReimagined
