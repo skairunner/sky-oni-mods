@@ -1,4 +1,4 @@
-supportedContent: VANILLA_ID
+supportedContent: VANILLA_ID,EXPANSION1_ID
 minimumSupportedBuild: 471618
 APIVersion: 2
 modVersion: 1.0.0 # please update
