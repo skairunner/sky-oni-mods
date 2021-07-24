@@ -1,8 +1,6 @@
 using HarmonyLib;
-
 using Newtonsoft.Json;
 using PeterHan.PLib.Options;
-using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
 namespace StoragePod
