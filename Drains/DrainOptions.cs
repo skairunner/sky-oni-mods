@@ -5,7 +5,9 @@ using PeterHan.PLib.Options;
 
 namespace Drains
 {
-    [Serializable][RestartRequired]
+    [JsonObject(MemberSerialization.OptIn)]
+    [ModInfo("https://github.com/skairunner/sky-oni-mods")]
+    [RestartRequired]
     public class DrainOptions: SingletonOptions<DrainOptions>
     {
         [JsonProperty]

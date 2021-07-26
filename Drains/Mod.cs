@@ -11,7 +11,7 @@ namespace Drains
     {
         public override void OnLoad(Harmony harmony)
         {
-            //StartLogging();
+            SkyLib.Logger.StartLogging();
             PUtil.InitLibrary(false);
             POptions pOpt = new POptions();
             pOpt.RegisterOptions(this, typeof(DrainOptions));
