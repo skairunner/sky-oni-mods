@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net40</TargetFramework>
-    <AssemblyTitle>Waterproof Transformer</AssemblyTitle>
-    <Version>1.4.0</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net471</TargetFramework>
+        <AssemblyTitle>Waterproof Transformer</AssemblyTitle>
+        <Version>1.4.0</Version>
+        </PropertyGroup>
+    <PropertyGroup>
+        <GenerateYAML>true</GenerateYAML>
+        <ModName>Waterproof Transformer</ModName>
+        <ModDescription></ModDescription>
+        <SupportedContent>ALL</SupportedContent>
+        <APIVersion>2</APIVersion>
+        <MinimumSupportedBuild>471618</MinimumSupportedBuild>
+    </PropertyGroup>
 </Project>

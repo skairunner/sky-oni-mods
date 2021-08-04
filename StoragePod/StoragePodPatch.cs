@@ -1,14 +1,12 @@
-using Harmony;
+using HarmonyLib;
 using Newtonsoft.Json;
-using PeterHan.PLib;
 using PeterHan.PLib.Options;
-using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 
-namespace IceMakerPlus
+namespace StoragePod
 {
     [RestartRequired]
-    public class StoragePodOptions : POptions.SingletonOptions<StoragePodOptions>
+    public class StoragePodOptions : SingletonOptions<StoragePodOptions>
     {
         public StoragePodOptions()
         {
@@ -32,43 +30,30 @@ namespace IceMakerPlus
 
     public class StoragePodPatch
     {
-        public static bool didStartupBuilding;
-        public static bool didStartupDb;
-
-        public static void OnLoad()
-        {
-            StartLogging();
-            PUtil.InitLibrary(false);
-            POptions.RegisterOptions(typeof(StoragePodOptions));
-            PUtil.RegisterPatchClass(typeof(StoragePodPatch));
-        }
-
-        [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
-        public static class GeneratedBuildings_LoadGeneratedBuildings_Path
+        [HarmonyPatch(typeof(Db))]
+        [HarmonyPatch("Initialize")]
+        public static class Db_Initialize_Patch
         {
             public static void Prefix()
             {
-                if (!didStartupBuilding)
-                {
-                    AddBuildingStrings(StoragePodConfig.ID, StoragePodConfig.DisplayName, StoragePodConfig.Description,
-                        StoragePodConfig.Effect);
-                    AddBuildingStrings(CoolPodConfig.ID, CoolPodConfig.DisplayName, CoolPodConfig.Description,
-                        CoolPodConfig.Effect);
-                    AddBuildingToBuildMenu("Base", StoragePodConfig.ID);
-                    AddBuildingToBuildMenu("Food", CoolPodConfig.ID);
-                    didStartupBuilding = true;
-                }
+                AddBuildingStrings(
+                    StoragePodConfig.ID,
+                    StoragePodConfig.DisplayName,
+                    StoragePodConfig.Description,
+                    StoragePodConfig.Effect);
+                AddBuildingStrings(
+                    CoolPodConfig.ID,
+                    CoolPodConfig.DisplayName,
+                    CoolPodConfig.Description,
+                    CoolPodConfig.Effect);
             }
-        }
 
-        [PLibMethod(RunAt.BeforeDbInit)]
-        internal static void DbInitPrefix()
-        {
-            if (!didStartupDb)
+            public static void Postfix()
             {
+                AddBuildingToBuildMenu("Base", StoragePodConfig.ID);
+                AddBuildingToBuildMenu("Food", CoolPodConfig.ID);
                 AddBuildingToTech("RefinedObjects", StoragePodConfig.ID);
                 AddBuildingToTech("Agriculture", CoolPodConfig.ID);
-                didStartupDb = true;
             }
         }
     }

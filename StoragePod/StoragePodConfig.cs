@@ -1,7 +1,7 @@
 using TUNING;
 using UnityEngine;
 
-namespace IceMakerPlus
+namespace StoragePod
 {
     internal class StoragePodConfig : IBuildingConfig
     {
@@ -49,10 +49,11 @@ namespace IceMakerPlus
             {
                 storedItems.AddRange(STORAGEFILTERS.FOOD);
             }
+            storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
             storage.storageFilters = storedItems;
             storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
             storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
-            storage.allowSublimation = false;
+            //storage.allowSublimation = false;
             go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.StorageLocker;
             go.AddOrGet<StorageLocker>();
             go.GetComponent<Storage>().capacityKg = StoragePodOptions.Instance.podCapacity;

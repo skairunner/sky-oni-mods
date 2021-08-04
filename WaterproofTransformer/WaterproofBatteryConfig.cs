@@ -21,8 +21,8 @@ namespace WaterproofTransformer
             var hitpoints = 30;
             var anim = "waterbattery_kanim";
             var construction_time = 60f;
-            var construction_mass = new[] {150f, 50f};
-            var construction_mats = new[] {"RefinedMetal", "Transparent"};
+            var construction_mass = new[] { 150f, 50f };
+            var construction_mats = new[] { "RefinedMetal", "Transparent" };
             var melting_point = 800f;
             var exhaust_temperature_active = 0.0f;
             var self_heat_kilowatts_active = 0.5f;

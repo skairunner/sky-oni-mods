@@ -20,8 +20,8 @@ namespace WaterproofTransformer
             var anim = "waterformer_kanim";
             var hitpoints = 40;
             var construction_time = 30f;
-            var construction_mass = new[] {150f, 50f};
-            string[] construction_mats = {MATERIALS.REFINED_METAL, MATERIALS.TRANSPARENT};
+            var construction_mass = new[] { 150f, 50f };
+            string[] construction_mats = { MATERIALS.REFINED_METAL, MATERIALS.TRANSPARENT };
             var melting_point = 800f;
             var build_location_rule = BuildLocationRule.OnFloor;
             var tieR5 = NOISE_POLLUTION.NOISY.TIER5;
@@ -29,6 +29,7 @@ namespace WaterproofTransformer
                 construction_time, construction_mass, construction_mats, melting_point, build_location_rule,
                 BUILDINGS.DECOR.PENALTY.TIER1, tieR5);
             buildingDef.RequiresPowerInput = true;
+            buildingDef.RequiresPowerOutput = true;
             buildingDef.UseWhitePowerOutputConnectorColour = true;
             buildingDef.PowerInputOffset = new CellOffset(0, 1);
             buildingDef.PowerOutputOffset = new CellOffset(1, 0);

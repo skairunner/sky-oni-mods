@@ -1,20 +1,17 @@
 ﻿using HarmonyLib;
-
 using KMod;
-
 using PeterHan.PLib.Core;
 using PeterHan.PLib.Options;
 
-namespace Drains
+namespace StoragePod
 {
     public class Mod : UserMod2
     {
         public override void OnLoad(Harmony harmony)
         {
-            SkyLib.Logger.StartLogging();
             PUtil.InitLibrary(false);
-            POptions pOpt = new POptions();
-            pOpt.RegisterOptions(this, typeof(DrainOptions));
+            POptions opt = new POptions();
+            opt.RegisterOptions(this, typeof(StoragePodOptions));
 
             base.OnLoad(harmony);
         }
