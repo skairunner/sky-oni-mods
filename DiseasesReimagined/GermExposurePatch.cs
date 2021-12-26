@@ -26,6 +26,9 @@ namespace DiseasesReimagined
         {
             var exposure = GameUtil.GetExposureTypeForDisease(disease);
             var sickness = GameUtil.GetSicknessForDisease(disease);
+            if (sickness == null)
+                return;
+
             ICollection<string> required = exposure.required_traits, excluded = exposure.
                 excluded_traits, noEffects = exposure.excluded_effects;
             var traits = target.GetComponent<Traits>();
