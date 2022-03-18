@@ -45,7 +45,7 @@ namespace DiseasesReimagined
             {
                 AddBuildingStrings(UVCleanerConfig.ID, UVCleanerConfig.DISPLAY_NAME, UVCleanerConfig.DESCRIPTION,
                     UVCleanerConfig.EFFECT);
-                AddBuildingToBuildMenu("Medical", UVCleanerConfig.ID);
+                ModUtil.AddBuildingToPlanScreen("Medical", UVCleanerConfig.ID, "cleaning", WashSinkConfig.ID);
             }
         }
 
