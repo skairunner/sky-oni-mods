@@ -70,8 +70,9 @@ namespace DiseasesReimagined
         // Gets the threshold for infecting a duplicant via each vector.
         public static GermExposureThresholds ThresholdsFor(ExposureType exposure)
         {
+            int defaultValue = exposure.exposure_threshold;
             if (!thresholds.TryGetValue(exposure, out GermExposureThresholds threshold))
-                threshold = new GermExposureThresholds(0, 0, 0);
+                threshold = new GermExposureThresholds(defaultValue, defaultValue, defaultValue);
             return threshold;
         }
     }
