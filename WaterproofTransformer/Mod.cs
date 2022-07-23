@@ -1,4 +1,4 @@
-﻿using KMod;
+using KMod;
 
 namespace WaterproofTransformer
 {

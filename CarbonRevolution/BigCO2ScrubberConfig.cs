@@ -1,4 +1,4 @@
-﻿using STRINGS;
+using STRINGS;
 using TUNING;
 using UnityEngine;
 using BUILDINGS = TUNING.BUILDINGS;

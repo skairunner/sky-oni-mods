@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using PeterHan.PLib;
 using PeterHan.PLib.Options;
 

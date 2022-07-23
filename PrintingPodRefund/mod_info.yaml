@@ -1,3 +1,5 @@
-supportedContent: VANILLA_ID
-lastWorkingBuild: 464364
-modVersion: 2.2.2
+supportedContent: VANILLA_ID,EXPANSION1_ID
+minimumSupportedBuild: 514967
+version: 2.3.0
+staticID: PrintingPodRaincheck
+APIVersion: 2

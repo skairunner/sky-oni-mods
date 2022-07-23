@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using PeterHan.PLib;
 using UnityEngine;
 

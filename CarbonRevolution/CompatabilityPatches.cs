@@ -1,4 +1,4 @@
-﻿using PeterHan.PLib;
+using PeterHan.PLib;
 
 namespace CarbonRevolution
 {

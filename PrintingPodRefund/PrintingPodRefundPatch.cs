@@ -1,7 +1,9 @@
 using System;
-using Harmony;
+using HarmonyLib;
+using KMod;
 using Newtonsoft.Json;
 using PeterHan.PLib;
+using PeterHan.PLib.Core;
 using PeterHan.PLib.Options;
 using static SkyLib.Logger;
 
@@ -27,6 +29,19 @@ namespace PrintingPodRefund
         }
     }
 
+    public class PrintingPodMod : UserMod2
+    {
+        public override void OnLoad(Harmony harmony)
+        {
+            StartLogging();
+
+            harmony.PatchAll();
+            PUtil.InitLibrary(false);
+            var options = new POptions();
+            options.RegisterOptions(this, typeof(PrintingPodRefundSettings));
+        }
+    }
+
     public class PrintingPodRefundPatch
     {
         public static bool didStartUp_Building = false;
@@ -37,13 +52,6 @@ namespace PrintingPodRefund
             var idx = Traverse.Create(imm).Field("spawnIdx").GetValue<int>();
             var index = Math.Min(idx, imm.spawnInterval.Length - 1);
             return imm.spawnInterval[index];
-        }
-
-        public static void OnLoad()
-        {
-            StartLogging();
-            PUtil.InitLibrary(false);
-            POptions.RegisterOptions(typeof(PrintingPodRefundSettings));
         }
 
         [HarmonyPatch(typeof(Telepad), "RejectAll")]

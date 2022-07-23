@@ -1,4 +1,4 @@
-﻿using Harmony;
+using Harmony;
 using WebSocketSharp.Server;
 using static SkyLib.Logger;
 

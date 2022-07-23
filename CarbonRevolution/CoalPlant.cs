@@ -1,4 +1,4 @@
-﻿namespace CarbonRevolution
+namespace CarbonRevolution
 {
     public class CoalPlant : StateMachineComponent<CoalPlant.StatesInstance>
     {

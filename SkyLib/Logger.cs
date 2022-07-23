@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace SkyLib
 {
@@ -9,17 +9,11 @@ namespace SkyLib
             return ((AssemblyTitleAttribute) mod.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0]).Title;
         }
 
-        public static string GetModVersion(Assembly mod)
-        {
-            return ((AssemblyFileVersionAttribute)
-                mod.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false)[0]).Version;
-        }
-
         // Start only once per instance.
         public static void StartLogging()
         {
             var assembly = Assembly.GetCallingAssembly();
-            LogLine($"Started with version {GetModVersion(assembly)}.");
+            LogLine($"SkyLib");
         }
 
         public static void LogLine(string line)

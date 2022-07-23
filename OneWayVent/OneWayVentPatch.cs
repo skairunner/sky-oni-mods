@@ -1,4 +1,4 @@
-﻿using static SkyLib.Logger;
+using static SkyLib.Logger;
 
 namespace OneWayVent
 {

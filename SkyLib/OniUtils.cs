@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Database;
 using ProcGen;
 using STRINGS;
@@ -17,34 +17,14 @@ namespace SkyLib
 
         public static void AddBuildingToBuildMenu(HashedString category, string buildingid, string addAfterId = null)
         {
-            var i = BUILDINGS.PLANORDER.FindIndex(x => x.category == category);
-            if (i == -1)
-            {
-                Logger.LogLine($"Could not find building category '{category}'");
-                return;
-            }
-
-            var planorderlist = BUILDINGS.PLANORDER[i].data as IList<string>;
-            if (planorderlist == null)
-            {
-                Logger.LogLine($"Could not find planorder with the given index for '{category}'");
-                return;
-            }
-
             if (addAfterId == null)
             {
-                planorderlist.Add(buildingid);
+                ModUtil.AddBuildingToPlanScreen(category, buildingid);
             }
             else
             {
-                var neigh_i = planorderlist.IndexOf(addAfterId);
-                if (neigh_i == -1)
-                {
-                    Logger.LogLine($"Could not find the building '{addAfterId}' to add '{buildingid}' after.");
-                    return;
-                }
-
-                planorderlist.Insert(neigh_i + 1, buildingid);
+                var ordering = ModUtil.BuildingOrdering.After;
+                ModUtil.AddBuildingToPlanScreen(category, buildingid, null, addAfterId, ordering);
             }
         }
 
