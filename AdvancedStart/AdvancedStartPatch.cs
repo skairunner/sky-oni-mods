@@ -1,5 +1,5 @@
-using Harmony;
-using PeterHan.PLib;
+using HarmonyLib;
+using PeterHan.PLib.Core;
 using PeterHan.PLib.Options;
 using System;
 using System.Collections.Generic;
@@ -9,13 +9,14 @@ using static SkyLib.Logger;
 
 namespace AdvancedStart
 {
-    public static class AdvancedStartPatch
+    public class AdvancedStartPatch: KMod.UserMod2
     {
-        public static void OnLoad()
+        public override void OnLoad(Harmony harmony)
         {
-            StartLogging();
+            base.OnLoad(harmony);
             PUtil.InitLibrary(false);
-            POptions.RegisterOptions(typeof(AdvancedStartOptions));
+            var options = new POptions();
+            options.RegisterOptions(this, typeof(AdvancedStartOptions));
         }
 
         [HarmonyPatch(typeof(NewBaseScreen), "SpawnMinions")]
@@ -24,7 +25,7 @@ namespace AdvancedStart
             // reverse-engineered from MinionResume.CalculateTotalSkillPointsGained()
             public static float XPForSkillPoints(int skillPoints)
             {
-                return (float)Math.Pow(Math.E, 
+                return (float)Math.Pow(Math.E,
                     SKILLS.EXPERIENCE_LEVEL_POWER * Math.Log((float)skillPoints / SKILLS.TARGET_SKILLS_EARNED) + Math.Log(SKILLS.TARGET_SKILLS_CYCLE * 600f));
             }
 
@@ -46,7 +47,7 @@ namespace AdvancedStart
             }
         }
 
-        [HarmonyPatch(typeof(MinionStartingStats), MethodType.Constructor, typeof(bool), typeof(string))]
+        [HarmonyPatch(typeof(MinionStartingStats), MethodType.Constructor, typeof(bool), typeof(string), typeof(string))]
         public static class MinionStartingStats_Constructor
         {
             public static void Postfix(MinionStartingStats __instance, bool is_starter_minion)
@@ -76,7 +77,10 @@ namespace AdvancedStart
                 }
                 foreach (var tech in config.startTechs)
                 {
-                    Research.Instance.GetOrAdd(techMap[tech]).Purchased();
+                    if (techMap.ContainsKey(tech))
+                    {
+                        Research.Instance.GetOrAdd(techMap[tech]).Purchased();
+                    }
                 }
 
                 var target = Grid.CellToPosCBC(headquartersCell, Grid.SceneLayer.Move);
@@ -84,7 +88,7 @@ namespace AdvancedStart
                 {
                     new CarePackageInfo(entry.Key, entry.Value, null).Deliver(target);
                 }
-            }    
+            }
         }
     }
 }

@@ -34,10 +34,10 @@ namespace AdvancedStart
 
             return options.GetProfile();
         }
-        
+
         public AdvancedStartConfig GetProfile()
         {
-            var baseDir = POptions.GetModDir(Assembly.GetExecutingAssembly());
+            var baseDir = new FileInfo(POptions.GetConfigFilePath(typeof(AdvancedStartConfig))).DirectoryName;
             switch (config)
             {
                 case Config.DefaultStart:
