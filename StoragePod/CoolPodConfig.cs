@@ -30,6 +30,7 @@ namespace StoragePod
                 construction_time, tieR4, construction_mats, melting_point, build_location_rule,
                 BUILDINGS.DECOR.PENALTY.TIER1, none);
             buildingDef.RequiresPowerInput = true;
+            buildingDef.AddLogicPowerPort = false;
             buildingDef.EnergyConsumptionWhenActive = 60f;
             buildingDef.ExhaustKilowattsWhenActive = 0.25f;
             buildingDef.LogicOutputPorts = new List<LogicPorts.Port>()
