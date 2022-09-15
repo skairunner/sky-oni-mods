@@ -9,7 +9,7 @@ namespace DiseasesReimagined
         public const string ID = "UVCleaner";
         public static LocString DISPLAY_NAME = "UV Cleaner";
         public static LocString DESCRIPTION = "The sun is a deadly laser, blindingly bright and prone to inducing sunburn. Naturally, some duplicants decided to bottle it for water sanitization purposes.";
-        public static LocString EFFECT = "Sterilizes liquids.";
+        public static LocString EFFECT = "Removes almost all Germs from liquids. Emits UV radiation while running, which might burn Duplicants that get too close.";
 
         public static int LUX = 500;
         public static int RADIUS = 3;

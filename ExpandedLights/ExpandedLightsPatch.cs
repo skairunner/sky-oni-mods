@@ -58,9 +58,9 @@ namespace ExpandedLights
                     AddBuildingStrings(TileLightConfig.Id, TileLightConfig.DisplayName, TileLightConfig.Description,
                         TileLightConfig.Effect);
 
-                    AddBuildingToBuildMenu("Furniture", FloodlightConfig.Id);
-                    AddBuildingToBuildMenu("Furniture", LEDLightConfig.Id);
-                    AddBuildingToBuildMenu("Furniture", TileLightConfig.Id);
+                    ModUtil.AddBuildingToPlanScreen("Furniture", FloodlightConfig.Id, "lights", CeilingLightConfig.ID);
+                    ModUtil.AddBuildingToPlanScreen("Furniture", LEDLightConfig.Id, "lights", FloorLampConfig.ID);
+                    ModUtil.AddBuildingToPlanScreen("Furniture", TileLightConfig.Id, "lights", CeilingLightConfig.ID);
                     didStartUp_Building = true;
                 }
             }
