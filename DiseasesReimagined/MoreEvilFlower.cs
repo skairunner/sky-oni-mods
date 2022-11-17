@@ -31,8 +31,8 @@ namespace DiseasesReimagined
         {
             var obj = gameObject;
             int cell;
-            if (obj != null && Grid.IsValidCell(cell = Grid.PosToCell(obj)) && isWilted?.
-                IsWilting() == false && disease != SimUtil.DiseaseInfo.Invalid.idx &&
+            if (obj != null && Grid.IsValidCell(cell = Grid.PosToCell(obj)) && isWilted !=
+                null && !isWilted.IsWilting() && disease != SimUtil.DiseaseInfo.Invalid.idx &&
                 uprooted != null)
             {
                 foreach (var monitoredCell in uprooted.monitorCells)

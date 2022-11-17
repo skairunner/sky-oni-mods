@@ -22,14 +22,14 @@ namespace DiseasesReimagined
             if (go != null && diseaseInstance.GetPercentCured() < 0.001f)
                 GameScheduler.Instance.Schedule("InfectWith" + sickness_id, 0.5f, (_) =>
                 {
-                    var effects = go.GetComponent<Effects>();
                     // Do not inflict the symptoms if the excluded effect is present
-                    if (effects == null || string.IsNullOrEmpty(excluded_effect) || !effects.
-                        HasEffect(excluded_effect))
+                    if (!go.TryGetComponent(out Effects effects) || string.IsNullOrEmpty(
+                        excluded_effect) || !effects.HasEffect(excluded_effect))
                     {
                         var exposure_info = new SicknessExposureInfo(sickness_id,
                             infection_source_info);
-                        go.GetComponent<MinionModifiers>()?.sicknesses?.Infect(exposure_info);
+                        if (go.TryGetComponent(out MinionModifiers modifiers))
+                            modifiers.sicknesses?.Infect(exposure_info);
                     }
                 });
             return null;
@@ -37,8 +37,9 @@ namespace DiseasesReimagined
 
         public override void OnCure(GameObject go, object instance_data)
         {
+            if (go.TryGetComponent(out MinionModifiers modifiers))
             // Cure the added sickness if the original disease gets cured
-            go.GetComponent<MinionModifiers>()?.sicknesses?.Cure(sickness_id);
+                modifiers.sicknesses?.Cure(sickness_id);
         }
     }
 }

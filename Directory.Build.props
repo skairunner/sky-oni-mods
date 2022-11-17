@@ -8,7 +8,6 @@
     <Authors>Skyrunner</Authors>
     <Product>sky-oni-mods</Product>
     <Copyright>MIT</Copyright>
-    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -30,7 +29,7 @@
     <Reference Include="UnityEngine.CoreModule" />
   </ItemGroup>
   <ItemGroup Condition=" '$(UsesPLib)' == 'true' ">
-    <PackageReference Include="PLib" Version="4.8.1" />
+    <PackageReference Include="PLib" Version="4.10.0" />
     <Reference Include="Newtonsoft.Json" />
     <Reference Include="Unity.TextMeshPro" />
     <Reference Include="UnityEngine.TextRenderingModule" />

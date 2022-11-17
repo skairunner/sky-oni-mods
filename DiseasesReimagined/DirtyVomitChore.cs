@@ -13,25 +13,26 @@ namespace DiseasesReimagined
     public class DirtyVomitChore : Chore<DirtyVomitChore.StatesInstance>
     {
         public DirtyVomitChore(
-            ChoreType chore_type,
+            ChoreType _,
             IStateMachineTarget target,
             StatusItem status_item,
             Notification notification,
             SimUtil.DiseaseInfo diseaseInfo,
             Action<Chore> on_complete = null)
-            : base(Db.Get().ChoreTypes.Vomit, target, target.GetComponent<ChoreProvider>(), true, on_complete,
-                null, null, PriorityScreen.PriorityClass.compulsory)
+            : base(Db.Get().ChoreTypes.Vomit, target, target.GetComponent<ChoreProvider>(),
+                true, on_complete, null, null, PriorityScreen.PriorityClass.compulsory)
         {
-            smi = new StatesInstance(this, target.gameObject, status_item, notification, diseaseInfo);
+            smi = new StatesInstance(this, target.gameObject, status_item, notification,
+                diseaseInfo);
         }
 
         public class StatesInstance : SicknessGameStateMachine.GameInstance
         {
-            readonly AmountInstance bodyTemperature;
+            private readonly AmountInstance bodyTemperature;
             public readonly Notification notification;
             public readonly StatusItem statusItem;
-            readonly SafetyQuery vomitCellQuery;
-            public SimUtil.DiseaseInfo diseaseInfo;
+            private readonly SafetyQuery vomitCellQuery;
+            private readonly SimUtil.DiseaseInfo diseaseInfo;
 
             public StatesInstance(
                 DirtyVomitChore master,
@@ -46,11 +47,11 @@ namespace DiseasesReimagined
                 bodyTemperature = Db.Get().Amounts.Temperature.Lookup(vomiter);
                 statusItem = status_item;
                 this.notification = notification;
-                vomitCellQuery = new SafetyQuery(Game.Instance.safetyConditions.VomitCellChecker,
-                    GetComponent<KMonoBehaviour>(), 10);
+                vomitCellQuery = new SafetyQuery(Game.Instance.safetyConditions.
+                    VomitCellChecker, GetComponent<KMonoBehaviour>(), 10);
             }
 
-            static bool CanEmitLiquid(int cell)
+            private static bool CanEmitLiquid(int cell)
             {
                 return !(Grid.Solid[cell] || (Grid.Properties[cell] & 2) != 0);
             }
@@ -59,21 +60,26 @@ namespace DiseasesReimagined
             {
                 if (dt <= 0.0)
                     return;
-                var timeRatio = dt / GetComponent<KBatchedAnimController>().CurrentAnim.totalTime;
+                var timeRatio = dt / GetComponent<KBatchedAnimController>().CurrentAnim.
+                    totalTime;
 
-                var orientation = sm.vomiter.Get(smi).GetComponent<Facing>();
-                var posCell = Grid.PosToCell(orientation.transform.GetPosition());
-                int frontCell = orientation.GetFrontCell();
-                if (!CanEmitLiquid(frontCell))
-                    frontCell = posCell;
+                var victim = sm.vomiter.Get(smi);
+                int posCell = Grid.PosToCell(victim.transform.position);
+                int frontCell = posCell;
+                if (victim.TryGetComponent(out Facing orientation)) {
+                    frontCell = orientation.GetFrontCell();
+                    if (!CanEmitLiquid(frontCell))
+                        frontCell = posCell;
+                }
 
                 var suit = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
-                if (suit != null)
-                    suit.GetComponent<Storage>().AddLiquid(SimHashes.DirtyWater, STRESS.VOMIT_AMOUNT * timeRatio,
+                if (suit != null && suit.TryGetComponent(out Storage storage))
+                    storage.AddLiquid(SimHashes.DirtyWater, STRESS.VOMIT_AMOUNT * timeRatio,
                         bodyTemperature.value, diseaseInfo.idx, diseaseInfo.count);
                 else
-                    SimMessages.AddRemoveSubstance(frontCell, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit,
-                        STRESS.VOMIT_AMOUNT * timeRatio, bodyTemperature.value, diseaseInfo.idx, diseaseInfo.count);
+                    SimMessages.AddRemoveSubstance(frontCell, SimHashes.DirtyWater,
+                        CellEventLogger.Instance.Vomit, STRESS.VOMIT_AMOUNT * timeRatio,
+                        bodyTemperature.value, diseaseInfo.idx, diseaseInfo.count);
             }
 
             public int GetVomitCell()
@@ -90,7 +96,6 @@ namespace DiseasesReimagined
         public class States : SicknessGameStateMachine
         {
             public State complete;
-
             public State moveto;
             public State recover;
             public State recover_pst;

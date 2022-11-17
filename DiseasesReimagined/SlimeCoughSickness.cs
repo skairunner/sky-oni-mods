@@ -3,7 +3,7 @@ using Klei.AI;
 
 namespace DiseasesReimagined
 {
-    class SlimeCoughSickness : Sickness
+    public class SlimeCoughSickness : Sickness
     {
         public const string ID = "SlimeCough";
 

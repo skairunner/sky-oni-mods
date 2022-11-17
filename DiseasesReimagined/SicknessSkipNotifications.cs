@@ -4,7 +4,7 @@ namespace DiseasesReimagined
 {
     public static class SkipNotifications
     {
-        public static HashSet<string> SicknessIDs = new HashSet<string>();
+        public static readonly HashSet<string> SicknessIDs = new HashSet<string>();
 
         public static void Skip(string sickness_id)
         {

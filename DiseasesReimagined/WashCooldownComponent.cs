@@ -6,13 +6,7 @@ namespace DiseasesReimagined
     // if it has not been long enough since then.
     public sealed class WashCooldownComponent : MonoBehaviour
     {
-        public bool CanWash
-        {
-            get
-            {
-                return GameClock.Instance.GetTime() >= NextWashTime;
-            }
-        }
+        public bool CanWash => GameClock.Instance.GetTime() >= NextWashTime;
 
         // The game time when the next wash can occur
         public float NextWashTime { get; set; }

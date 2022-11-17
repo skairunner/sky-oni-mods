@@ -1,18 +1,20 @@
 using HarmonyLib;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
-using PeterHan.PLib;
-using PeterHan.PLib.Core;
 using PeterHan.PLib.Lighting;
 using PeterHan.PLib.PatchManager;
 using ReimaginationTeam.Reimagination;
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using PeterHan.PLib.Detours;
 using UnityEngine;
+
 using static SkyLib.Logger;
 using static SkyLib.OniUtils;
 using Sicknesses = Database.Sicknesses;
+using SicknessStateMachine = GameStateMachine<Klei.AI.SicknessInstance.States, Klei.AI.
+    SicknessInstance.StatesInstance, Klei.AI.SicknessInstance, object>;
 
 namespace DiseasesReimagined
 {
@@ -47,7 +49,7 @@ namespace DiseasesReimagined
         }
 
         // Helper method to find a specific attribute modifier
-        public static AttributeModifier FindAttributeModifier(List<Sickness.SicknessComponent> components, string id)
+        private static AttributeModifier FindAttributeModifier(List<Sickness.SicknessComponent> components, string id)
         {
             var attr_mod = (AttributeModifierSickness)components.Find(comp => comp is AttributeModifierSickness);
             return Array.Find(attr_mod.Modifers, mod => mod.AttributeId == id);
@@ -61,7 +63,8 @@ namespace DiseasesReimagined
             {
                 var medInfo = __result.AddOrGet<MedicinalPill>().info;
                 // The basic cure now doesn't cure the base disease, only certain symptoms
-                medInfo.curedSicknesses = new List<string>(new[] {FoodPoisonVomiting.ID, SlimeCoughSickness.ID});
+                medInfo.curedSicknesses = new List<string>(new[] {FoodPoisonVomiting.ID,
+                    SlimeCoughSickness.ID});
             }
         }
 
@@ -82,20 +85,26 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(DoctorStation), "OnStorageChange")]
         public static class DoctorStation_OnStorageChange_Patch
         {
+            private delegate void AddTreatment(DoctorStation station, string diseaseID,
+                Tag cureTag);
+
+            private static readonly AddTreatment ADD_TREATMENT = typeof(DoctorStation).
+                Detour<AddTreatment>();
+
             public static bool Prefix(DoctorStation __instance, Dictionary<HashedString, Tag> ___treatments_available,
                                       Storage ___storage, DoctorStation.StatesInstance ___smi)
             {
-                var docStation = Traverse.Create(__instance);
                 ___treatments_available.Clear();
 
                 foreach (var go in ___storage.items)
-                    if (go.HasTag(GameTags.MedicalSupplies))
+                    if (go.TryGetComponent(out KPrefabID id) && id.HasTag(GameTags.
+                        MedicalSupplies))
                     {
-                        var tag = go.PrefabID();
+                        var tag = id.PrefabTag;
                         if (tag == "IntermediateCure")
-                            docStation.Method("AddTreatment", SlimeLethalSickness.ID, tag).GetValue(SlimeLethalSickness.ID, tag);
+                            ADD_TREATMENT.Invoke(__instance, SlimeLethalSickness.ID, tag);
                         if (tag == "AdvancedCure")
-                            docStation.Method("AddTreatment", ZombieSickness.ID, tag).GetValue(ZombieSickness.ID, tag);
+                            ADD_TREATMENT.Invoke(__instance, ZombieSickness.ID, tag);
                     }
 
                 ___smi.sm.hasSupplies.Set(___treatments_available.Count > 0, ___smi);
@@ -164,7 +173,8 @@ namespace DiseasesReimagined
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
                         // 10% stress/cycle
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.01666666666f, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME)
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id,
+                            0.01666666666f, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME)
                     }));
             }
         }
@@ -177,7 +187,8 @@ namespace DiseasesReimagined
             {
                 var stressmod = FindAttributeModifier(___components, Db.Get().Amounts.Stress.
                     deltaAttribute.Id);
-                Traverse.Create(stressmod).Field("Value").SetValue(.04166666666f); // 30% stress/cycle
+                // 30% stress/cycle
+                Traverse.Create(stressmod).Field("Value").SetValue(.04166666666f);
             }
         }
 
@@ -190,7 +201,8 @@ namespace DiseasesReimagined
                 ___components.Add(
                     new AttributeModifierSickness(new AttributeModifier[]
                     {
-                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, 0.03333333333f, DUPLICANTS.DISEASES.ZOMBIESICKNESS.NAME)
+                        new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id,
+                            0.03333333333f, DUPLICANTS.DISEASES.ZOMBIESICKNESS.NAME)
                     }));
             }
         }
@@ -200,6 +212,15 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(SicknessInstance.States), "InitializeStates")]
         public static class SicknessInstance_States_InitializeStates_Patch
         {
+            private delegate SicknessStateMachine.TargetParameter GetStateTarget(
+                SicknessStateMachine.State state);
+
+            private static readonly GetStateTarget GET_STATE_TARGET = typeof(
+                SicknessStateMachine.State).Detour<GetStateTarget>();
+
+            private static readonly IDetouredField<SicknessInstance, Notification> NOTIFICATION_FIELD =
+                PDetours.DetourField<SicknessInstance, Notification>("notification");
+
             public static void Postfix(SicknessInstance.States __instance)
             {
                 var old_enterActions = __instance.infected.enterActions;
@@ -216,21 +237,18 @@ namespace DiseasesReimagined
             }
 
             // DoNotification but with a custom version that checks the whitelist.
-            public static void DoNotification(SicknessInstance.States __instance)
+            private static void DoNotification(SicknessInstance.States __instance)
             {
-                var state_target = Traverse.Create(__instance.infected)
-                    .Method("GetStateTarget")
-                    .GetValue<GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.TargetParameter>();
+                var state_target = GET_STATE_TARGET.Invoke(__instance.infected);
 
                 __instance.infected.Enter("DoNotification()", smi =>
                 {
                     // if it's not to be skipped, (reluctantly) do the notification.
                     if (!SkipNotifications.SicknessIDs.Contains(smi.master.Sickness.Id))
                     {
-                        var notification = Traverse.Create(smi.master)
-                            .Field<Notification>("notification").Value;
-
-                        state_target.Get<Notifier>(smi).Add(notification, string.Empty);
+                        var notification = NOTIFICATION_FIELD.Get(smi.master);
+                        if (notification != null)
+                            state_target.Get<Notifier>(smi).Add(notification, string.Empty);
                     }
                 });
             }
@@ -246,7 +264,7 @@ namespace DiseasesReimagined
                 // Simplest method is to have food poisoning max population on air be 0
                 foreach (var rule in rules)
                 {
-                    if ((rule as StateGrowthRule)?.state == Element.State.Gas)
+                    if (rule is StateGrowthRule state && state.state == Element.State.Gas)
                     {
                         rule.maxCountPerKG = 0;
                         rule.minCountPerKG = 0;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
-using PeterHan.PLib;
 using PeterHan.PLib.Core;
 using UnityEngine;
 
@@ -12,22 +11,22 @@ namespace DiseasesReimagined
     public static class PlantsPatch
     {
         // Transfers germs from one object to another using their mass ratios
-        public static void TransferByMassRatio(GameObject parent, GameObject child)
+        private static void TransferByMassRatio(GameObject parent, GameObject child)
         {
             if (parent == null)
-                throw new ArgumentNullException("parent");
+                throw new ArgumentNullException(nameof(parent));
             if (child == null)
-                throw new ArgumentNullException("child");
+                throw new ArgumentNullException(nameof(child));
             PrimaryElement parentElement = parent.GetComponent<PrimaryElement>(),
                 childElement = child.GetComponent<PrimaryElement>();
             float seedMass;
-            int germs, subGerms;
+            int germs;
             // Distribute the germs by mass ratio if there are any
             if (parentElement != null && childElement != null && (seedMass = childElement.
                 Mass) > 0.0f && (germs = parentElement.DiseaseCount) > 0)
             {
                 byte disease = parentElement.DiseaseIdx;
-                subGerms = Mathf.RoundToInt(germs * seedMass / (seedMass +
+                int subGerms = Mathf.RoundToInt(germs * seedMass / (seedMass +
                     parentElement.Mass));
                 // Seed germs
                 childElement.AddDisease(disease, subGerms, "TransferToChild");
@@ -73,19 +72,20 @@ namespace DiseasesReimagined
             private static void InfectPlant(GameObject farmTile, float required,
                 Storage storage, Tag material)
             {
-                GameObject plant;
                 PrimaryElement irrigant;
                 // Check all available items
                 while (required > 0.0f && (irrigant = storage.FindFirstWithMass(material)) !=
                     null)
                 {
+                    GameObject plant;
                     float mass = irrigant.Mass, consumed = Mathf.Min(required, mass);
                     int disease = irrigant.DiseaseCount;
-                    if (disease > 0 && (plant = farmTile.GetComponent<PlantablePlot>()?.
-                        Occupant) != null)
+                    if (disease > 0 && farmTile.TryGetComponent(out PlantablePlot plot) &&
+                        (plant = plot.Occupant) != null && plant.TryGetComponent(
+                        out PrimaryElement pe))
                     {
                         var diseaseCount = Mathf.RoundToInt(required * disease / mass);
-                        plant.GetComponent<PrimaryElement>()?.AddDisease(irrigant.DiseaseIdx, diseaseCount, "Irrigation");
+                        pe.AddDisease(irrigant.DiseaseIdx, diseaseCount, "Irrigation");
                         irrigant.ModifyDiseaseCount(-diseaseCount, "Irrigation");
                     }
                     required -= consumed;
@@ -99,7 +99,9 @@ namespace DiseasesReimagined
         {
             public static void Postfix(EvilFlower __instance)
             {
-                __instance.gameObject?.AddOrGet<MoreEvilFlower>();
+                var go = __instance.gameObject;
+                if (go != null)
+                    go.AddOrGet<MoreEvilFlower>();
             }
         }
         
@@ -113,7 +115,7 @@ namespace DiseasesReimagined
                 if (element != null && crop != null)
                 {
                     element.Temperature = temperature;
-                    TransferByMassRatio(crop?.gameObject, element.gameObject);
+                    TransferByMassRatio(crop.gameObject, element.gameObject);
                 }
             }
 
@@ -146,10 +148,9 @@ namespace DiseasesReimagined
         {
             public static void Postfix(SeedProducer __instance, GameObject __result)
             {
-                var seed = __result;
                 var obj = __instance.gameObject;
-                if (seed != null && obj != null)
-                    TransferByMassRatio(obj, seed);
+                if (__result != null && obj != null)
+                    TransferByMassRatio(obj, __result);
             }
         }
     }
