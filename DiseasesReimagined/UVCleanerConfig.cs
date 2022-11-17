@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+using PeterHan.PLib.Core;
 using TUNING;
 using UnityEngine;
 
 namespace DiseasesReimagined
 {
-    public class UVCleanerConfig : IBuildingConfig
+    public sealed class UVCleanerConfig : IBuildingConfig
     {
         public const string ID = "UVCleaner";
         public static LocString DISPLAY_NAME = "UV Cleaner";
@@ -14,28 +14,13 @@ namespace DiseasesReimagined
         public static int LUX = 500;
         public static int RADIUS = 3;
 
-        private static readonly List<Storage.StoredItemModifier> StoredItemModifiers =
-            new List<Storage.StoredItemModifier>
-            {
-                Storage.StoredItemModifier.Hide,
-                Storage.StoredItemModifier.Insulate,
-                Storage.StoredItemModifier.Seal
-            };
-
         public override BuildingDef CreateBuildingDef()
         {
-            var width = 3;
-            var height = 3;
-            var anim = "uvcleaner_kanim";
-            var hitpoints = 100;
-            var construction_time = 120f;
-            float[] mass = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
-            string[] mats = MATERIALS.REFINED_METALS;
-            var melting_point = 1600f;
-            var build_location_rule = BuildLocationRule.OnFloor;
-            var tieR2 = NOISE_POLLUTION.NOISY.TIER2;
-            var buildingDef = BuildingTemplates.CreateBuildingDef(ID, width, height, anim, hitpoints, construction_time,
-                mass, mats, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tieR2);
+            var buildingDef = BuildingTemplates.CreateBuildingDef(ID, 3, 3, "uvcleaner_kanim",
+                100, 120.0f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.REFINED_METALS,
+                1600f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.NONE, NOISE_POLLUTION.NOISY.
+                TIER2);
+            PGameUtils.CopySoundsToAnim("uvcleaner_kanim", "waterpurifier_kanim");
             BuildingTemplates.CreateElectricalBuildingDef(buildingDef);
             buildingDef.EnergyConsumptionWhenActive = 320f;
             buildingDef.SelfHeatKilowattsWhenActive = 6.0f;
@@ -48,7 +33,7 @@ namespace DiseasesReimagined
             buildingDef.UtilityInputOffset = new CellOffset(0, 0);
             buildingDef.PermittedRotations = PermittedRotations.FlipH;
             buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
-            buildingDef.OverheatTemperature = TUNING.BUILDINGS.OVERHEAT_TEMPERATURES.NORMAL;
+            buildingDef.OverheatTemperature = BUILDINGS.OVERHEAT_TEMPERATURES.NORMAL;
             return buildingDef;
         }
 
@@ -61,13 +46,13 @@ namespace DiseasesReimagined
             var defaultStorage = BuildingTemplates.CreateDefaultStorage(go);
             defaultStorage.showInUI = true;
             defaultStorage.capacityKg = 2f * conduitConsumer.consumptionRate;
-            defaultStorage.SetDefaultStoredItemModifiers(StoredItemModifiers);
+            defaultStorage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
             go.AddOrGet<UVCleaner>();
         }
 
         public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
         {
-            var lightShapePreview = go.AddComponent<LightShapePreview>();
+            var lightShapePreview = go.AddOrGet<LightShapePreview>();
             lightShapePreview.lux = LUX;
             lightShapePreview.radius = RADIUS;
             lightShapePreview.shape = LightShape.Circle;

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Klei;
 using Klei.AI;
@@ -10,7 +9,8 @@ namespace DiseasesReimagined
     public class FoodPoisonVomiting : Sickness
     {
         public const string ID = "FoodPoisonVomiting";
-        public static List<InfectionVector> vectors = new List<InfectionVector>(new[] {InfectionVector.Digestion});
+        public static readonly List<InfectionVector> vectors = new List<InfectionVector>(
+            new[] {InfectionVector.Digestion});
 
         public FoodPoisonVomiting()
             : base(ID, SicknessType.Ailment, Severity.Minor, 1f, vectors, 1019f)
@@ -19,7 +19,8 @@ namespace DiseasesReimagined
             AddSicknessComponent(new ModifyParentTimeComponent(FoodSickness.ID, .8f));
             AddSicknessComponent(new AttributeModifierSickness(new []
             {
-                new AttributeModifier(Db.Get().Amounts.Stamina.deltaAttribute.Id, -0.08333333333f, "Vomiting")
+                new AttributeModifier(Db.Get().Amounts.Stamina.deltaAttribute.Id,
+                    -0.08333333333f, "Vomiting")
             }));
         }
     }
@@ -75,7 +76,7 @@ namespace DiseasesReimagined
                     };
                     new DirtyVomitChore(Db.Get().ChoreTypes.Vomit, chore_provider,
                         Db.Get().DuplicantStatusItems.Vomiting, notification, diseaseInfo,
-                        chore => { FinishedVomit(vomiter); });
+                        chore => { FinishedVomit(); });
                 }
                 // Decrease kcal as well
                 var cals = Db.Get().Amounts.Calories.Lookup(vomiter);
@@ -84,7 +85,7 @@ namespace DiseasesReimagined
                     cals.SetValue(curKcal - GermExposureTuning.KCAL_LOST_VOMIT);
             }
 
-            void FinishedVomit(GameObject vomiter)
+            private void FinishedVomit()
             {
                 sm.vomitFinished.Trigger(this);
             }

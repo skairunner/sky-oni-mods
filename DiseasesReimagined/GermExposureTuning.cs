@@ -1,5 +1,4 @@
 using Klei.AI;
-using PeterHan.PLib;
 using PeterHan.PLib.Core;
 using System.Collections.Generic;
 
@@ -47,7 +46,7 @@ namespace DiseasesReimagined
         static GermExposureTuning()
         {
             var types = TUNING.GERM_EXPOSURE.TYPES;
-            if (types != null && types.Length > 4)
+            if (types != null && types.Length > 5)
                 // Note that Sicknesses contains lists of available exposure vectors which
                 // must also be modified to add a new exposure method
                 thresholds = new Dictionary<ExposureType, GermExposureThresholds>(16)
@@ -58,10 +57,14 @@ namespace DiseasesReimagined
                     { types[1], new GermExposureThresholds(0, 1000, 1000) },
                     // [2] = Zombie spores (-2)
                     { types[2], new GermExposureThresholds(100, 100, 100) },
-                    // [3] = Allergies (0)
-                    { types[3], new GermExposureThresholds(0, 0, 50) },
-                    // [4] = Smelled flowers (0)
-                    { types[4], new GermExposureThresholds(0, 0, 1) }
+                    // [3] = Radiation sickness (0)
+                    // The vanilla exposure has a bug where zombie spore recovery stops
+                    // radiation sickness due to a copy and paste error, Clay please
+                    { types[3], new GermExposureThresholds(10, 10, 10) },
+                    // [4] = Allergies (0)
+                    { types[4], new GermExposureThresholds(0, 0, 50) },
+                    // [5] = Smelled flowers (0)
+                    { types[5], new GermExposureThresholds(0, 0, 1) },
                 };
             else
                 PUtil.LogWarning("Germ exposure deactivated, invalid default germ exposures!");

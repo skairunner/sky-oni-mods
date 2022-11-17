@@ -16,20 +16,19 @@
     </ItemGroup>
   </Target>
 
-    <Target Name="GenerateYAML" BeforeTargets="Build" Condition="'$(GenerateYAML)' == 'true'">
-        <GenerateMetadataFiles
-            OutputPath="$(TargetDir)"
-
-            Title="$(ModName)"
-            Description="$(ModDescription)"
-            StaticID="$(AssemblyName)"
+  <Target Name="GenerateYAML" BeforeTargets="Build" Condition="'$(GenerateYAML)' == 'true'">
+    <GenerateMetadataFiles
+      OutputPath="$(TargetDir)"
+      Title="$(ModName)"
+      Description="$(ModDescription)"
+      StaticID="$(AssemblyName)"
       
-            SupportedContent="$(SupportedContent)"
-            MinimumSupportedBuild="$(MinimumSupportedBuild)"
-            Version="$(FileVersion)"
-            APIVersion="$(APIVersion)"
-        />
-    </Target>
+      SupportedContent="$(SupportedContent)"
+      MinimumSupportedBuild="$(MinimumSupportedBuild)"
+      Version="$(FileVersion)"
+      APIVersion="$(APIVersion)"
+      />
+  </Target>
 
   <Target Name="ILRepack" AfterTargets="CopyFilesToOutputDirectory">
     <ItemGroup>
@@ -46,10 +45,6 @@
       LibraryPath="$(GameFolder)"
       Parallel="true"
       OutputFile="$(TargetPath)"/>
-  </Target>
-
-  <Target Name="Pdb2Mdb" AfterTargets="ILRepack">
-    <Exec Command='..\util\pdb2mdb.exe "$(TargetPath)"' />
   </Target>
 
   <Target Name="AfterBuild" DependsOnTargets="CopyArtifactsToInstallFolder" />
@@ -79,8 +74,5 @@
           DestinationFiles="$(InstallFolder)\$(TargetFileName)" />
     <Copy SourceFiles="@(YamlFiles)"
         DestinationFiles="@(YamlFiles->'$(InstallFolder)\%(Filename)%(Extension)')"/>
-    <Copy Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " 
-          SourceFiles="$(TargetDir)\$(TargetName).pdb;$(TargetDir)\$(TargetFileName).mdb" 
-          DestinationFiles="$(InstallFolder)\$(TargetName).pdb;$(InstallFolder)\$(TargetFileName).mdb" />
   </Target>
 </Project>

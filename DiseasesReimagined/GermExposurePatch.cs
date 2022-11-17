@@ -3,6 +3,7 @@ using HarmonyLib;
 using Klei.AI;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace DiseasesReimagined
@@ -19,6 +20,8 @@ namespace DiseasesReimagined
         public static LocString THRESHOLD_IMMUNE = "Immune";
         public static LocString THRESHOLD_TOOLTIP_1 = "{0} will catch {1} upon any exposure to its germs";
         public static LocString THRESHOLD_TOOLTIP = "{1} must be exposed to {0:D} germs to have a chance at catching {2}";
+
+        private static readonly StringBuilder EXPOSURE_TEXT = new StringBuilder(256);
 
         // Creates one line of the immune system information panel.
         private static void CreateOneImmuneInfo(Disease disease, GameObject target,
@@ -114,7 +117,7 @@ namespace DiseasesReimagined
         }
 
         // Creates the immune system information panel.
-        internal static bool CreateImmuneInfo(CollapsibleDetailContentPanel immuneSystemPanel,
+        private static bool CreateImmuneInfo(CollapsibleDetailContentPanel immuneSystemPanel,
             GameObject target)
         {
             var integrator = target.GetComponent<GermIntegrator>();
@@ -141,39 +144,41 @@ namespace DiseasesReimagined
             var exposureStatus = data as GermExposureMonitor.ExposureStatusData;
             var exposure = exposureStatus?.exposure_type;
             if (exposure == null)
-                throw new ArgumentNullException("No exposure specified");
+                throw new ArgumentNullException(nameof(exposure));
             var dupe = exposureStatus.owner.gameObject;
             if (dupe != null)
             {
-                var manager = dupe.GetComponent<GermIntegrator>();
                 var smi = dupe.GetSMI<GermExposureMonitor.Instance>();
                 string name = db.Sicknesses.Get(exposure.sickness_id).Name, bonus;
-                float baseResist = exposure.base_resistance, resist = manager.GetResistance(
-                    exposure), chance;
-                // If manager is unavailable, substitute placeholders
-                if (manager == null)
-                {
-                    bonus = GameUtil.GetFormattedSimple(0);
-                    chance = 0.5f;
-                }
-                else
+                float baseResist = exposure.base_resistance, resist, chance;
+                if (dupe.TryGetComponent(out GermIntegrator manager))
                 {
                     bonus = GameUtil.GetFormattedSimple(manager.GetTotalGerms(exposure)) +
                         TOTAL_GERMS;
+                    resist = manager.GetResistance(exposure);
                     chance = manager.GetWorstInfectionChance(exposure, resist);
+                }
+                else
+                {
+                    // If manager is unavailable, substitute placeholders
+                    bonus = GameUtil.GetFormattedSimple(0);
+                    resist = 0.0f;
+                    chance = 0.5f;
                 }
                 int tier = (int)smi.GetExposureTier(exposure.germ_id) - 1;
                 // Severity: low, mild, or high
-                str = str.Replace("{Severity}", STRINGS.DUPLICANTS.STATUSITEMS.EXPOSEDTOGERMS.
-                    EXPOSURE_TIERS[tier]);
-                str = str.Replace("{Sickness}", name);
-                str = str.Replace("{Source}", exposureStatus.owner.GetLastDiseaseSource(
-                    exposure.germ_id));
-                str = str.Replace("{Base}", GameUtil.GetFormattedSimple(baseResist));
-                str = str.Replace("{Dupe}", GameUtil.GetFormattedSimple(resist - baseResist));
-                str = str.Replace("{Total}", GameUtil.GetFormattedSimple(resist));
-                str = str.Replace("{ExposureLevelBonus}", bonus);
-                str = str.Replace("{Chance}", GameUtil.GetFormattedPercent(chance * 100f));
+                str = EXPOSURE_TEXT.Clear().Append(str).
+                    Replace("{Severity}", STRINGS.DUPLICANTS.STATUSITEMS.EXPOSEDTOGERMS.
+                        EXPOSURE_TIERS[tier]).
+                    Replace("{Sickness}", name).
+                    Replace("{Source}", exposureStatus.owner.GetLastDiseaseSource(exposure.
+                        germ_id)).
+                    Replace("{Base}", GameUtil.GetFormattedSimple(baseResist)).
+                    Replace("{Dupe}", GameUtil.GetFormattedSimple(resist - baseResist)).
+                    Replace("{Total}", GameUtil.GetFormattedSimple(resist)).
+                    Replace("{ExposureLevelBonus}", bonus).
+                    Replace("{Chance}", GameUtil.GetFormattedPercent(chance * 100f)).
+                    ToString();
             }
             return str;
         }
@@ -225,10 +230,13 @@ namespace DiseasesReimagined
             internal static bool Prefix(GermExposureMonitor.Instance __instance, int count,
                 Disease disease, Tag source, Sickness.InfectionVector vector)
             {
-                var manager = __instance.gameObject?.AddOrGet<GermIntegrator>();
-                if (manager != null)
+                var go = __instance.gameObject;
+                bool run = go == null;
+                if (!run) {
+                    var manager = go.AddOrGet<GermIntegrator>();
                     manager.InjectDisease(__instance, disease, count, source, vector);
-                return manager == null;
+                }
+                return run;
             }
         }
 
@@ -244,10 +252,13 @@ namespace DiseasesReimagined
             /// </summary>
             internal static bool Prefix(GermExposureMonitor.Instance __instance)
             {
-                var manager = __instance.gameObject?.AddOrGet<GermIntegrator>();
-                if (manager != null)
+                var go = __instance.gameObject;
+                bool run = go == null;
+                if (!run) {
+                    var manager = go.AddOrGet<GermIntegrator>();
                     manager.OnSleepFinished(__instance);
-                return manager == null;
+                }
+                return run;
             }
         }
 
@@ -262,7 +273,8 @@ namespace DiseasesReimagined
             /// </summary>
             internal static void Postfix(GameObject __result)
             {
-                __result?.AddComponent<GermIntegrator>();
+                if (__result != null)
+                    __result.AddOrGet<GermIntegrator>();
             }
         }
     }

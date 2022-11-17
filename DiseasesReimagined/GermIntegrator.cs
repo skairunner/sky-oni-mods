@@ -1,11 +1,10 @@
-using HarmonyLib;
 using Klei.AI;
 using KSerialization;
-using PeterHan.PLib;
 using PeterHan.PLib.Core;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using PeterHan.PLib.Detours;
 using UnityEngine;
 
 using DiseaseSourceInfo = GermExposureMonitor.Instance.DiseaseSourceInfo;
@@ -15,7 +14,7 @@ namespace DiseasesReimagined
 {
     // Replaces GermExposureMonitor with a sensible integrated exposure system.
     [SerializationConfig(MemberSerialization.OptIn)]
-    public sealed class GermIntegrator : KMonoBehaviour, ISaveLoadable
+    public sealed class GermIntegrator : KMonoBehaviour
     {
         // All sickness vectors that can be used to get sick.
         private static readonly Sickness.InfectionVector[] ALL_VECTORS =
@@ -23,6 +22,9 @@ namespace DiseasesReimagined
             Sickness.InfectionVector.Contact, Sickness.InfectionVector.Digestion,
             Sickness.InfectionVector.Exposure, Sickness.InfectionVector.Inhalation
         };
+
+        private static readonly IDetouredField<GermExposureTracker, SeededRandom> RNG_FIELD =
+            PDetours.DetourField<GermExposureTracker, SeededRandom>("rng");
 
         // Adjusts the threshold for germ resistance.
         public static float AdjustedThreshold(int threshold, float resistance)
@@ -32,7 +34,7 @@ namespace DiseasesReimagined
         }
 
         // Calculates the infection chance for a given integrated exposure.
-        public static float GetInfectionChance(GermExposure ge, int total, float resistance)
+        private static float GetInfectionChance(GermExposure ge, int total, float resistance)
         {
             /*
              * Allow one exposure count with 0 effects, then use exponential function:
@@ -85,7 +87,7 @@ namespace DiseasesReimagined
         {
             var exposure = ge.Exposure;
             int threshold = GermExposureTuning.ThresholdsFor(exposure).GetThreshold(ge.Vector);
-            if (threshold > 0 && gameObject != null)
+            if (threshold > 0)
             {
                 string germ = ge.GermID;
                 var state = monitor.GetExposureState(germ);
@@ -151,8 +153,6 @@ namespace DiseasesReimagined
                 case ExposureState.Sick:
                     // Already sick
                     break;
-                default:
-                    break;
                 }
             }
         }
@@ -174,7 +174,7 @@ namespace DiseasesReimagined
         {
             int total = 0;
             if (exposure == null)
-                throw new ArgumentNullException("exposure");
+                throw new ArgumentNullException(nameof(exposure));
             foreach (var vector in ALL_VECTORS)
                 if (integratedExposure.TryGetValue(new GermExposure(vector, exposure),
                         out int byVector))
@@ -187,7 +187,7 @@ namespace DiseasesReimagined
         {
             float worstChance = 0.0f;
             if (exposure == null)
-                throw new ArgumentNullException("exposure");
+                throw new ArgumentNullException(nameof(exposure));
             foreach (var vector in ALL_VECTORS)
             {
                 var ge = new GermExposure(vector, exposure);
@@ -207,20 +207,21 @@ namespace DiseasesReimagined
             int count, Tag source, Sickness.InfectionVector vector)
         {
             var sicknesses = Db.Get().Sicknesses;
-            foreach (var exposure in TUNING.GERM_EXPOSURE.TYPES)
-                if (disease.id == exposure.germ_id && IsExposureValidForTraits(exposure))
-                {
-                    // Null sickness ID for smelled flowers
-                    string id = exposure.sickness_id;
-                    var sickness = (id == null) ? null : sicknesses.Get(id);
-                    if (sickness == null || sickness.infectionVectors.Contains(vector))
-                        DoInjectDisease(monitor, disease, count, source, new GermExposure(
-                            vector, exposure));
-                }
+            if (count > 0)
+                foreach (var exposure in TUNING.GERM_EXPOSURE.TYPES)
+                    if (disease.id == exposure.germ_id && IsExposureValidForTraits(exposure))
+                    {
+                        // Null sickness ID for smelled flowers
+                        string id = exposure.sickness_id;
+                        var sickness = (id == null) ? null : sicknesses.Get(id);
+                        if (sickness == null || sickness.infectionVectors.Contains(vector))
+                            DoInjectDisease(monitor, disease, count, source, new GermExposure(
+                                vector, exposure));
+                    }
         }
 
         // Checks to see if the Duplicant is immune to a certain exposure.
-        internal bool IsExposureValidForTraits(ExposureType exposure)
+        private bool IsExposureValidForTraits(ExposureType exposure)
         {
             bool valid = true;
             ICollection<string> required = exposure.required_traits, excluded = exposure.
@@ -239,16 +240,15 @@ namespace DiseasesReimagined
                         valid = false;
                         break;
                     }
-            if (valid && noEffects != null && noEffects.Count > 0)
+            if (valid && noEffects != null && noEffects.Count > 0 && gameObject.
+                TryGetComponent(out Effects effects))
             {
-                var effects = gameObject.GetComponent<Effects>();
-                if (effects != null)
-                    foreach (string effect_id in noEffects)
-                        if (effects.HasEffect(effect_id))
-                        {
-                            valid = false;
-                            break;
-                        }
+                foreach (string effect_id in noEffects)
+                    if (effects.HasEffect(effect_id))
+                    {
+                        valid = false;
+                        break;
+                    }
             }
             return valid;
         }
@@ -299,19 +299,16 @@ namespace DiseasesReimagined
         // When the Duplicant wakes up, check the chances and infect with valid diseases
         internal void OnSleepFinished(GermExposureMonitor.Instance monitor)
         {
-            SeededRandom random;
             // Use the same state as the vanilla game does
             var inst = GermExposureTracker.Instance;
-            if (inst == null)
-                random = new SeededRandom(GameClock.Instance.GetCycle());
-            else
-                random = Traverse.Create(inst).Field("rng").GetValue<SeededRandom>();
+            var random = inst == null ? new SeededRandom(GameClock.Instance.GetCycle()) :
+                RNG_FIELD.Get(inst);
             foreach (var pair in integratedExposure)
             {
                 var ge = pair.Key;
                 var exposure = ge.Exposure;
                 // Avoid double dipping on zombie spores
-                if (!exposure.infect_immediately && gameObject != null)
+                if (!exposure.infect_immediately)
                 {
                     string germ = ge.GermID;
                     int total = pair.Value;
@@ -351,9 +348,6 @@ namespace DiseasesReimagined
                     case ExposureState.Contact:
                         // Reset state to none if contact and no exposure
                         monitor.SetExposureState(germ, ExposureState.None);
-                        break;
-                    default:
-                        // None = continue on
                         break;
                     }
                 }
@@ -399,17 +393,11 @@ namespace DiseasesReimagined
         public ExposureType Exposure { get; }
 
         // The germ ID exposed.
-        public string GermID
-        {
-            get
-            {
-                return Exposure.germ_id;
-            }
-        }
+        public string GermID => Exposure.germ_id;
 
         public GermExposure(Sickness.InfectionVector vector, ExposureType exposure)
         {
-            Exposure = exposure ?? throw new ArgumentNullException("exposure");
+            Exposure = exposure ?? throw new ArgumentNullException(nameof(exposure));
             Vector = vector;
         }
 

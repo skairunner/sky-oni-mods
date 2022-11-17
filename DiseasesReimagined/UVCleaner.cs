@@ -10,6 +10,8 @@ namespace DiseasesReimagined
     [SerializationConfig(MemberSerialization.OptIn)]
     public class UVCleaner : KMonoBehaviour, IGameObjectEffectDescriptor, ISim200ms
     {
+        private static readonly List<Descriptor> EMPTY_LIST = new List<Descriptor>();
+
         // The germ fraction to remove.
         public const float GERM_REMOVAL = 0.95f;
 
@@ -22,22 +24,20 @@ namespace DiseasesReimagined
         [MyCmpReq] private BuildingComplete building;
         [MyCmpReq] private ConduitConsumer consumer;
         [MyCmpReq] private KSelectable selectable;
+        [MyCmpReq] internal Operational operational;
+        [MyCmpReq] private Storage storage;
         #pragma warning restore CS0649
 
         private int waterOutputCell = -1;
 
-        [MyCmpReq] public Operational operational;
-
         private Guid statusHandle;
-
-        [MyCmpReq] protected Storage storage;
 
         public void Sim200ms(float dt)
         {
             if (operational != null && !operational.IsOperational)
                 operational.SetActive(false);
             else
-                UpdateState(dt);
+                UpdateState();
         }
 
         protected override void OnPrefabInit()
@@ -68,16 +68,16 @@ namespace DiseasesReimagined
             reactable = new SunburnReactable(this);
         }
 
-        private void UpdateState(float _)
+        private void UpdateState()
         {
             var hasLiquid = consumer.IsSatisfied;
             byte invalid = SimUtil.DiseaseInfo.Invalid.idx;
             foreach (var item in storage.items)
             {
-                var pe = item.GetComponent<PrimaryElement>();
-                float mass = pe.Mass;
+                float mass;
                 // Is it liquid?
-                if (mass > 0.0f && pe.Element.IsLiquid)
+                if (item.TryGetComponent(out PrimaryElement pe) && (mass = pe.Mass) > 0.0f &&
+                    pe.Element.IsLiquid)
                 {
                     byte germID = pe.DiseaseIdx;
                     // Remove the fraction and destroy if too few
@@ -106,7 +106,7 @@ namespace DiseasesReimagined
         private static void OnOperationalChanged(UVCleaner component, object data)
         {
             if (component.operational.IsOperational)
-                component.UpdateState(0.0f);
+                component.UpdateState();
         }
 
         private static void OnActiveChanged(UVCleaner component, object data)
@@ -125,21 +125,19 @@ namespace DiseasesReimagined
                 }
                 else
                 {
-                    selectable.ReplaceStatusItem(statusHandle, Db.Get().BuildingStatusItems.Working);
+                    selectable.ReplaceStatusItem(statusHandle, Db.Get().BuildingStatusItems.
+                        Working);
                 }
             }
-            else
+            else if (statusHandle != Guid.Empty)
             {
-                if (statusHandle != Guid.Empty)
-                {
-                    statusHandle = selectable.RemoveStatusItem(statusHandle);
-                }
+                statusHandle = selectable.RemoveStatusItem(statusHandle);
             }
         }
 
         public List<Descriptor> GetDescriptors(GameObject go)
         {
-            return new List<Descriptor>();
+            return EMPTY_LIST;
         }
 
         private static readonly EventSystem.IntraObjectHandler<UVCleaner> OnOperationalChangedDelegate =
@@ -156,16 +154,16 @@ namespace DiseasesReimagined
     {
         private readonly UVCleaner cleaner;
         
-        public SunburnReactable(UVCleaner cleaner)
-            : base(cleaner.gameObject, nameof(SunburnReactable), Db.Get().ChoreTypes.Checkpoint, 3, 3)
+        public SunburnReactable(UVCleaner cleaner) : base(cleaner.gameObject,
+            nameof(SunburnReactable), Db.Get().ChoreTypes.Checkpoint, 3, 3)
         {
             this.cleaner = cleaner;
             preventChoreInterruption = false;
         }
 
-        public override bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition)
+        public override bool InternalCanBegin(GameObject victim, Navigator.ActiveTransition transition)
         {
-            return cleaner.operational.IsActive && !reactor.GetSicknesses().Has(Db.Get().
+            return cleaner.operational.IsActive && !victim.GetSicknesses().Has(Db.Get().
                 Sicknesses.Sunburn);
         }
 

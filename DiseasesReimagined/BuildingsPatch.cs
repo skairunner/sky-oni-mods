@@ -1,11 +1,13 @@
 using HarmonyLib;
-using PeterHan.PLib;
+#if DEBUG
 using PeterHan.PLib.Core;
+#endif
 using PeterHan.PLib.Lighting;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+
 using static SkyLib.OniUtils;
 
 namespace DiseasesReimagined
@@ -17,14 +19,13 @@ namespace DiseasesReimagined
         public static void SemicircleLight(LightingArgs arg)
         {
             SemicircleDownHelper(
-                arg.Source,
                 arg.SourceCell,
                 arg.Range,
                 arg.Brightness
             );
         }
         
-        private static void SemicircleDownHelper(GameObject source, int sourceCell, int range, 
+        private static void SemicircleDownHelper(int sourceCell, int range, 
             IDictionary<int, float> brightness)
         {
             var octants = new OctantBuilder(brightness, sourceCell)
@@ -43,9 +44,10 @@ namespace DiseasesReimagined
         {
             public static void Prefix()
             {
-                AddBuildingStrings(UVCleanerConfig.ID, UVCleanerConfig.DISPLAY_NAME, UVCleanerConfig.DESCRIPTION,
-                    UVCleanerConfig.EFFECT);
-                ModUtil.AddBuildingToPlanScreen("Medical", UVCleanerConfig.ID, "cleaning", WashSinkConfig.ID);
+                AddBuildingStrings(UVCleanerConfig.ID, UVCleanerConfig.DISPLAY_NAME,
+                    UVCleanerConfig.DESCRIPTION, UVCleanerConfig.EFFECT);
+                ModUtil.AddBuildingToPlanScreen("Medical", UVCleanerConfig.ID, "cleaning",
+                    WashSinkConfig.ID);
             }
         }
 
