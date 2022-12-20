@@ -40,6 +40,7 @@ namespace ExpandedLights
             buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
             buildingDef.AudioCategory = "Metal";
             buildingDef.OverheatTemperature = BUILDINGS.OVERHEAT_TEMPERATURES.HIGH_2;
+            buildingDef.Entombable = false;
             return buildingDef;
         }
 

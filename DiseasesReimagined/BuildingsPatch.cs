@@ -4,7 +4,6 @@ using PeterHan.PLib.Core;
 #endif
 using PeterHan.PLib.Lighting;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -18,21 +17,12 @@ namespace DiseasesReimagined
 
         public static void SemicircleLight(LightingArgs arg)
         {
-            SemicircleDownHelper(
-                arg.SourceCell,
-                arg.Range,
-                arg.Brightness
-            );
-        }
-        
-        private static void SemicircleDownHelper(int sourceCell, int range, 
-            IDictionary<int, float> brightness)
-        {
-            var octants = new OctantBuilder(brightness, sourceCell)
+            var octants = new OctantBuilder(arg.Brightness, arg.SourceCell)
             {
                 Falloff = 0.5f,
                 SmoothLight = true
             };
+            int range = arg.Range;
             octants.AddOctant(range, DiscreteShadowCaster.Octant.E_SE);
             octants.AddOctant(range, DiscreteShadowCaster.Octant.S_SE);
             octants.AddOctant(range, DiscreteShadowCaster.Octant.S_SW);
@@ -150,8 +140,8 @@ namespace DiseasesReimagined
         {
             public static void Postfix(GameObject new_reactor, ref bool __result)
             {
-                var cooldown = new_reactor.GetComponent<WashCooldownComponent>();
-                if (cooldown != null && !cooldown.CanWash)
+                if (new_reactor != null && new_reactor.TryGetComponent(out
+                        WashCooldownComponent cooldown) && !cooldown.CanWash)
                     __result = false;
             }
 
