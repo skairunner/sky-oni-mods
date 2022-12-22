@@ -1,6 +1,5 @@
 using HarmonyLib;
 using KMod;
-using PeterHan.PLib;
 using PeterHan.PLib.Core;
 using PeterHan.PLib.Lighting;
 using PeterHan.PLib.PatchManager;
@@ -36,15 +35,14 @@ namespace ExpandedLights
             var lightManager = new PLightManager();
             DirectedCone = lightManager.Register("SkyLib.LightShape.Cone", LightDefs.LightCone);
             Beam5 = lightManager.Register("SkyLib.LightShape.Beam5", LightDefs.LinearLight5);
-            SmoothCircle = lightManager.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle);
+            SmoothCircle = lightManager.Register("SkyLib.LightShape.Circle", LightDefs.LightCircle, LightShape.Circle);
             OffsetCone = lightManager.Register("SkyLib.LightShape.OffsetCone", LightDefs.OffsetCone);
-            FixedSemi = lightManager.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle);
+            FixedSemi = lightManager.Register("SkyLib.LightShape.FixedSemi", LightDefs.FixedLightSemicircle, LightShape.Cone);
             Semicircle = lightManager.Register("SkyLib.LightShape.Semicircle", LightDefs.LightSemicircle);
             OffsetSemi = lightManager.Register("SkyLib.LightShape.OffsetSemi", LightDefs.OffsetSemicircle);
         }
 
-        [HarmonyPatch(typeof(GeneratedBuildings))]
-        [HarmonyPatch("LoadGeneratedBuildings")]
+        [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
         public static class GeneratedBuildings_LoadGeneratedBuildings_Path
         {
             public static void Prefix()

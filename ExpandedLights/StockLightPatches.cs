@@ -10,19 +10,19 @@ namespace ExpandedLights
         [HarmonyPatch(typeof(CeilingLightConfig), "CreateBuildingDef")]
         public static class CeilingLightConfig_CreateBuildingDef_Patch
         {
-            public static BuildingDef Postfix(BuildingDef __result)
+            public static void Postfix(BuildingDef __result)
             {
                 __result.SelfHeatKilowattsWhenActive = 0.1f;
-                return __result;
             }
         }
 
         [HarmonyPatch(typeof(CeilingLightConfig), "DoPostConfigurePreview")]
         public static class CeilingLightConfig_DoPostConfigurePreview_Patch
         {
-            public static void Postfix(BuildingDef def, GameObject go)
+            public static void Postfix(GameObject go)
             {
-                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.FixedSemi.KleiLightShape;
+                if (go.TryGetComponent(out LightShapePreview preview))
+                    preview.shape = ExpandedLightsPatch.FixedSemi.KleiLightShape;
             }
         }
 
@@ -31,27 +31,28 @@ namespace ExpandedLights
         {
             public static void Postfix(GameObject go)
             {
-                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.FixedSemi.KleiLightShape;
+                if (go.TryGetComponent(out Light2D light))
+                    light.shape = ExpandedLightsPatch.FixedSemi.KleiLightShape;
             }
         }
 
         [HarmonyPatch(typeof(FloorLampConfig), "CreateBuildingDef")]
         public static class FloorLampConfig_CreateBuildingDef_Patch
         {
-            public static BuildingDef Postfix(BuildingDef __result)
+            public static void Postfix(BuildingDef __result)
             {
                 __result.EnergyConsumptionWhenActive = 4f;
                 __result.SelfHeatKilowattsWhenActive = 0.1f;
-                return __result;
             }
         }
 
         [HarmonyPatch(typeof(FloorLampConfig), "DoPostConfigurePreview")]
         public static class FloorLampConfig_DoPostConfigurePreview_Patch
         {
-            public static void Postfix(BuildingDef def, GameObject go)
+            public static void Postfix(GameObject go)
             {
-                go.GetComponent<LightShapePreview>().shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
+                if (go.TryGetComponent(out LightShapePreview preview))
+                    preview.shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
             }
         }
 
@@ -60,7 +61,8 @@ namespace ExpandedLights
         {
             public static void Postfix(GameObject go)
             {
-                go.GetComponent<Light2D>().shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
+                if (go.TryGetComponent(out Light2D light))
+                    light.shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
             }
         }
     }

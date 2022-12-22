@@ -44,14 +44,16 @@ namespace DiseasesReimagined
             patchManager.RegisterPatchClass(typeof(CompatPatch));
             patchManager.RegisterPatchClass(typeof(DiseasesPatch));
             BuildingsPatch.uvlight = new PLightManager().Register("SkyLib.LightShape.FixedSemi",
-                BuildingsPatch.SemicircleLight);
+                BuildingsPatch.SemicircleLight, LightShape.Cone);
             FrostbitePatch.Mod_OnLoad.OnLoad();
         }
 
         // Helper method to find a specific attribute modifier
         private static AttributeModifier FindAttributeModifier(List<Sickness.SicknessComponent> components, string id)
         {
-            var attr_mod = (AttributeModifierSickness)components.Find(comp => comp is AttributeModifierSickness);
+            var attr_mod = components.Find(comp => comp is AttributeModifierSickness) as AttributeModifierSickness;
+            if (attr_mod == null)
+                throw new InvalidOperationException("Could not find sickness modifier!");
             return Array.Find(attr_mod.Modifers, mod => mod.AttributeId == id);
         }
 
@@ -188,7 +190,7 @@ namespace DiseasesReimagined
                 var stressmod = FindAttributeModifier(___components, Db.Get().Amounts.Stress.
                     deltaAttribute.Id);
                 // 30% stress/cycle
-                Traverse.Create(stressmod).Field("Value").SetValue(.04166666666f);
+                stressmod.SetValue(.04166666666f);
             }
         }
 

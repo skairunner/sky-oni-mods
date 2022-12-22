@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
-    <AssemblyTitle>Expanded Lights</AssemblyTitle>
-    <Version>1.9.0</Version>
-    <UsesPLib>true</UsesPLib>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net471</TargetFramework>
+        <AssemblyTitle>Expanded Lights</AssemblyTitle>
+        <Version>2.0.0</Version>
+        <UsesPLib>true</UsesPLib>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Update="mod.yaml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="mod_info.yaml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>

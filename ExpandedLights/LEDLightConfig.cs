@@ -82,7 +82,7 @@ namespace ExpandedLights
             light2D.Range = range;
             light2D.Angle = 2.6f;
             light2D.Direction = LIGHT2D.CEILINGLIGHT_DIRECTION;
-            light2D.Offset = LIGHT2D.CEILINGLIGHT_OFFSET;
+            light2D.Offset = Vector2.zero;
             light2D.shape = ExpandedLightsPatch.SmoothCircle.KleiLightShape;
             light2D.drawOverlay = true;
             light2D.Lux = lux;

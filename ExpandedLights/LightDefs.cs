@@ -127,14 +127,13 @@ namespace ExpandedLights
 
             var new_sourceCell = Grid.OffsetCell(arg.SourceCell, new CellOffset(offset_dir.X, offset_dir.Y));
 
-            _LightSemicircleHelper(arg.Source, new_sourceCell, arg.Range, orient, arg.Brightness);
+            _LightSemicircleHelper(new_sourceCell, arg.Range, orient, arg.Brightness);
         }
 
         // a LightSemicircle that always points down
         public static void FixedLightSemicircle(LightingArgs arg)
         {
             _LightSemicircleHelper(
-                arg.Source,
                 arg.SourceCell,
                 arg.Range,
                 Orientation.R180,
@@ -146,14 +145,13 @@ namespace ExpandedLights
         {
             var thing = arg.Source.GetComponent<Rotatable>();
             _LightSemicircleHelper(
-                arg.Source,
                 arg.SourceCell,
                 arg.Range,
                 thing != null ? thing.GetOrientation() : Orientation.Neutral,
                 arg.Brightness);
         }
 
-        public static void _LightSemicircleHelper(GameObject source, int sourceCell, int range, Orientation rotation,
+        public static void _LightSemicircleHelper(int sourceCell, int range, Orientation rotation,
             IDictionary<int, float> brightness)
         {
             var octants = new OctantBuilder(brightness, sourceCell)
