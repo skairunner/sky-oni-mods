@@ -8,7 +8,7 @@ namespace DiseasesReimagined
         public const string ID = "SlimeLethal";
 
         public SlimeLethalSickness()
-            : base(ID, SicknessType.Ailment, Severity.Major, 0.00025f,
+            : base(ID, SicknessType.Ailment, Severity.Critical, 0.00025f,
                 new List<InfectionVector>
                 {
                     InfectionVector.Inhalation
