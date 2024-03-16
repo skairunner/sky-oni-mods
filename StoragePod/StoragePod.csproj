@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net471</TargetFramework>
         <AssemblyName>Storage Pod</AssemblyName>
-        <Version>1.6.0</Version>
+        <Version>1.7.0</Version>
         <UsesPLib>true</UsesPLib>
     </PropertyGroup>
     <PropertyGroup>
