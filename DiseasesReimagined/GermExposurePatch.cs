@@ -117,11 +117,10 @@ namespace DiseasesReimagined
         }
 
         // Creates the immune system information panel.
-        private static bool CreateImmuneInfo(CollapsibleDetailContentPanel immuneSystemPanel,
+        private static void CreateImmuneInfo(CollapsibleDetailContentPanel immuneSystemPanel,
             GameObject target)
         {
             var integrator = target.GetComponent<GermIntegrator>();
-            bool update = false;
             if (integrator != null)
             {
                 var diseases = Db.Get().Diseases;
@@ -132,9 +131,8 @@ namespace DiseasesReimagined
                     DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.DESC);
                 for (int i = 0; i < diseases.Count; i++)
                     CreateOneImmuneInfo(diseases[i], target, integrator, immuneSystemPanel);
-                update = true;
             }
-            return update;
+            immuneSystemPanel.Commit();
         }
 
         // Resolves the text for the "exposed" status item
@@ -184,21 +182,19 @@ namespace DiseasesReimagined
         }
 
         /// <summary>
-        /// Applied to DiseaseInfoScreen to replace the immune system information with our
+        /// Applied to AdditionalDetailsPanel to replace the immune system information with our
         /// mod's version.
         /// </summary>
-        [HarmonyPatch(typeof(DiseaseInfoScreen), "CreateImmuneInfo")]
-        public static class DiseaseInfoScreen_CreateImmuneInfo_Patch
+        [HarmonyPatch(typeof(AdditionalDetailsPanel), "RefreshImuneSystemPanel")]
+        public static class AdditionalDetailsPanel_RefreshImuneSystemPanel_Patch
         {
             /// <summary>
-            /// Applied before CreateImmuneInfo runs.
+            /// Applied before RefreshImuneSystemPanel runs.
             /// </summary>
-            internal static bool Prefix(GameObject ___selectedTarget, ref bool __result,
-                CollapsibleDetailContentPanel ___immuneSystemPanel)
+            internal static bool Prefix(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
             {
-                bool ok = CreateImmuneInfo(___immuneSystemPanel, ___selectedTarget);
-                __result = ok;
-                return !ok;
+                CreateImmuneInfo(targetPanel, targetEntity);
+                return false;
             }
         }
 
