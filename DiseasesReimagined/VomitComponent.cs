@@ -61,9 +61,8 @@ namespace DiseasesReimagined
             public void Vomit(GameObject vomiter)
             {
                 var diseaseList = Db.Get().Diseases;
-                var chore_provider = vomiter.GetComponent<ChoreProvider>();
                 var sickness = Db.Get().Sicknesses.FoodSickness;
-                if (chore_provider != null)
+                if (vomiter.TryGetComponent(out ChoreProvider chore_provider))
                 {
                     var notification = new Notification("Vomiting",
                         NotificationType.Bad,

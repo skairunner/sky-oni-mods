@@ -22,14 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2" />
     <Reference Include="0Harmony" />
     <Reference Include="Assembly-CSharp" />
     <Reference Include="Assembly-CSharp-firstpass" />
     <Reference Include="UnityEngine.CoreModule" />
   </ItemGroup>
   <ItemGroup Condition=" '$(UsesPLib)' == 'true' ">
-    <PackageReference Include="PLib" Version="4.11.0" />
+    <PackageReference Include="PLib" Version="4.16.0" />
     <Reference Include="Newtonsoft.Json" />
     <Reference Include="Unity.TextMeshPro" />
     <Reference Include="UnityEngine.TextRenderingModule" />
