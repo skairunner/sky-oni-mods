@@ -12,6 +12,9 @@ namespace DiseasesReimagined
 
         // The exponential factor for disease contraction chances
         internal const float CONTRACT_FACTOR = 0.5f;
+        
+        // The base damage for frostbite/scalding
+        internal const float DAMAGE_BASE = 5.0f;
 
         // The damage for frostbite/scalding per degree K out of range
         internal const float DAMAGE_PER_K = 0.2f;

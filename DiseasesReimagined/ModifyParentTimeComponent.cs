@@ -31,8 +31,9 @@ namespace DiseasesReimagined
         {
             // Modifies parent time on cure
             var parent = Db.Get().Sicknesses.Get(parentName);
-            var sicknesses = go.GetComponent<Modifiers>().sicknesses;
-            if (parent != null && sicknesses.Has(parent))
+            Sicknesses sicknesses;
+            if (parent != null && go.TryGetComponent(out Modifiers mod) && (sicknesses =
+                mod.sicknesses).Has(parent))
             {
                 var sickness = sicknesses.Get(parent);
                 var smi = SMI_FIELD.Get(sickness);

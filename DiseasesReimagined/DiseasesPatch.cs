@@ -45,7 +45,6 @@ namespace DiseasesReimagined
             patchManager.RegisterPatchClass(typeof(DiseasesPatch));
             BuildingsPatch.uvlight = new PLightManager().Register("SkyLib.LightShape.FixedSemi",
                 BuildingsPatch.SemicircleLight, LightShape.Cone);
-            FrostbitePatch.Mod_OnLoad.OnLoad();
         }
 
         // Helper method to find a specific attribute modifier

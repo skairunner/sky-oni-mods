@@ -17,13 +17,12 @@ namespace DiseasesReimagined
                 throw new ArgumentNullException(nameof(parent));
             if (child == null)
                 throw new ArgumentNullException(nameof(child));
-            PrimaryElement parentElement = parent.GetComponent<PrimaryElement>(),
-                childElement = child.GetComponent<PrimaryElement>();
             float seedMass;
             int germs;
             // Distribute the germs by mass ratio if there are any
-            if (parentElement != null && childElement != null && (seedMass = childElement.
-                Mass) > 0.0f && (germs = parentElement.DiseaseCount) > 0)
+            if (parent.TryGetComponent(out PrimaryElement parentElement) && child.
+                TryGetComponent(out PrimaryElement childElement) && (seedMass =
+                childElement.Mass) > 0.0f && (germs = parentElement.DiseaseCount) > 0)
             {
                 byte disease = parentElement.DiseaseIdx;
                 int subGerms = Mathf.RoundToInt(germs * seedMass / (seedMass +

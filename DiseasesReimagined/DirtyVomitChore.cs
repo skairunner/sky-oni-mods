@@ -33,6 +33,9 @@ namespace DiseasesReimagined
             public readonly StatusItem statusItem;
             private readonly SafetyQuery vomitCellQuery;
             private readonly SimUtil.DiseaseInfo diseaseInfo;
+            private readonly KBatchedAnimController kbac;
+            private readonly SuitEquipper equipper;
+            private readonly Navigator nav;
 
             public StatesInstance(
                 DirtyVomitChore master,
@@ -47,8 +50,11 @@ namespace DiseasesReimagined
                 bodyTemperature = Db.Get().Amounts.Temperature.Lookup(vomiter);
                 statusItem = status_item;
                 this.notification = notification;
-                vomitCellQuery = new SafetyQuery(Game.Instance.safetyConditions.
-                    VomitCellChecker, GetComponent<KMonoBehaviour>(), 10);
+                equipper = GetComponent<SuitEquipper>();
+                kbac = GetComponent<KBatchedAnimController>();
+                nav = GetComponent<Navigator>();
+                vomitCellQuery = new SafetyQuery(Game.Instance.safetyConditions.VomitCellChecker,
+                    nav, 10);
             }
 
             private static bool CanEmitLiquid(int cell)
@@ -60,8 +66,7 @@ namespace DiseasesReimagined
             {
                 if (dt <= 0.0)
                     return;
-                var timeRatio = dt / GetComponent<KBatchedAnimController>().CurrentAnim.
-                    totalTime;
+                var timeRatio = dt / kbac.CurrentAnim.totalTime;
 
                 var victim = sm.vomiter.Get(smi);
                 int posCell = Grid.PosToCell(victim.transform.position);
@@ -72,7 +77,7 @@ namespace DiseasesReimagined
                         frontCell = posCell;
                 }
 
-                var suit = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+                var suit = equipper.IsWearingAirtightSuit();
                 if (suit != null && suit.TryGetComponent(out Storage storage))
                     storage.AddLiquid(SimHashes.DirtyWater, STRESS.VOMIT_AMOUNT * timeRatio,
                         bodyTemperature.value, diseaseInfo.idx, diseaseInfo.count);
@@ -84,7 +89,6 @@ namespace DiseasesReimagined
 
             public int GetVomitCell()
             {
-                var nav = GetComponent<Navigator>();
                 vomitCellQuery.Reset();
                 nav.RunQuery(vomitCellQuery);
 

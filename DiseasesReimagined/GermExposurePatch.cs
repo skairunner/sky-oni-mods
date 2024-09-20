@@ -34,54 +34,55 @@ namespace DiseasesReimagined
 
             ICollection<string> required = exposure.required_traits, excluded = exposure.
                 excluded_traits, noEffects = exposure.excluded_effects;
-            var traits = target.GetComponent<Traits>();
-            var effects = target.GetComponent<Effects>();
             // The part we actually changed
             float threshold = Mathf.Ceil(GermIntegrator.AdjustedThreshold(GermExposureTuning.
                 ThresholdsFor(exposure).GetMinThreshold(), integrator.GetResistance(exposure)));
-            string tooltip = "";
+            var tooltip = EXPOSURE_TEXT.Clear();
             // Check for required traits to catch the disease
-            if (required != null && required.Count > 0)
-            {
-                string traitList = "";
-                foreach (string trait in required)
-                    if (!traits.HasTrait(trait))
-                    {
-                        if (traitList.Length > 0)
-                            traitList += ", ";
-                        traitList += Db.Get().traits.Get(trait).Name;
-                    }
-                if (traitList.Length > 0)
+            if (target.TryGetComponent(out Traits traits)) {
+                if (required != null && required.Count > 0)
                 {
-                    // Immune: missing required traits
-                    threshold = 0.0f;
-                    tooltip = string.Format(STRINGS.DUPLICANTS.DISEASES.
-                        IMMUNE_FROM_MISSING_REQUIRED_TRAIT, traitList);
+                    string traitList = "";
+                    foreach (string trait in required)
+                        if (!traits.HasTrait(trait))
+                        {
+                            if (traitList.Length > 0)
+                                traitList += ", ";
+                            traitList += Db.Get().traits.Get(trait).Name;
+                        }
+                    if (traitList.Length > 0)
+                    {
+                        // Immune: missing required traits
+                        threshold = 0.0f;
+                        tooltip.AppendFormat(STRINGS.DUPLICANTS.DISEASES.
+                            IMMUNE_FROM_MISSING_REQUIRED_TRAIT, traitList);
+                    }
                 }
-            }
-            // Check for traits that prevent catching it
-            if (excluded != null && excluded.Count > 0)
-            {
-                string traitList = "";
-                foreach (string trait in excluded)
-                    if (traits.HasTrait(trait))
-                    {
-                        if (traitList.Length > 0)
-                            traitList += ", ";
-                        traitList += Db.Get().traits.Get(trait).Name;
-                    }
-                if (traitList.Length > 0)
+                // Check for traits that prevent catching it
+                if (excluded != null && excluded.Count > 0)
                 {
-                    // Immune: blocking trait
-                    threshold = 0.0f;
-                    if (tooltip.Length > 0)
-                        tooltip += "\n";
-                    tooltip += string.Format(STRINGS.DUPLICANTS.DISEASES.
-                        IMMUNE_FROM_HAVING_EXLCLUDED_TRAIT, traitList);
+                    string traitList = "";
+                    foreach (string trait in excluded)
+                        if (traits.HasTrait(trait))
+                        {
+                            if (traitList.Length > 0)
+                                traitList += ", ";
+                            traitList += Db.Get().traits.Get(trait).Name;
+                        }
+                    if (traitList.Length > 0)
+                    {
+                        // Immune: blocking trait
+                        threshold = 0.0f;
+                        if (tooltip.Length > 0)
+                            tooltip.AppendLine();
+                        tooltip.AppendFormat(STRINGS.DUPLICANTS.DISEASES.
+                            IMMUNE_FROM_HAVING_EXLCLUDED_TRAIT, traitList);
+                    }
                 }
             }
             // Check for effects that prevent catching it
-            if (noEffects != null && noEffects.Count > 0)
+            if (noEffects != null && noEffects.Count > 0 && target.
+                TryGetComponent(out Effects effects))
             {
                 string effectList = "";
                 foreach (string effect in noEffects)
@@ -96,8 +97,8 @@ namespace DiseasesReimagined
                     // Immune: blocking effect
                     threshold = 0.0f;
                     if (tooltip.Length > 0)
-                        tooltip += "\n";
-                    tooltip += string.Format(STRINGS.DUPLICANTS.DISEASES.
+                        tooltip.AppendLine();
+                    tooltip.AppendFormat(STRINGS.DUPLICANTS.DISEASES.
                         IMMUNE_FROM_HAVING_EXCLUDED_EFFECT, effectList);
                 }
             }
@@ -105,27 +106,25 @@ namespace DiseasesReimagined
             if (tooltip.Length == 0)
             {
                 if (threshold > 1.0f)
-                    tooltip = string.Format(THRESHOLD_TOOLTIP, GameUtil.GetFormattedSimple(
+                    tooltip.AppendFormat(THRESHOLD_TOOLTIP, GameUtil.GetFormattedSimple(
                         threshold), target.GetProperName(), sickness.Name);
                 else
-                    tooltip = string.Format(THRESHOLD_TOOLTIP_1, target.GetProperName(),
+                    tooltip.AppendFormat(THRESHOLD_TOOLTIP_1, target.GetProperName(),
                         sickness.Name);
             }
             panel.SetLabel("disease_" + disease.Id, "    • " + disease.Name + ": " +
                 (threshold == 0.0f ? THRESHOLD_IMMUNE.text : GameUtil.GetFormattedSimple(
-                threshold)), tooltip);
+                threshold)), tooltip.ToString());
         }
 
         // Creates the immune system information panel.
         private static void CreateImmuneInfo(CollapsibleDetailContentPanel immuneSystemPanel,
             GameObject target)
         {
-            var integrator = target.GetComponent<GermIntegrator>();
-            if (integrator != null)
+            if (target.TryGetComponent(out GermIntegrator integrator))
             {
                 var diseases = Db.Get().Diseases;
                 // Create the immune system panel
-                immuneSystemPanel.SetTitle(THRESHOLD_TITLE);
                 immuneSystemPanel.SetLabel("germ_resistance", Db.Get().Attributes.
                     GermResistance.Name + ": " + integrator.GetDupeResistance(), STRINGS.
                     DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.DESC);
@@ -183,7 +182,7 @@ namespace DiseasesReimagined
 
         /// <summary>
         /// Applied to AdditionalDetailsPanel to replace the immune system information with our
-        /// mod's version.
+        /// mod's version. The typo is in the base game source too.
         /// </summary>
         [HarmonyPatch(typeof(AdditionalDetailsPanel), "RefreshImuneSystemPanel")]
         public static class AdditionalDetailsPanel_RefreshImuneSystemPanel_Patch
@@ -191,7 +190,8 @@ namespace DiseasesReimagined
             /// <summary>
             /// Applied before RefreshImuneSystemPanel runs.
             /// </summary>
-            internal static bool Prefix(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+            internal static bool Prefix(CollapsibleDetailContentPanel targetPanel,
+                GameObject targetEntity)
             {
                 CreateImmuneInfo(targetPanel, targetEntity);
                 return false;

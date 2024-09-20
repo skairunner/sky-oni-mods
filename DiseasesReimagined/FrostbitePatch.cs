@@ -1,47 +1,27 @@
-using STRINGS;
-using static SkyLib.OniUtils;
 using HarmonyLib;
 using Klei.AI;
-using UnityEngine;
 using PeterHan.PLib.Core;
+using UnityEngine;
+using PeterHan.PLib.Detours;
+using STRINGS;
 
 namespace DiseasesReimagined
 {
-    using TempMonitorStateMachine = GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance,
-        IStateMachineTarget, object>;
-
-    // Patches for frostbite-related things
-    public static class FrostbitePatch
+    // Frostbite and scald damage depending on temperature
+    [HarmonyPatch(typeof(ScaldingMonitor.Instance), "TemperatureDamage")]
+    public static class ScaldingMonitor_Instance_TemperatureDamage_Patch
     {
-        // Add strings and status items for Frostbite
-        public static class Mod_OnLoad
-        {
-            public static void OnLoad()
-            {
-                AddStatusItem("FROSTBITTEN", "NAME", "Frostbite", "CREATURES");
-                AddStatusItem("FROSTBITTEN",
-                    "TOOLTIP",
-                    "Current external " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD +
-                    " is perilously low [<b>{ExternalTemperature}</b> / <b>{TargetTemperature}</b>]",
-                    "CREATURES");
-                AddStatusItem("FROSTBITTEN", "NOTIFICATION_NAME", "Frostbite", "CREATURES");
-                AddStatusItem("FROSTBITTEN", "NOTIFICATION_TOOLTIP", "Freezing " +
-                    UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD +
-                    " are hurting these Duplicants:", "CREATURES");
-                
-                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.NAME",
-                    "Frostbite Threshold");
-                Strings.Add("STRINGS.DUPLICANTS.ATTRIBUTES.FROSTBITETHRESHOLD.TOOLTIP",
-                    "Determines the " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD +
-                    " at which a Duplicant will be frostbitten.");
-            }
-        }
+        private static readonly IDetouredField<ScaldingMonitor.Instance, Health> HEALTH =
+            PDetours.DetourField<ScaldingMonitor.Instance, Health>("health");
+
+        private static readonly IDetouredField<ScaldingMonitor.Instance, OccupyArea> OCCUPY_AREA =
+            PDetours.DetourField<ScaldingMonitor.Instance, OccupyArea>("occupyArea");
 
         // Gets the minimum external pressure of the cells occupied by the creature
-        private static float GetCurrentExternalPressure(ExternalTemperatureMonitor.Instance instance)
+        private static float GetCurrentExternalPressure(ScaldingMonitor.Instance instance)
         {
-            int cell = Grid.PosToCell(instance.gameObject);
-            var area = instance.occupyArea;
+            int cell = Grid.PosToCell(instance.transform.position);
+            var area = OCCUPY_AREA.Get(instance);
             float pressure = Grid.Pressure[cell];
             if (area != null)
             {
@@ -59,113 +39,59 @@ namespace DiseasesReimagined
             return pressure;
         }
 
-        private static float GetFrostbiteThreshold(ExternalTemperatureMonitor.Instance data)
+        public static bool Prefix(ScaldingMonitor.Instance __instance, float dt,
+                                  ref float ___lastScaldTime)
         {
-            return data.attributes.GetValue("FrostbiteThreshold") + GermExposureTuning.
-                BASE_FROSTBITE_THRESHOLD;
-        }
-
-        // Add Frostbite that is Scalding but for cold
-        [HarmonyPatch(typeof(ExternalTemperatureMonitor), "InitializeStates")]
-        public static class ExternalTemperatureMonitor_InitializeStates_Patch
-        {
-            public static TempMonitorStateMachine.State frostbite;
-            public static TempMonitorStateMachine.State transitionToFrostbite;
-            
-            private static readonly StatusItem Frostbitten = new StatusItem(
-                "FROSTBITTEN",
-                "CREATURES",
-                string.Empty,
-                StatusItem.IconType.Exclamation,
-                NotificationType.DuplicantThreatening,
-                true,
-                OverlayModes.None.ID
-            ) { resolveTooltipCallback = (str, data) =>
+            float now = Time.time;
+            var hp = HEALTH.Get(__instance);
+            // Avoid damage for pressures < threshold
+            if (hp != null && now - ___lastScaldTime > 5.0f &&
+                GetCurrentExternalPressure(__instance) > GermExposureTuning.MIN_PRESSURE)
             {
-                float externalTemperature = ((ExternalTemperatureMonitor.Instance) data).AverageExternalTemperature;
-                float frostbiteThreshold = GetFrostbiteThreshold((ExternalTemperatureMonitor.Instance)data);
-                str = str.Replace("{ExternalTemperature}", GameUtil.GetFormattedTemperature(externalTemperature));
-                str = str.Replace("{TargetTemperature}", GameUtil.GetFormattedTemperature(frostbiteThreshold));
-                return str;
-            }};
-            
-            private static bool IsFrostbite(ExternalTemperatureMonitor.Instance data)
-            {
-                // a bit of a kludge, because for some reason Average External Temperature
-                // does not update for Frostbite even though it does for Scalding.
-                var exttemp = data.GetCurrentExternalTemperature;
-                return exttemp < GetFrostbiteThreshold(data) && exttemp > 0.01f &&
-                    GetCurrentExternalPressure(data) >= GermExposureTuning.MIN_PRESSURE;
-            }
-
-            public static void Postfix(ExternalTemperatureMonitor __instance)
-            {
-                Frostbitten.AddNotification();
-                frostbite = __instance.CreateState(nameof(frostbite));
-                transitionToFrostbite = __instance.CreateState(nameof(transitionToFrostbite));
-                __instance.tooCool.Transition(transitionToFrostbite, smi => IsFrostbite(smi) &&
-                    smi.timeinstate > 3.0f);
-                transitionToFrostbite
-                    .Transition(__instance.tooCool, smi => !IsFrostbite(smi))
-                    .Transition(frostbite, smi => IsFrostbite(smi) && smi.timeinstate > 1.0);
-                frostbite
-                   .Transition(__instance.tooCool, smi => !IsFrostbite(smi) && smi.timeinstate > 3.0f) // to leave frostbite state
-                   .ToggleExpression(Db.Get().Expressions.Cold) // brr
-                   .ToggleThought(Db.Get().Thoughts.Cold) // I'm thinking of brr
-                   .ToggleStatusItem(Frostbitten, smi => smi)
-                   .Update("ColdDamage", (smi, dt) => smi.ScaldDamage(dt), UpdateRate.SIM_1000ms);
-            }
-        }
-
-        // Frostbite and scald damage depending on temperature
-        [HarmonyPatch(typeof(ExternalTemperatureMonitor.Instance), "ScaldDamage")]
-        public static class ExternalTemperatureMonitor_Instance_ScaldDamage_Patch
-        {
-            public static bool Prefix(ExternalTemperatureMonitor.Instance __instance, float dt,
-                float ___lastScaldTime)
-            {
-                float now = Time.time;
-                var hp = __instance.health;
-                // Avoid damage for pressures < threshold
-                bool pressure = GetCurrentExternalPressure(__instance) > GermExposureTuning.
-                    MIN_PRESSURE;
-                if (hp != null && now - ___lastScaldTime > 5.0f && pressure)
-                {
-                    float temp = __instance.AverageExternalTemperature;
-                    // For every 5 C outside the limits, damage 1HP more
-                    float damage = System.Math.Max(0.0f, GermExposureTuning.DAMAGE_PER_K *
-                        (temp - __instance.GetScaldingThreshold())) + System.Math.Max(0.0f,
-                        GermExposureTuning.DAMAGE_PER_K * (GetFrostbiteThreshold(__instance) -
-                        temp));
-                    if (damage > 0.0f)
-                        hp.Damage(damage * dt);
+                float temp = __instance.AverageExternalTemperature;
+                // For every 5 C outside the limits, damage 1HP more
+                float damage = System.Math.Max(0.0f, GermExposureTuning.DAMAGE_PER_K *
+                    (temp - __instance.GetScaldingThreshold())) + System.Math.Max(0.0f,
+                    GermExposureTuning.DAMAGE_PER_K * (__instance.GetScoldingThreshold() -
+                    temp));
+                if (damage > 0.0f) {
+                    hp.Damage((GermExposureTuning.DAMAGE_BASE + damage) * dt);
+                    ___lastScaldTime = now;
                 }
-                return pressure;
             }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Applied to MinionConfig to set the default frostbite temperature to something a little
+    /// more diabolical.
+    /// </summary>
+    [HarmonyPatch(typeof(RationalAi), nameof(RationalAi.InitializeStates))]
+    public static class RationalAi_InitializeStates_Patch
+    {
+        /// <summary>
+        /// Applied after InitializeStates runs.
+        /// </summary>
+        internal static void Postfix(RationalAi __instance)
+        {
+            __instance.alive.Enter(AdjustScalding);
         }
 
-        // Frostbite attribute setup
-        [HarmonyPatch(typeof(Database.Attributes), MethodType.Constructor, typeof(ResourceSet))]
-        public static class Database_Attributes_Attributes_Patch
-        {
-            public static void Postfix(Database.Attributes __instance)
-            {
-                var frostbiteThreshold = new Attribute("FrostbiteThreshold", false,
-                    Attribute.Display.General, false);
-                frostbiteThreshold.SetFormatter(new StandardAttributeFormatter(
-                    GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.None));
-                __instance.Add(frostbiteThreshold);
-            }
-        }
-        
-        // Add Atmo Suit frostbite immunity
-        [HarmonyPatch(typeof(AtmoSuitConfig), "CreateEquipmentDef")]
-        public static class AtmosuitConfig_CreateEquipmentDef_Patch
-        {
-            public static void Postfix(EquipmentDef __result)
-            {
-                __result.AttributeModifiers.Add(new AttributeModifier("FrostbiteThreshold",
-                    -200.0f, EQUIPMENT.PREFABS.ATMO_SUIT.NAME));
+        private static void AdjustScalding(RationalAi.Instance smi) {
+            var go = smi.master.gameObject;
+            if (go != null) {
+                var scaldingSMI = go.GetSMI<ScaldingMonitor.Instance>();
+                if (scaldingSMI.def is ScaldingMonitor.Def def) {
+                    float oldValue = def.defaultScoldingTreshold;
+                    def.defaultScoldingTreshold = GermExposureTuning.BASE_FROSTBITE_THRESHOLD;
+                    // The SM is already started, injecting in between the instantiation and
+                    // start call is very hard, so fix it up post hoc
+                    go.GetAttributes()?.Get(Db.Get().Attributes.ScoldingThreshold)?.Add(
+                        new AttributeModifier("ScoldingThreshold", GermExposureTuning.
+                        BASE_FROSTBITE_THRESHOLD - oldValue, DUPLICANTS.STATS.
+                        SKIN_DURABILITY.NAME));
+                }
             }
         }
     }
