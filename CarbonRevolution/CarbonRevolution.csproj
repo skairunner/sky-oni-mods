@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net40</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <AssemblyTitle>Carbon Revolution</AssemblyTitle>
     <Version>1.6.0</Version>
     <FileVersion>1.6.0</FileVersion>

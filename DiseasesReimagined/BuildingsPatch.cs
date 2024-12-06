@@ -72,7 +72,7 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(HandSanitizer.Work), "OnCompleteWork")]
         public static class HandSanitizer_Work_OnCompleteWork_Patch
         {
-            public static void Postfix(HandSanitizer.Work __instance, Worker worker)
+            public static void Postfix(HandSanitizer.Work __instance, KMonoBehaviour worker)
             {
                 GermySinkManager.Instance?.FinishGermyWork(__instance, worker);
             }
@@ -100,7 +100,7 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(Shower), "OnAbortWork")]
         public static class Shower_OnAbortWork_Patch
         {
-            public static void Postfix(Shower __instance, Worker worker)
+            public static void Postfix(Shower __instance, KMonoBehaviour worker)
             {
                 GermySinkManager.Instance?.FinishGermyWork(__instance, worker);
             }
@@ -109,7 +109,7 @@ namespace DiseasesReimagined
         [HarmonyPatch(typeof(Shower), "OnCompleteWork")]
         public static class Shower_OnCompleteWork_Patch
         {
-            public static void Postfix(Shower __instance, Worker worker)
+            public static void Postfix(Shower __instance, KMonoBehaviour worker)
             {
                 GermySinkManager.Instance?.FinishGermyWork(__instance, worker);
             }

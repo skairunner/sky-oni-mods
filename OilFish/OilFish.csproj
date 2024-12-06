@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net35</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <AssemblyTitle>Oil Pacu</AssemblyTitle>
     <Version>0.1.0</Version>
   </PropertyGroup>

@@ -73,7 +73,7 @@ namespace DiseasesReimagined
         }
 
         // Transfer a fraction of consumed germs to the worker and finish the chore
-        public void FinishGermyWork(Workable work, Worker worker)
+        public void FinishGermyWork(Workable work, KMonoBehaviour worker)
         {
             if (work == null)
                 throw new ArgumentNullException(nameof(work));
