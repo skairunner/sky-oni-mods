@@ -261,11 +261,11 @@ namespace DiseasesReimagined
         /// <summary>
         /// Applied to BaseMinionConfig to add disease integration monitors to every Duplicant.
         /// </summary>
-        [HarmonyPatch(typeof(BaseMinionConfig), "CreatePrefab")]
-        public static class BaseMinionConfig_CreatePrefab_Patch
+        [HarmonyPatch(typeof(BaseMinionConfig), "BaseMinion")]
+        public static class BaseMinionConfig_BaseMinion_Patch
         {
             /// <summary>
-            /// Applied after CreatePrefab runs.
+            /// Applied after BaseMinion runs.
             /// </summary>
             internal static void Postfix(GameObject __result)
             {
