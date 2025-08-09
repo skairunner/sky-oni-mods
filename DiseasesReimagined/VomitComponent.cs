@@ -79,9 +79,13 @@ namespace DiseasesReimagined
                 }
                 // Decrease kcal as well
                 var cals = Db.Get().Amounts.Calories.Lookup(vomiter);
-                float curKcal = cals.value;
-                if (curKcal > GermExposureTuning.KCAL_LOST_VOMIT + 100.0f)
-                    cals.SetValue(curKcal - GermExposureTuning.KCAL_LOST_VOMIT);
+                if (cals != null)
+                {
+                    // Bionic Duplicants do not have kcal
+                    float curKcal = cals.value;
+                    if (curKcal > GermExposureTuning.KCAL_LOST_VOMIT + 100.0f)
+                        cals.SetValue(curKcal - GermExposureTuning.KCAL_LOST_VOMIT);
+                }
             }
 
             private void FinishedVomit()
